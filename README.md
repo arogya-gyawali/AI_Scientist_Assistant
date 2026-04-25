@@ -1,4 +1,4 @@
-> **🚧 Work in progress — hackathon build.** Specs and types are landing on the `shaun` branch first; nothing here is stable yet.
+> **Tentative — first-pass data architecture proposal.** Drafted so the team has something concrete to align on. Specifics will likely change as others weigh in.
 
 # AI Scientist Assistant
 
