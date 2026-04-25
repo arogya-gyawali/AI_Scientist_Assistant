@@ -25,7 +25,9 @@ Full architecture in [`spec/architecture.md`](spec/architecture.md). Type contra
 
 ## Stack
 
-React (via Lovable) → Vercel · Supabase (Postgres + pgvector + edge functions) · OpenRouter (Gemini 2.5 Flash) · protocols.io · Tavily.
+React (via Lovable) → Vercel · Supabase (Postgres + pgvector + edge functions) · protocols.io · Tavily.
+
+**LLM:** OpenRouter → Gemini 2.5 Flash for **prototyping** (cheap dev iteration), Anthropic direct → Claude Sonnet 4.6 for **production** (demo / quality-sensitive runs). Switch via `LLM_PROVIDER` in `.env`.
 
 ## Working on this
 

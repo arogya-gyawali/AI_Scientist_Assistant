@@ -12,8 +12,8 @@
 | Deployment | Vercel | Hackathon credit (claimed) |
 | Backend / DB / serverless | Supabase | Free tier; Postgres + pgvector + edge functions |
 | Web search + extract | Tavily | Stages 1 (lit QC), 3 (catalog gap-fill), 4 (supplier pricing). Hackathon credit `TVLY-HF9ETJRW`. |
-| LLM gateway | OpenRouter | Single gateway for all model calls |
-| LLM model | `google/gemini-2.5-flash` | All stages |
+| LLM (prototyping) | OpenRouter → `google/gemini-2.5-flash` | Default for dev iteration: cheap, fast, swap models freely via one gateway |
+| LLM (production) | Anthropic direct → Claude Sonnet 4.6 | Higher quality and reliability for the demo/production runs; uses Anthropic SDK directly with prompt caching |
 | Protocol data source | protocols.io REST API | Source of truth for protocol content |
 | Supplier sources | Thermo Fisher, Sigma-Aldrich, Promega, Qiagen, IDT, ATCC, Addgene | Crawled via Tavily for catalog #s + pricing |
 | Embeddings | OpenAI `text-embedding-3-small` or local | Cheap or free |
@@ -172,6 +172,25 @@ Full TypeScript interfaces in `spec/types/`. Each stage writes its named field o
 - **Cache every external fetch into Supabase.** protocols.io responses, Tavily search/extract results, supplier quotes, embeddings, and any other paid-or-rate-limited call gets cached by a deterministic key (URL, query hash, content hash) with a TTL appropriate to the data type — protocols rarely change (long TTL); supplier prices change (short TTL); embeddings are immutable per text. The cache is shared across all plans so retries and re-runs are nearly free.
 - **Each stage is independently testable.** Mock the plan with the stage's `reads` populated, run that stage in isolation. Important for parallel hackathon work.
 - **Progressive UI rendering.** UI subscribes to the plan document. Each populated field renders its section; missing fields show "generating…". No coordinated loading state.
+
+## LLM provider strategy
+
+Two LLM client codepaths, used for different lifecycle stages:
+
+| Mode | Provider | Default model | When |
+|---|---|---|---|
+| **Prototyping** | OpenRouter (OpenAI-compatible API) | `google/gemini-2.5-flash` | Day-to-day dev iteration. Cheap (~$0.30 per million output tokens), fast, lets us A/B different models on the same prompts without juggling SDKs. |
+| **Production** | Anthropic SDK (direct) | `claude-sonnet-4-6` | Demo runs and any user-visible output where quality matters. No OpenRouter markup, supports Anthropic's prompt caching for the protocols.io context we re-use across stages. |
+
+**Why both:** prototyping on OpenRouter keeps dev cycles cheap and gives us model-swap flexibility while we tune prompts. Switching to Anthropic for production trades that flexibility for higher-quality, more consistent Claude output and prompt caching savings on the long retrieved-protocol context that shows up in Stages 2/3.
+
+**Implementation detail:** the two SDKs have different message formats (Claude separates system prompt + uses content blocks; OpenAI-compatible flattens them). The runtime LLM client abstracts this — stages call `llm.complete({ system, user, ... })` and the client picks the codepath based on `LLM_PROVIDER=openrouter|anthropic` env var. Prompt content is identical between modes; only the wire format differs.
+
+Switch via `.env`:
+```
+LLM_PROVIDER=openrouter   # default for dev
+# LLM_PROVIDER=anthropic  # uncomment for production runs
+```
 
 ## Tavily call budget per plan
 
