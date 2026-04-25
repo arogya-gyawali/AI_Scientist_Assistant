@@ -188,15 +188,15 @@ classDiagram
 
 Where each type is produced and consumed across the pipeline.
 
-| Stage | Input | Output | External source |
+| Stage | Reads (plan fields) | Writes (plan field : type) | External source |
 |---|---|---|---|
-| 1. Lit Review | `Hypothesis` | `LitReviewSession` (conversational) | Tavily |
-| 2. Protocol | `Hypothesis` + cached protocols | `ProtocolGenerationOutput` | protocols.io steps |
-| 3. Materials | Stage 2 output | `MaterialsOutput` | protocols.io materials |
-| 4. Budget | Stage 3 output | `BudgetOutput` | LLM estimate |
-| 5. Timeline | Stage 2 output | `TimelineOutput` | Derived from steps |
-| 6. Validation | Stage 2 output + hypothesis | `ValidationOutput` | Protocol "expected results" |
-| 7. Summary | All above | `ExperimentPlan` | LLM final pass |
+| 1. Lit Review | `hypothesis` | `lit_review` : `LitReviewSession` (conversational) | Tavily |
+| 2. Protocol | `hypothesis` | `protocol` : `ProtocolGenerationOutput` | protocols.io steps |
+| 3. Materials | `protocol` | `materials` : `MaterialsOutput` | protocols.io materials + Tavily for catalog # gaps |
+| 4. Budget | `materials` | `budget` : `BudgetOutput` | Tavily supplier-page scrape (Thermo / Sigma / Promega / Qiagen / IDT / ATCC / Addgene); LLM estimate as fallback |
+| 5. Timeline | `protocol` | `timeline` : `TimelineOutput` | Derived from steps |
+| 6. Validation | `hypothesis`, `protocol` | `validation` : `ValidationOutput` | Protocol "expected results" |
+| 7. Summary | all above | `summary` : `SummaryOutput` | LLM final pass |
 
 Stages 3, 5, 6 run in parallel after 2. Stage 4 depends on 3. Stage 7 waits for everything.
 
