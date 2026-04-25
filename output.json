@@ -1,0 +1,568 @@
+{
+  "title": "Effect of Lactobacillus rhamnosus GG Supplementation on Intestinal Permeability and Tight Junction Protein Expression in C57BL/6 Mice",
+  "summary": "This study will evaluate whether 4 weeks of oral Lactobacillus rhamnosus GG supplementation reduces intestinal permeability by at least 30% in C57BL/6 mice compared to vehicle controls. Intestinal permeability will be assessed using FITC-dextran assay, and tight junction proteins claudin-1 and occludin will be quantified by Western blot and immunohistochemistry to determine the mechanism of action.",
+  "protocol": {
+    "phases": [
+      {
+        "phase_name": "Animal Acclimatization and Baseline",
+        "steps": [
+          {
+            "step_number": 1,
+            "title": "Animal procurement and housing",
+            "description": "Obtain 40 male C57BL/6 mice, 6-8 weeks old, weight 20-25g. House in specific pathogen-free (SPF) conditions at 22\u00b12\u00b0C, 50-60% humidity, 12h light/dark cycle. Provide standard chow and water ad libitum. Allow 7 days acclimatization before treatment initiation.",
+            "reference": "Kilkenny et al., PLoS Biology. 2010"
+          },
+          {
+            "step_number": 2,
+            "title": "Randomization and group assignment",
+            "description": "Randomly assign mice to two groups (n=20 per group): Group 1 (Control) receives vehicle (1% sterile skim milk in PBS), Group 2 (LGG) receives Lactobacillus rhamnosus GG at 1\u00d710^9 CFU in 200\u03bcL vehicle. Use block randomization to ensure equal distribution.",
+            "reference": "Festing et al., Laboratory Animals. 2002"
+          }
+        ]
+      },
+      {
+        "phase_name": "Probiotic Administration",
+        "steps": [
+          {
+            "step_number": 3,
+            "title": "Preparation of L. rhamnosus GG suspension",
+            "description": "Culture L. rhamnosus GG (ATCC 53103) in MRS broth at 37\u00b0C anaerobically for 18-24h. Harvest by centrifugation at 3000\u00d7g for 10 min at 4\u00b0C. Wash twice with sterile PBS. Resuspend in 1% sterile skim milk in PBS to achieve 5\u00d710^9 CFU/mL. Prepare fresh every 3 days and store at 4\u00b0C. Verify CFU by serial dilution plating on MRS agar.",
+            "reference": "Lebeer et al., Microbes and Infection. 2008"
+          },
+          {
+            "step_number": 4,
+            "title": "Daily oral gavage administration",
+            "description": "Administer 200\u03bcL of either LGG suspension (1\u00d710^9 CFU) or vehicle control via oral gavage once daily for 28 consecutive days. Use sterile gavage needles (20G, 38mm). Record body weight every 3 days and monitor for adverse effects. Administer treatments at the same time each day (9:00-11:00 AM).",
+            "reference": "Rodrigues et al., Nature Protocols. 2021"
+          }
+        ]
+      },
+      {
+        "phase_name": "Intestinal Permeability Assessment",
+        "steps": [
+          {
+            "step_number": 5,
+            "title": "FITC-dextran permeability assay",
+            "description": "On day 29, fast mice for 4h with water ad libitum. Administer FITC-dextran (FD4, 4kDa, 600 mg/kg body weight) via oral gavage in PBS. After 4h, anesthetize mice with isoflurane and collect blood via cardiac puncture into heparinized tubes. Centrifuge at 3000\u00d7g for 15 min at 4\u00b0C to obtain plasma. Measure FITC fluorescence using fluorometer (excitation 485nm, emission 528nm). Calculate serum FITC-dextran concentration using standard curve (ranging from 0-10 \u03bcg/mL).",
+            "reference": "Chassaing et al., American Journal of Physiology. 2012"
+          }
+        ]
+      },
+      {
+        "phase_name": "Tissue Collection and Processing",
+        "steps": [
+          {
+            "step_number": 6,
+            "title": "Intestinal tissue harvest",
+            "description": "Following blood collection, euthanize mice by cervical dislocation under deep anesthesia. Excise entire small intestine from pylorus to cecum. Flush lumen with ice-cold PBS. Divide into three sections: proximal (duodenum), middle (jejunum), and distal (ileum). For each animal, allocate jejunum tissue as follows: 2cm segment in 10% neutral buffered formalin for IHC, 3cm segment snap-frozen in liquid nitrogen for Western blot, 2cm segment in RNAlater for qPCR.",
+            "reference": "Arrieta et al., Gut. 2006"
+          },
+          {
+            "step_number": 7,
+            "title": "Tissue preservation",
+            "description": "Fix formalin samples for 24h at room temperature, then transfer to 70% ethanol until paraffin embedding. Store snap-frozen samples at -80\u00b0C. Store RNAlater samples at -20\u00b0C after overnight incubation at 4\u00b0C. Label all samples with unique identifiers.",
+            "reference": "Ramos-Vara et al., Veterinary Pathology. 2008"
+          }
+        ]
+      },
+      {
+        "phase_name": "Western Blot Analysis",
+        "steps": [
+          {
+            "step_number": 8,
+            "title": "Protein extraction",
+            "description": "Homogenize 50mg frozen jejunum tissue in 500\u03bcL RIPA buffer (50mM Tris-HCl pH 7.4, 150mM NaCl, 1% NP-40, 0.5% sodium deoxycholate, 0.1% SDS) supplemented with protease inhibitor cocktail (1:100) and phosphatase inhibitors. Incubate on ice for 30 min with vortexing every 10 min. Centrifuge at 14,000\u00d7g for 15 min at 4\u00b0C. Collect supernatant and determine protein concentration using BCA assay.",
+            "reference": "Cani et al., Diabetes. 2008"
+          },
+          {
+            "step_number": 9,
+            "title": "SDS-PAGE and immunoblotting",
+            "description": "Load 30\u03bcg protein per well on 10% SDS-PAGE gels. Run electrophoresis at 100V for 90 min. Transfer proteins to PVDF membranes at 100V for 60 min at 4\u00b0C. Block membranes with 5% non-fat milk in TBST for 1h at room temperature. Incubate with primary antibodies overnight at 4\u00b0C: rabbit anti-claudin-1 (1:1000), rabbit anti-occludin (1:1000), mouse anti-\u03b2-actin (1:5000). Wash 3\u00d710 min with TBST. Incubate with HRP-conjugated secondary antibodies (1:5000) for 1h at room temperature. Wash 3\u00d710 min. Develop using ECL substrate and image using ChemiDoc system.",
+            "reference": "Al-Sadi et al., American Journal of Pathology. 2008"
+          },
+          {
+            "step_number": 10,
+            "title": "Densitometry analysis",
+            "description": "Quantify band intensity using ImageJ software. Normalize claudin-1 and occludin expression to \u03b2-actin loading control. Calculate fold change relative to control group mean. Analyze samples in duplicate.",
+            "reference": "Schneider et al., Nature Methods. 2012"
+          }
+        ]
+      },
+      {
+        "phase_name": "Immunohistochemistry",
+        "steps": [
+          {
+            "step_number": 11,
+            "title": "Tissue sectioning and deparaffinization",
+            "description": "Section paraffin-embedded jejunum tissue at 5\u03bcm thickness using microtome. Mount on positively charged slides. Deparaffinize in xylene (3\u00d75 min) and rehydrate through graded ethanol series (100%, 95%, 70%, 50%, each 3 min) to distilled water.",
+            "reference": "Ramos-Vara et al., Veterinary Pathology. 2008"
+          },
+          {
+            "step_number": 12,
+            "title": "Antigen retrieval and immunostaining",
+            "description": "Perform heat-induced antigen retrieval in citrate buffer (10mM, pH 6.0) at 95\u00b0C for 20 min. Cool for 30 min. Block endogenous peroxidase with 3% H2O2 for 10 min. Block non-specific binding with 10% normal goat serum in PBS for 1h at room temperature. Incubate with primary antibodies (rabbit anti-claudin-1 at 1:200 or rabbit anti-occludin at 1:200) overnight at 4\u00b0C in humidified chamber. Wash 3\u00d75 min with PBS. Incubate with biotinylated goat anti-rabbit secondary antibody (1:500) for 30 min. Apply ABC reagent for 30 min. Develop with DAB substrate for 3-5 min. Counterstain with hematoxylin for 1 min. Dehydrate and mount with Permount.",
+            "reference": "Anderson et al., Journal of Clinical Investigation. 2004"
+          },
+          {
+            "step_number": 13,
+            "title": "Image acquisition and quantification",
+            "description": "Capture images at 400\u00d7 magnification using brightfield microscope with digital camera. Analyze 10 random fields per section, 3 sections per animal. Quantify staining intensity using ImageJ color deconvolution plugin. Score intensity semi-quantitatively (0=negative, 1=weak, 2=moderate, 3=strong) and calculate H-score: \u03a3(intensity \u00d7 percentage of positive area). Two blinded observers independently score all slides.",
+            "reference": "Fedchenko et al., Acta Histochemica. 2014"
+          }
+        ]
+      },
+      {
+        "phase_name": "Statistical Analysis",
+        "steps": [
+          {
+            "step_number": 14,
+            "title": "Data analysis and interpretation",
+            "description": "Compile all data in GraphPad Prism 9. Test normality using Shapiro-Wilk test. Compare FITC-dextran concentrations, protein expression levels, and IHC scores between groups using unpaired t-test (if normal) or Mann-Whitney U test (if non-normal). Calculate percentage reduction in intestinal permeability as: [(Control mean - LGG mean)/Control mean] \u00d7 100. Perform correlation analysis between FITC-dextran levels and tight junction protein expression using Pearson or Spearman correlation. Present data as mean \u00b1 SEM. Consider p<0.05 statistically significant. Calculate statistical power post-hoc.",
+            "reference": "Cumming et al., Journal of Physiology. 2007"
+          }
+        ]
+      }
+    ]
+  },
+  "materials": [
+    {
+      "category": "Animals",
+      "name": "C57BL/6 male mice, 6-8 weeks",
+      "supplier": "Jackson Laboratory",
+      "catalog_number": "000664",
+      "quantity": "40",
+      "unit_cost_usd": 35.0,
+      "total_cost_usd": 1400.0
+    },
+    {
+      "category": "Animals",
+      "name": "Housing and husbandry (4 weeks)",
+      "supplier": "Institutional vivarium",
+      "catalog_number": "N/A",
+      "quantity": "40 mice \u00d7 4 weeks",
+      "unit_cost_usd": 1.5,
+      "total_cost_usd": 240.0
+    },
+    {
+      "category": "Probiotic",
+      "name": "Lactobacillus rhamnosus GG (ATCC 53103)",
+      "supplier": "ATCC",
+      "catalog_number": "53103",
+      "quantity": "1 vial",
+      "unit_cost_usd": 450.0,
+      "total_cost_usd": 450.0
+    },
+    {
+      "category": "Culture media",
+      "name": "MRS broth",
+      "supplier": "BD Difco",
+      "catalog_number": "288130",
+      "quantity": "500 g",
+      "unit_cost_usd": 185.0,
+      "total_cost_usd": 185.0
+    },
+    {
+      "category": "Culture media",
+      "name": "MRS agar",
+      "supplier": "BD Difco",
+      "catalog_number": "288210",
+      "quantity": "500 g",
+      "unit_cost_usd": 195.0,
+      "total_cost_usd": 195.0
+    },
+    {
+      "category": "Reagents",
+      "name": "FITC-dextran, 4 kDa (FD4)",
+      "supplier": "Sigma-Aldrich",
+      "catalog_number": "46944",
+      "quantity": "1 g",
+      "unit_cost_usd": 175.0,
+      "total_cost_usd": 175.0
+    },
+    {
+      "category": "Reagents",
+      "name": "Skim milk powder",
+      "supplier": "BD Difco",
+      "catalog_number": "232100",
+      "quantity": "500 g",
+      "unit_cost_usd": 85.0,
+      "total_cost_usd": 85.0
+    },
+    {
+      "category": "Reagents",
+      "name": "PBS, pH 7.4, sterile",
+      "supplier": "Gibco",
+      "catalog_number": "10010-023",
+      "quantity": "10 L",
+      "unit_cost_usd": 12.0,
+      "total_cost_usd": 120.0
+    },
+    {
+      "category": "Reagents",
+      "name": "RIPA lysis buffer",
+      "supplier": "Cell Signaling Technology",
+      "catalog_number": "9806",
+      "quantity": "100 mL",
+      "unit_cost_usd": 95.0,
+      "total_cost_usd": 95.0
+    },
+    {
+      "category": "Reagents",
+      "name": "Protease inhibitor cocktail",
+      "supplier": "Roche",
+      "catalog_number": "11836153001",
+      "quantity": "1 set (50 tablets)",
+      "unit_cost_usd": 310.0,
+      "total_cost_usd": 310.0
+    },
+    {
+      "category": "Reagents",
+      "name": "BCA protein assay kit",
+      "supplier": "Thermo Fisher",
+      "catalog_number": "23225",
+      "quantity": "1 kit",
+      "unit_cost_usd": 145.0,
+      "total_cost_usd": 145.0
+    },
+    {
+      "category": "Reagents",
+      "name": "SDS-PAGE gels, 10%, 12-well",
+      "supplier": "Bio-Rad",
+      "catalog_number": "4561034",
+      "quantity": "20 gels",
+      "unit_cost_usd": 8.5,
+      "total_cost_usd": 170.0
+    },
+    {
+      "category": "Reagents",
+      "name": "PVDF membrane, 0.45 \u03bcm",
+      "supplier": "Millipore",
+      "catalog_number": "IPVH00010",
+      "quantity": "1 roll",
+      "unit_cost_usd": 265.0,
+      "total_cost_usd": 265.0
+    },
+    {
+      "category": "Antibodies",
+      "name": "Anti-claudin-1 antibody, rabbit polyclonal",
+      "supplier": "Abcam",
+      "catalog_number": "ab15098",
+      "quantity": "100 \u03bcg",
+      "unit_cost_usd": 425.0,
+      "total_cost_usd": 425.0
+    },
+    {
+      "category": "Antibodies",
+      "name": "Anti-occludin antibody, rabbit polyclonal",
+      "supplier": "Abcam",
+      "catalog_number": "ab167161",
+      "quantity": "100 \u03bcg",
+      "unit_cost_usd": 435.0,
+      "total_cost_usd": 435.0
+    },
+    {
+      "category": "Antibodies",
+      "name": "Anti-\u03b2-actin antibody, mouse monoclonal",
+      "supplier": "Sigma-Aldrich",
+      "catalog_number": "A5441",
+      "quantity": "200 \u03bcL",
+      "unit_cost_usd": 285.0,
+      "total_cost_usd": 285.0
+    },
+    {
+      "category": "Antibodies",
+      "name": "Anti-rabbit IgG-HRP secondary antibody",
+      "supplier": "Cell Signaling Technology",
+      "catalog_number": "7074",
+      "quantity": "100 \u03bcL",
+      "unit_cost_usd": 155.0,
+      "total_cost_usd": 155.0
+    },
+    {
+      "category": "Antibodies",
+      "name": "Anti-mouse IgG-HRP secondary antibody",
+      "supplier": "Cell Signaling Technology",
+      "catalog_number": "7076",
+      "quantity": "100 \u03bcL",
+      "unit_cost_usd": 155.0,
+      "total_cost_usd": 155.0
+    },
+    {
+      "category": "Antibodies",
+      "name": "Biotinylated anti-rabbit IgG",
+      "supplier": "Vector Laboratories",
+      "catalog_number": "BA-1000",
+      "quantity": "1.5 mL",
+      "unit_cost_usd": 195.0,
+      "total_cost_usd": 195.0
+    },
+    {
+      "category": "Reagents",
+      "name": "ECL Western blot substrate",
+      "supplier": "Thermo Fisher",
+      "catalog_number": "32106",
+      "quantity": "500 mL",
+      "unit_cost_usd": 195.0,
+      "total_cost_usd": 195.0
+    },
+    {
+      "category": "Reagents",
+      "name": "10% neutral buffered formalin",
+      "supplier": "VWR",
+      "catalog_number": "89370-094",
+      "quantity": "4 L",
+      "unit_cost_usd": 18.0,
+      "total_cost_usd": 72.0
+    },
+    {
+      "category": "Reagents",
+      "name": "RNAlater stabilization solution",
+      "supplier": "Thermo Fisher",
+      "catalog_number": "AM7020",
+      "quantity": "100 mL",
+      "unit_cost_usd": 85.0,
+      "total_cost_usd": 85.0
+    },
+    {
+      "category": "Reagents",
+      "name": "ABC Elite kit (avidin-biotin complex)",
+      "supplier": "Vector Laboratories",
+      "catalog_number": "PK-6100",
+      "quantity": "1 kit",
+      "unit_cost_usd": 165.0,
+      "total_cost_usd": 165.0
+    },
+    {
+      "category": "Reagents",
+      "name": "DAB peroxidase substrate kit",
+      "supplier": "Vector Laboratories",
+      "catalog_number": "SK-4100",
+      "quantity": "1 kit",
+      "unit_cost_usd": 115.0,
+      "total_cost_usd": 115.0
+    },
+    {
+      "category": "Reagents",
+      "name": "Hematoxylin stain",
+      "supplier": "Sigma-Aldrich",
+      "catalog_number": "HHS32",
+      "quantity": "500 mL",
+      "unit_cost_usd": 45.0,
+      "total_cost_usd": 45.0
+    },
+    {
+      "category": "Reagents",
+      "name": "Citrate buffer, pH 6.0, 10\u00d7",
+      "supplier": "Abcam",
+      "catalog_number": "ab64214",
+      "quantity": "500 mL",
+      "unit_cost_usd": 75.0,
+      "total_cost_usd": 75.0
+    },
+    {
+      "category": "Reagents",
+      "name": "Normal goat serum",
+      "supplier": "Vector Laboratories",
+      "catalog_number": "S-1000",
+      "quantity": "10 mL",
+      "unit_cost_usd": 95.0,
+      "total_cost_usd": 95.0
+    },
+    {
+      "category": "Reagents",
+      "name": "Permount mounting medium",
+      "supplier": "Fisher Scientific",
+      "catalog_number": "SP15-500",
+      "quantity": "500 mL",
+      "unit_cost_usd": 125.0,
+      "total_cost_usd": 125.0
+    },
+    {
+      "category": "Consumables",
+      "name": "Gavage needles, 20G \u00d7 38mm",
+      "supplier": "Instech Laboratories",
+      "catalog_number": "FTP-20-38",
+      "quantity": "50",
+      "unit_cost_usd": 2.5,
+      "total_cost_usd": 125.0
+    },
+    {
+      "category": "Consumables",
+      "name": "Heparinized blood collection tubes",
+      "supplier": "BD",
+      "catalog_number": "365963",
+      "quantity": "100",
+      "unit_cost_usd": 1.25,
+      "total_cost_usd": 125.0
+    },
+    {
+      "category": "Consumables",
+      "name": "Cryogenic vials, 2 mL",
+      "supplier": "Corning",
+      "catalog_number": "430488",
+      "quantity": "200",
+      "unit_cost_usd": 0.85,
+      "total_cost_usd": 170.0
+    },
+    {
+      "category": "Consumables",
+      "name": "Microscope slides, positively charged",
+      "supplier": "Fisher Scientific",
+      "catalog_number": "12-550-15",
+      "quantity": "1 box (72 slides)",
+      "unit_cost_usd": 42.0,
+      "total_cost_usd": 42.0
+    },
+    {
+      "category": "Consumables",
+      "name": "General lab consumables (tubes, tips, etc.)",
+      "supplier": "Various",
+      "catalog_number": "N/A",
+      "quantity": "Bulk",
+      "unit_cost_usd": 0.0,
+      "total_cost_usd": 500.0
+    }
+  ],
+  "budget": {
+    "materials_subtotal_usd": 8299.0,
+    "equipment_fees_usd": 3500.0,
+    "labor_usd": 12600.0,
+    "contingency_usd": 2440.0,
+    "total_usd": 26839.0,
+    "line_items": [
+      {
+        "category": "Animals",
+        "description": "Purchase and housing of 40 C57BL/6 mice for 4 weeks",
+        "cost_usd": 1640.0
+      },
+      {
+        "category": "Reagents and consumables",
+        "description": "All chemicals, antibodies, culture media, and disposables",
+        "cost_usd": 6659.0
+      },
+      {
+        "category": "Equipment fees",
+        "description": "Fluorometer, microscope, Western blot system, microtome use",
+        "cost_usd": 3500.0
+      },
+      {
+        "category": "Technical labor",
+        "description": "Research technician, 280 hours at $35/hr",
+        "cost_usd": 9800.0
+      },
+      {
+        "category": "Histology services",
+        "description": "Tissue embedding, sectioning (40 samples \u00d7 $70)",
+        "cost_usd": 2800.0
+      },
+      {
+        "category": "Contingency",
+        "description": "10% buffer for unexpected costs",
+        "cost_usd": 2440.0
+      }
+    ]
+  },
+  "timeline": {
+    "total_weeks": 10,
+    "phases": [
+      {
+        "phase_name": "Study preparation",
+        "weeks": "Week 1",
+        "tasks": [
+          "Obtain all materials and reagents",
+          "Prepare culture media and validate L. rhamnosus GG culture",
+          "Receive and acclimate mice (7 days)",
+          "Complete IACUC documentation"
+        ],
+        "dependencies": [
+          "IACUC approval",
+          "Vendor delivery schedules"
+        ]
+      },
+      {
+        "phase_name": "Treatment period",
+        "weeks": "Week 2-5",
+        "tasks": [
+          "Daily oral gavage administration (28 days)",
+          "Body weight monitoring every 3 days",
+          "Prepare fresh probiotic suspensions every 3 days",
+          "Record health observations"
+        ],
+        "dependencies": [
+          "Completion of acclimatization"
+        ]
+      },
+      {
+        "phase_name": "Permeability assessment and tissue collection",
+        "weeks": "Week 6",
+        "tasks": [
+          "FITC-dextran administration and blood collection (Day 29)",
+          "Tissue harvest and preservation",
+          "Plasma separation and fluorescence measurement",
+          "Snap-freeze and fix tissues appropriately"
+        ],
+        "dependencies": [
+          "Completion of 28-day treatment"
+        ]
+      },
+      {
+        "phase_name": "Western blot analysis",
+        "weeks": "Week 7",
+        "tasks": [
+          "Protein extraction from frozen tissues",
+          "BCA protein quantification",
+          "SDS-PAGE and transfer to PVDF",
+          "Immunoblotting for claudin-1, occludin, \u03b2-actin",
+          "Densitometry analysis"
+        ],
+        "dependencies": [
+          "Tissue collection complete"
+        ]
+      },
+      {
+        "phase_name": "Immunohistochemistry",
+        "weeks": "Week 8",
+        "tasks": [
+          "Paraffin embedding and sectioning of fixed tissues",
+          "IHC staining for claudin-1 and occludin",
+          "Image acquisition and quantification",
+          "Blinded scoring by two observers"
+        ],
+        "dependencies": [
+          "Histology processing complete"
+        ]
+      },
+      {
+        "phase_name": "Data analysis and reporting",
+        "weeks": "Week 9-10",
+        "tasks": [
+          "Compile all data sets",
+          "Perform statistical analyses",
+          "Generate figures and tables",
+          "Interpret results relative to hypothesis",
+          "Prepare final report"
+        ],
+        "dependencies": [
+          "All assays complete"
+        ]
+      }
+    ]
+  },
+  "validation": {
+    "primary_outcome": "Serum FITC-dextran concentration at 4 hours post-gavage as a measure of intestinal permeability",
+    "success_threshold": "\u226530% reduction in FITC-dextran concentration in LGG group compared to control group (p<0.05)",
+    "statistical_test": "Unpaired t-test or Mann-Whitney U test depending on normality; Pearson/Spearman correlation for protein expression vs. permeability",
+    "positive_result": "LGG group shows \u226530% lower FITC-dextran levels with corresponding significant increases (\u22651.3-fold) in claudin-1 and occludin protein expression by Western blot and IHC, with negative correlation between permeability and tight junction protein levels",
+    "negative_result": "No significant difference (<30% or p>0.05) in FITC-dextran levels between groups, or reduced permeability without corresponding tight junction protein upregulation, indicating alternative mechanisms or lack of effect",
+    "quality_controls": [
+      "Daily verification of probiotic viability by CFU enumeration (should be 0.5-2.0 \u00d7 10^9 CFU per dose)",
+      "FITC-dextran standard curve R\u00b2 >0.99",
+      "Western blot \u03b2-actin loading control shows equal loading across all samples (CV <15%)",
+      "Positive and negative control tissues for IHC validation",
+      "Inter-observer agreement for IHC scoring (Cohen's kappa >0.75)",
+      "Body weight change <10% during treatment period (indicator of treatment tolerance)",
+      "No bacterial contamination in control group tissues (confirmed by sterile tissue culture)",
+      "Technical replicates for Western blot with CV <20%"
+    ]
+  }
+}
