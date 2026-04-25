@@ -7,6 +7,17 @@ The hypothesis is:
 {hypothesis}
 
 {feedback_context}
+The hypothesis is:
+{hypothesis}
+
+{feedback_context}
+
+Be concise. Strict limits:
+- Maximum 5 protocol phases, 3 steps each
+- Maximum 15 materials items total
+- Maximum 10 budget line items
+- Keep all text fields under 100 words
+- Do not add extra fields not in the schema
 
 Respond ONLY with a valid JSON object. No markdown, no explanation, no backticks. Just raw JSON.
 

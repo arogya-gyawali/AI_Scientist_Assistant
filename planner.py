@@ -24,10 +24,5 @@ def generate_experiment_plan(hypothesis: str, feedback: list = None) -> dict:
     
     raw = response.content[0].text
     
-    # Debug
-    print(f"Response length: {len(raw)} chars")
-    print("Last 200 chars:")
-    print(raw[-200:])
-    
     clean = raw.replace("```json", "").replace("```", "").strip()
     return json.loads(clean)

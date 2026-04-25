@@ -15,7 +15,7 @@ if __name__ == "__main__":
     print(f"Summary: {plan['summary']}")
     print(f"\nTotal Budget: ${plan['budget']['total_usd']:,.2f}")
     print(f"Timeline: {plan['timeline']['total_weeks']} weeks")
-    print(f"\nMaterials count: {len(plan['materials'])} items")
+    print(f"Materials count: {len(plan['materials']['items'])} items")
     print(f"Protocol phases: {len(plan['protocol']['phases'])}")
     
     # Save full output to file
