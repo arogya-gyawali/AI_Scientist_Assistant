@@ -5,6 +5,7 @@ import type { MaterialsOutput } from './materials';
 import type { BudgetOutput } from './budget';
 import type { TimelineOutput } from './timeline';
 import type { ValidationOutput } from './validation';
+import type { DesignCritique } from './critique';
 
 export type RiskAssessment = {
   risk: string;
@@ -42,6 +43,7 @@ export type ExperimentPlan = {
   budget?: BudgetOutput;
   timeline?: TimelineOutput;
   validation?: ValidationOutput;
+  critique?: DesignCritique;
   summary?: SummaryOutput;
 
   // Per-stage lifecycle

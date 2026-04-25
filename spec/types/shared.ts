@@ -31,6 +31,7 @@ export type StageName =
   | 'budget'
   | 'timeline'
   | 'validation'
+  | 'critique'
   | 'summary';
 
 export type StageStatus =

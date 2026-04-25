@@ -52,9 +52,15 @@ export const STAGE_CONTRACTS: Record<StageName, StageContract> = {
     writes: ['budget'],
     parallel_safe: true,
   },
+  critique: {
+    stage: 'critique',
+    reads: ['hypothesis', 'protocol', 'materials', 'budget', 'timeline', 'validation'],
+    writes: ['critique'],
+    parallel_safe: true,
+  },
   summary: {
     stage: 'summary',
-    reads: ['hypothesis', 'lit_review', 'protocol', 'materials', 'budget', 'timeline', 'validation'],
+    reads: ['hypothesis', 'lit_review', 'protocol', 'materials', 'budget', 'timeline', 'validation', 'critique'],
     writes: ['summary'],
     parallel_safe: false,
   },

@@ -8,7 +8,7 @@ A natural-language hypothesis goes in. Out comes a literature novelty check plus
 
 ## How it works
 
-Seven stages share a single `ExperimentPlan` document (blackboard pattern). Each stage reads the fields it needs and writes its result back. The UI subscribes to the plan and renders sections as they land.
+Eight stages share a single `ExperimentPlan` document (blackboard pattern). Each stage reads the fields it needs and writes its result back. The UI subscribes to the plan and renders sections as they land.
 
 | Stage | Source | Writes |
 |---|---|---|
@@ -18,6 +18,7 @@ Seven stages share a single `ExperimentPlan` document (blackboard pattern). Each
 | 4. Budget | Tavily supplier scrape | `budget` |
 | 5. Timeline | derived from steps | `timeline` |
 | 6. Validation | derived from protocol | `validation` |
+| 8. Design Critique | LLM reviewer-perspective audit | `critique` |
 | 7. Summary | LLM final pass | `summary` |
 
 Full architecture in [`spec/architecture.md`](spec/architecture.md). Type contracts in [`spec/TYPES.md`](spec/TYPES.md).

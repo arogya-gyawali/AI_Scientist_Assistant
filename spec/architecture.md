@@ -20,7 +20,7 @@
 
 ## Pipeline (blackboard pattern)
 
-7 stages, all reading from and writing to one shared `ExperimentPlan` document stored in Supabase. No stage-to-stage handoffs — every stage's data dependency is on fields of the shared plan. The orchestrator schedules a stage when its `reads` are populated and the stage isn't already running or complete.
+8 stages, all reading from and writing to one shared `ExperimentPlan` document stored in Supabase. No stage-to-stage handoffs — every stage's data dependency is on fields of the shared plan. The orchestrator schedules a stage when its `reads` are populated and the stage isn't already running or complete.
 
 This makes the system:
 - **Resumable** — failed stages don't block independent stages
@@ -67,6 +67,10 @@ flowchart TB
         S6Op["Gemini Flash:<br/>criteria + controls"]
     end
 
+    subgraph S8["Stage 8: Design Critique"]
+        S8Op["Gemini Flash:<br/>reviewer-perspective<br/>design audit"]
+    end
+
     subgraph S7["Stage 7: Summary"]
         S7Op["Gemini Flash:<br/>TL;DR + risk assessment"]
     end
@@ -102,7 +106,10 @@ flowchart TB
     S4Op <--> Cache
     S4 -->|writes budget| Plan
 
-    Plan -->|reads all| S7
+    Plan -->|reads protocol, materials,<br/>budget, timeline, validation| S8
+    S8 -->|writes critique| Plan
+
+    Plan -->|reads all incl critique| S7
     S7 -->|writes summary| Plan
 
     Plan --> PlanView
@@ -124,9 +131,10 @@ flowchart TB
 | 5. Timeline | `protocol` | `timeline` | yes |
 | 6. Validation | `hypothesis`, `protocol` | `validation` | yes |
 | 4. Budget | `materials` | `budget` | yes |
-| 7. Summary | all 7 stage fields | `summary` | no (last) |
+| 8. Design Critique | `hypothesis`, `protocol`, `materials`, `budget`, `timeline`, `validation` | `critique` | yes |
+| 7. Summary | all 8 stage fields | `summary` | no (last) |
 
-Stages 1 and 2 can start immediately. 3, 5, 6 unlock when 2 completes. 4 unlocks when 3 completes. 7 waits for everything.
+Stages 1 and 2 can start immediately. 3, 5, 6 unlock when 2 completes. 4 unlocks when 3 completes. 8 unlocks when 3, 4, 5, 6 are all complete. 7 waits for everything including critique.
 
 ## Stage data shapes
 
@@ -140,6 +148,7 @@ Full TypeScript interfaces in `spec/types/`. Each stage writes its named field o
 | `budget` | `BudgetOutput` | Stage 4 | Tavily supplier-page scrape + LLM estimate fallback |
 | `timeline` | `TimelineOutput` | Stage 5 | derived from steps |
 | `validation` | `ValidationOutput` | Stage 6 | protocol "expected results" |
+| `critique` | `DesignCritique` | Stage 8 | LLM reviewer-perspective audit over Stages 2–6 |
 | `summary` | `SummaryOutput` | Stage 7 | LLM final pass over all other fields |
 
 ### Supplier domains (queried via Tavily in Stages 3 & 4)
@@ -174,6 +183,8 @@ Rough estimate to size credit usage:
 | 3 (Materials gap fill) | 0–3 | Only when protocols.io has vague material |
 | 4 (Budget pricing) | 5–10 | Per material above a cost-relevance threshold |
 | **Total** | **~9–17 per plan** | Cache hits reduce subsequent runs significantly |
+
+Stages 2, 5, 6, 7, and 8 don't hit Tavily — they're LLM-only synthesis over data already in the plan.
 
 ## Sample inputs (from challenge brief)
 

@@ -17,9 +17,10 @@ Data contracts for the AI Scientist Assistant pipeline. Source of truth for what
 9. [Stage 4 — Budget](#stage-4--budget)
 10. [Stage 5 — Timeline](#stage-5--timeline)
 11. [Stage 6 — Validation](#stage-6--validation)
-12. [Stage 7 — Summary & Final Plan](#stage-7--summary--final-plan)
-13. [Stretch — Feedback Loop](#stretch--feedback-loop)
-14. [Storage layer (Supabase)](#storage-layer-supabase)
+12. [Stage 8 — Design Critique](#stage-8--design-critique)
+13. [Stage 7 — Summary & Final Plan](#stage-7--summary--final-plan)
+14. [Stretch — Feedback Loop](#stretch--feedback-loop)
+15. [Storage layer (Supabase)](#storage-layer-supabase)
 
 ---
 
@@ -27,20 +28,20 @@ Data contracts for the AI Scientist Assistant pipeline. Source of truth for what
 
 Architecture is a **blackboard**: one shared `ExperimentPlan` document, every stage reads fields it depends on and writes its result back to a named field. No stage-to-stage handoffs.
 
-| | **1. Lit Review** | **2. Protocol** | **3. Materials** | **4. Budget** | **5. Timeline** | **6. Validation** | **7. Summary** |
-|---|---|---|---|---|---|---|---|
-| **Reads (`ExperimentPlan` fields)** | `hypothesis` | `hypothesis` | `protocol` | `materials` | `protocol` | `hypothesis`, `protocol` | all 7 stage fields |
-| **Writes** | `lit_review` | `protocol` | `materials` | `budget` | `timeline` | `validation` | `summary` |
-| **Field type** | `LitReviewSession` | `ProtocolGenerationOutput` | `MaterialsOutput` | `BudgetOutput` | `TimelineOutput` | `ValidationOutput` | `SummaryOutput` |
-| **Core content** | `signal`, `refs[]`, `chat_history[]` | `steps[]`, `experiment_type` | `materials[]`, `by_category` | `line_items[]`, `total` | `phases[]`, `critical_path` | `success_criteria[]`, `controls[]` | `tldr`, risk assessment |
-| **External source** | Tavily | protocols.io `/steps` | protocols.io `/materials` + Tavily for gaps | Tavily supplier scrape + LLM fallback | Derived from steps | Derived from `protocol` | LLM synthesis |
-| **Citations** | `refs[].source` | `cited_protocols[]` | per-`Material.citation` | per-line `source` + `supplier_quotes[]` | (inherited) | (inherited) | `meta.feedback_session_ids` |
-| **Honesty fields** | `signal` itself | `assumptions[]` | `gaps[]` | `disclaimer`, `assumptions[]` | `assumptions[]` | `failure_modes[]` | `risk_assessment[]` |
-| **User-facing UI** | Chat panel | Step-by-step view | Materials table | Cost breakdown | Gantt-style chart | Criteria + controls list | TL;DR header |
-| **Parallel-safe** | yes | yes | yes | yes | yes | yes | no (last) |
-| **Feedback target** | — | yes (stretch) | yes (stretch) | yes (stretch) | yes (stretch) | yes (stretch) | — |
+| | **1. Lit Review** | **2. Protocol** | **3. Materials** | **4. Budget** | **5. Timeline** | **6. Validation** | **8. Critique** | **7. Summary** |
+|---|---|---|---|---|---|---|---|---|
+| **Reads (`ExperimentPlan` fields)** | `hypothesis` | `hypothesis` | `protocol` | `materials` | `protocol` | `hypothesis`, `protocol` | `hypothesis`, `protocol`, `materials`, `budget`, `timeline`, `validation` | all 8 stage fields |
+| **Writes** | `lit_review` | `protocol` | `materials` | `budget` | `timeline` | `validation` | `critique` | `summary` |
+| **Field type** | `LitReviewSession` | `ProtocolGenerationOutput` | `MaterialsOutput` | `BudgetOutput` | `TimelineOutput` | `ValidationOutput` | `DesignCritique` | `SummaryOutput` |
+| **Core content** | `signal`, `refs[]`, `chat_history[]` | `steps[]`, `experiment_type` | `materials[]`, `by_category` | `line_items[]`, `total` | `phases[]`, `critical_path` | `success_criteria[]`, `controls[]`, `power_calculation` | `concerns[]`, `overall_soundness`, `strengths[]` | `tldr`, risk assessment |
+| **External source** | Tavily | protocols.io `/steps` | protocols.io `/materials` + Tavily for gaps | Tavily supplier scrape + LLM fallback | Derived from steps | Derived from `protocol` | LLM reviewer-perspective audit | LLM synthesis |
+| **Citations** | `refs[].source` | `cited_protocols[]` | per-`Material.citation` | per-line `source` + `supplier_quotes[]` | (inherited) | (inherited) | `concerns[].cited_step` | `meta.feedback_session_ids` |
+| **Honesty fields** | `signal` itself | `assumptions[]` | `gaps[]` | `disclaimer`, `assumptions[]` | `assumptions[]` | `failure_modes[]` | `concerns[]` is the whole point | `risk_assessment[]` |
+| **User-facing UI** | Chat panel | Step-by-step view | Materials table | Cost breakdown | Gantt-style chart | Criteria + controls list | Reviewer-style critique panel | TL;DR header |
+| **Parallel-safe** | yes | yes | yes | yes | yes | yes | yes | no (last) |
+| **Feedback target** | — | yes (stretch) | yes (stretch) | yes (stretch) | yes (stretch) | yes (stretch) | yes (stretch) | — |
 
-**Scheduling:** Stages 1 and 2 unlock immediately (only need `hypothesis`). Stages 3, 5, 6 unlock when 2 completes. Stage 4 unlocks when 3 completes. Stage 7 waits for everything.
+**Scheduling:** Stages 1 and 2 unlock immediately (only need `hypothesis`). Stages 3, 5, 6 unlock when 2 completes. Stage 4 unlocks when 3 completes. Stage 8 (Critique) unlocks when 3, 4, 5, 6 are complete. Stage 7 waits for everything including critique.
 
 **Per-stage status** is tracked on `ExperimentPlan.status[stage_name]` as a `StageStatus` discriminated union (`not_started` / `running` / `complete` / `failed`).
 
@@ -63,9 +64,18 @@ classDiagram
         +budget?: BudgetOutput
         +timeline?: TimelineOutput
         +validation?: ValidationOutput
+        +critique?: DesignCritique
         +summary?: SummaryOutput
         +status: Record~StageName, StageStatus~
         +meta: ExperimentPlanMeta
+    }
+
+    class DesignCritique {
+        +overall_soundness: enum
+        +concerns: DesignConcern[]
+        +missing_controls: string[]
+        +strengths: string[]
+        +reviewer_perspective: string
     }
 
     class Hypothesis {
@@ -168,6 +178,7 @@ classDiagram
     ExperimentPlan o-- BudgetOutput : optional
     ExperimentPlan o-- TimelineOutput : optional
     ExperimentPlan o-- ValidationOutput : optional
+    ExperimentPlan o-- DesignCritique : optional
     ExperimentPlan o-- SummaryOutput : optional
 
     LitReviewSession *-- LitReviewOutput
@@ -196,7 +207,8 @@ Where each type is produced and consumed across the pipeline.
 | 4. Budget | `materials` | `budget` : `BudgetOutput` | Tavily supplier-page scrape (Thermo / Sigma / Promega / Qiagen / IDT / ATCC / Addgene); LLM estimate as fallback |
 | 5. Timeline | `protocol` | `timeline` : `TimelineOutput` | Derived from steps |
 | 6. Validation | `hypothesis`, `protocol` | `validation` : `ValidationOutput` | Protocol "expected results" |
-| 7. Summary | all above | `summary` : `SummaryOutput` | LLM final pass |
+| 8. Design Critique | `hypothesis`, `protocol`, `materials`, `budget`, `timeline`, `validation` | `critique` : `DesignCritique` | LLM reviewer-perspective audit |
+| 7. Summary | all above incl. `critique` | `summary` : `SummaryOutput` | LLM final pass |
 
 Stages 3, 5, 6 run in parallel after 2. Stage 4 depends on 3. Stage 7 waits for everything.
 
@@ -574,6 +586,42 @@ The `power_calculation` justifies the `n` cited in any `SuccessCriterion.thresho
 
 ---
 
+## Stage 8 — Design Critique
+
+**What this stage does (plain English):** Runs after Stages 2–6 are complete. Audits the generated plan from the perspective of a senior PI or hostile reviewer: missing controls, untested confounders, sample sizes that don't match the effect size, alternative hypotheses the study can't distinguish, ethical concerns, reproducibility risks. Outputs an overall soundness rating, a prioritized list of concerns, and the strengths of the design (acknowledging what's done well is what makes the critique credible). Stage 7 Summary then incorporates these findings into its TL;DR and risk assessment.
+
+Numbered Stage 8 because it was added after the original 7-stage spec; in the runtime pipeline it sits between Stage 6 (Validation) and Stage 7 (Summary).
+
+```typescript
+// Open-ended category — common values listed in line, but new categories can appear.
+// 'controls' | 'confounders' | 'sample_size' | 'alternative_hypotheses' | 'reproducibility'
+// | 'feasibility' | 'ethics' | 'measurement' | 'novelty' | 'statistical_validity' | ...
+type ConcernCategory = string;
+
+type DesignConcern = {
+  id: string;
+  category: ConcernCategory;
+  severity: 'high' | 'medium' | 'low';
+  description: string;
+  suggestion: string;
+  cited_step?: number;                    // optional FK to ProtocolStep.n
+};
+
+type DesignCritique = {
+  overall_soundness: 'strong' | 'acceptable' | 'concerns' | 'major_issues';
+  concerns: DesignConcern[];
+  missing_controls: string[];
+  missing_considerations: string[];
+  strengths: string[];                    // important — credibility comes from acknowledging what's done well
+  reviewer_perspective: string;           // 1–2 sentences in the voice of a senior PI / hostile reviewer
+  reviewed_at: ISO8601;
+};
+```
+
+`DesignCritique.concerns[]` is the actionable output. Each concern has a `severity` (so the UI can sort/filter) and a `suggestion` (so the scientist isn't just told it's broken — they're told what to do about it). `cited_step` lets the UI highlight the specific protocol step the concern is about.
+
+---
+
 ## Stage 7 — Summary & Final Plan
 
 `ExperimentPlan` is the **shared blackboard document**. It's created when the user submits a hypothesis (only `hypothesis`, `id`, `status`, and `meta` populated). Stages then write their named fields. The UI subscribes to it and renders whatever fields are present.
@@ -616,6 +664,7 @@ type ExperimentPlan = {
   budget?: BudgetOutput;
   timeline?: TimelineOutput;
   validation?: ValidationOutput;
+  critique?: DesignCritique;
   summary?: SummaryOutput;
 
   // Per-stage lifecycle — source of truth for "is stage X done?"
@@ -686,12 +735,13 @@ A plan partway through generation — Stages 1, 2, 3, 5, 6 complete; Stage 4 (Bu
     "created_at": "2026-04-25T14:30:00Z"
   },
   "status": {
-    "lit_review": { "state": "complete", "completed_at": "2026-04-25T14:30:18Z" },
-    "protocol":   { "state": "complete", "completed_at": "2026-04-25T14:30:42Z" },
-    "materials":  { "state": "complete", "completed_at": "2026-04-25T14:31:05Z" },
-    "timeline":   { "state": "complete", "completed_at": "2026-04-25T14:30:58Z" },
-    "validation": { "state": "complete", "completed_at": "2026-04-25T14:31:01Z" },
-    "budget":     { "state": "running",  "started_at":   "2026-04-25T14:31:06Z" },
+    "lit_review": { "state": "complete",    "completed_at": "2026-04-25T14:30:18Z" },
+    "protocol":   { "state": "complete",    "completed_at": "2026-04-25T14:30:42Z" },
+    "materials":  { "state": "complete",    "completed_at": "2026-04-25T14:31:05Z" },
+    "timeline":   { "state": "complete",    "completed_at": "2026-04-25T14:30:58Z" },
+    "validation": { "state": "complete",    "completed_at": "2026-04-25T14:31:01Z" },
+    "budget":     { "state": "running",     "started_at":   "2026-04-25T14:31:06Z" },
+    "critique":   { "state": "not_started" },
     "summary":    { "state": "not_started" }
   },
   "protocol": {
@@ -832,6 +882,7 @@ spec/
     ├── budget.ts             ← Stage 4 field type + SupplierQuote
     ├── timeline.ts           ← Stage 5 field type
     ├── validation.ts         ← Stage 6 field type + PowerCalculation
+    ├── critique.ts           ← Stage 8 field type + DesignCritique
     ├── summary.ts            ← Stage 7 field type + ExperimentPlan blackboard
     ├── stage-contracts.ts    ← STAGE_CONTRACTS reads/writes table for the orchestrator
     ├── feedback.ts           ← Stretch goal

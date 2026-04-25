@@ -5,6 +5,7 @@ export * from './materials';
 export * from './budget';
 export * from './timeline';
 export * from './validation';
+export * from './critique';
 export * from './summary';
 export * from './stage-contracts';
 export * from './feedback';
