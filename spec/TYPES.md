@@ -4,22 +4,165 @@ Data contracts for the AI Scientist Assistant pipeline. Source of truth for what
 
 ## Contents
 
-1. [Pipeline overview](#pipeline-overview)
-2. [Conventions](#conventions)
-3. [Shared types](#shared-types)
-4. [Stage 1 — Lit Review](#stage-1--lit-review)
-5. [Stage 2 — Protocol Generation](#stage-2--protocol-generation)
-6. [Stage 3 — Materials & Supply Chain](#stage-3--materials--supply-chain)
-7. [Stage 4 — Budget](#stage-4--budget)
-8. [Stage 5 — Timeline](#stage-5--timeline)
-9. [Stage 6 — Validation](#stage-6--validation)
-10. [Stage 7 — Summary & Final Plan](#stage-7--summary--final-plan)
-11. [Stretch — Feedback Loop](#stretch--feedback-loop)
-12. [Storage layer (Supabase)](#storage-layer-supabase)
+1. [Stages at a glance](#stages-at-a-glance)
+2. [Type composition diagram](#type-composition-diagram)
+3. [Pipeline flow](#pipeline-flow)
+4. [Conventions](#conventions)
+5. [Shared types](#shared-types)
+6. [Stage 1 — Lit Review](#stage-1--lit-review)
+7. [Stage 2 — Protocol Generation](#stage-2--protocol-generation)
+8. [Stage 3 — Materials & Supply Chain](#stage-3--materials--supply-chain)
+9. [Stage 4 — Budget](#stage-4--budget)
+10. [Stage 5 — Timeline](#stage-5--timeline)
+11. [Stage 6 — Validation](#stage-6--validation)
+12. [Stage 7 — Summary & Final Plan](#stage-7--summary--final-plan)
+13. [Stretch — Feedback Loop](#stretch--feedback-loop)
+14. [Storage layer (Supabase)](#storage-layer-supabase)
 
 ---
 
-## Pipeline overview
+## Stages at a glance
+
+One-screen overview. Every stage column has the same six categories so you can scan across.
+
+| | **1. Lit Review** | **2. Protocol** | **3. Materials** | **4. Budget** | **5. Timeline** | **6. Validation** | **7. Summary** |
+|---|---|---|---|---|---|---|---|
+| **Input** | `Hypothesis` | `Hypothesis` + cached protocols | Stage 2 out | Stage 3 out | Stage 2 out | Stage 2 out + `Hypothesis` | All above |
+| **Output type** | `LitReviewSession` | `ProtocolGenerationOutput` | `MaterialsOutput` | `BudgetOutput` | `TimelineOutput` | `ValidationOutput` | `ExperimentPlan` |
+| **Core content** | `signal`, `refs[]`, `chat_history[]` | `steps[]`, `experiment_type` | `materials[]`, `by_category` | `line_items[]`, `total` | `phases[]`, `critical_path` | `success_criteria[]`, `controls[]` | `tldr`, full plan |
+| **External source** | Tavily | protocols.io `/steps` | protocols.io `/materials` | LLM estimate | Derived from steps | Derived from S2 | LLM synthesis |
+| **Citations** | `refs[].source` | `cited_protocols[]` | per-`Material.citation` | per-line `source` | (inherited) | (inherited) | `meta.feedback_session_ids` |
+| **Honesty fields** | `signal` itself | `assumptions[]` | `gaps[]` | `disclaimer`, `assumptions[]` | `assumptions[]` | `failure_modes[]` | `risk_assessment[]` |
+| **User-facing UI** | Chat panel | Step-by-step view | Materials table | Cost breakdown | Gantt-style chart | Criteria + controls list | TL;DR header |
+| **Feedback target** | — | yes (stretch) | yes (stretch) | yes (stretch) | yes (stretch) | yes (stretch) | — |
+
+Pipeline ordering: Stages 3, 5, 6 run in parallel after 2. Stage 4 depends on 3. Stage 7 waits for everything.
+
+---
+
+## Type composition diagram
+
+How the types compose into the final `ExperimentPlan`. Solid lines = composition (`*--`); dashed lines = reference (`..>`).
+
+```mermaid
+classDiagram
+    direction TB
+
+    class ExperimentPlan {
+        +id: string
+        +meta: ExperimentPlanMeta
+    }
+
+    class Hypothesis {
+        +id: string
+        +text: string
+        +domain?: Domain
+    }
+
+    class LitReviewSession {
+        +id: string
+        +chat_history: LitReviewChatMessage[]
+        +user_decision: enum
+    }
+
+    class LitReviewOutput {
+        +signal: enum
+        +refs: Citation[]
+        +tavily_query: string
+    }
+
+    class ProtocolGenerationOutput {
+        +experiment_type: string
+        +steps: ProtocolStep[]
+        +cited_protocols: CitedProtocol[]
+        +assumptions: string[]
+    }
+
+    class ProtocolStep {
+        +n: number
+        +title: string
+        +duration: Duration
+        +cited_doi?: DOI
+    }
+
+    class MaterialsOutput {
+        +materials: Material[]
+        +gaps: string[]
+    }
+
+    class Material {
+        +name: string
+        +vendor: string
+        +sku: string
+        +citation: Citation
+    }
+
+    class BudgetOutput {
+        +line_items: BudgetLineItem[]
+        +total: Money
+        +disclaimer: string
+    }
+
+    class BudgetLineItem {
+        +material_id: string
+        +unit_cost: Money
+        +source: enum
+    }
+
+    class TimelineOutput {
+        +phases: TimelinePhase[]
+        +total_duration: Duration
+        +critical_path: string[]
+    }
+
+    class TimelinePhase {
+        +name: string
+        +tasks: TimelineTask[]
+        +depends_on: string[]
+    }
+
+    class ValidationOutput {
+        +success_criteria: SuccessCriterion[]
+        +controls: Control[]
+        +failure_modes: FailureMode[]
+    }
+
+    class SummaryOutput {
+        +tldr: string
+        +risk_assessment: RiskAssessment[]
+    }
+
+    class StageFeedback {
+        +stage: enum
+        +experiment_type: string
+        +target_field_path: string
+    }
+
+    ExperimentPlan *-- Hypothesis
+    ExperimentPlan *-- LitReviewSession
+    ExperimentPlan *-- ProtocolGenerationOutput
+    ExperimentPlan *-- MaterialsOutput
+    ExperimentPlan *-- BudgetOutput
+    ExperimentPlan *-- TimelineOutput
+    ExperimentPlan *-- ValidationOutput
+    ExperimentPlan *-- SummaryOutput
+
+    LitReviewSession *-- LitReviewOutput
+    ProtocolGenerationOutput *-- ProtocolStep
+    MaterialsOutput *-- Material
+    BudgetOutput *-- BudgetLineItem
+    TimelineOutput *-- TimelinePhase
+
+    BudgetLineItem ..> Material : references by id
+    TimelinePhase ..> ProtocolStep : tasks reference steps
+    StageFeedback ..> ExperimentPlan : corrects
+```
+
+---
+
+## Pipeline flow
+
+Where each type is produced and consumed across the pipeline.
 
 | Stage | Input | Output | External source |
 |---|---|---|---|
