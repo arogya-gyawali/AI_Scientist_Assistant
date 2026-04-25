@@ -205,7 +205,75 @@ Rough estimate to size credit usage:
 
 Stages 2, 5, 6, 7, and 8 don't hit Tavily — they're LLM-only synthesis over data already in the plan.
 
+## Tavily call shapes per stage
 
+Recommended request parameters per stage. The Tavily client wrapper should expose stage-specific helpers (e.g., `tavilyForLitReview(query)`, `tavilyForSupplier(vendor, sku)`) that bake these defaults so individual stage code stays uncluttered.
+
+### Stage 1 — Lit Review
+
+```typescript
+tavily.search({
+  query: rephrasedHypothesis,        // LLM-rewritten from the raw user hypothesis
+  search_depth: "advanced",          // 2 credits; worth it for novelty quality
+  max_results: 5,
+  include_answer: true,              // synthesized answer for the novelty signal
+  include_raw_content: false,        // snippets are enough; keeps token cost down
+  // intentionally NO `days` — return the most relevant prior work
+  // regardless of age. Foundational papers from 2003 should surface
+  // if they invalidate the novelty claim.
+})
+```
+
+### Stage 1 chat follow-ups
+
+The conversational layer **doesn't fire fresh Tavily calls per turn**. The initial search result + raw content is cached on the `LitReviewSession` (`cached_tavily_context`), and follow-up questions are answered by the LLM over that cached context. New Tavily calls only fire if the user materially changes the search topic or explicitly asks for "more papers."
+
+### Stage 3 — Materials gap-fill
+
+```typescript
+tavily.search({
+  query: `${reagentName} catalog number`,
+  include_domains: [
+    "sigmaaldrich.com", "thermofisher.com", "promega.com",
+    "qiagen.com", "idtdna.com", "atcc.org", "addgene.org",
+  ],
+  search_depth: "basic",             // 1 credit; finding a product page doesn't need depth
+  max_results: 3,
+  include_answer: false,             // we want the URL, not a synthesis
+  include_raw_content: false,
+  // no `days` — supplier pages are evergreen URLs, not time-sensitive
+})
+```
+
+Only fires when a `Material` from protocols.io is missing `vendor` or `sku`. Skip otherwise.
+
+### Stage 4 — Budget pricing
+
+```typescript
+tavily.search({
+  query: `${vendor} ${sku} price`,
+  include_domains: [vendorDomain],   // narrow to the chosen vendor's domain only
+  search_depth: "basic",
+  max_results: 1,                    // top hit is almost always the product page
+  include_answer: false,
+  include_raw_content: true,         // need full page text to extract the price
+  // no `days`
+})
+```
+
+Only fire for materials above a cost-relevance threshold (e.g., expected unit cost > $50 or `category == 'cell_line'/'organism'/'equipment'`). Cheap consumables get LLM-estimated prices to avoid burning credits on $5 tubes.
+
+### Cache key conventions
+
+Every Tavily response is cached by SHA-256 of the canonicalized request body (sorted JSON of `{query, search_depth, max_results, include_answer, include_raw_content, include_domains, days}`). TTLs:
+
+| Stage | TTL | Reason |
+|---|---|---|
+| Lit Review | 7 days | Prior-art landscape changes slowly |
+| Materials gap-fill | 30 days | Catalog # rarely changes |
+| Budget pricing | 24 hours | Supplier prices can change weekly |
+
+Cache misses fall through to live Tavily; hits return cached JSON unmodified.
 
 ## Sample inputs (from challenge brief)
 
