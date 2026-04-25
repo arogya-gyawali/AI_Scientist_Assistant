@@ -2,15 +2,9 @@ import type { StageName } from './shared';
 import type { ExperimentPlan } from './summary';
 
 // Fields on ExperimentPlan that stages read/write. Excludes lifecycle metadata.
-export type PlanField =
-  | 'hypothesis'
-  | 'lit_review'
-  | 'protocol'
-  | 'materials'
-  | 'budget'
-  | 'timeline'
-  | 'validation'
-  | 'summary';
+// Each StageName is also the name of the field that stage writes, so PlanField
+// is just StageName plus the input field 'hypothesis'.
+export type PlanField = 'hypothesis' | StageName;
 
 export type StageContract = {
   stage: StageName;

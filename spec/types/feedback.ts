@@ -1,11 +1,8 @@
-import type { Domain, ISO8601 } from './shared';
+import type { Domain, ISO8601, StageName } from './shared';
 
-export type FeedbackStage =
-  | 'protocol'
-  | 'materials'
-  | 'budget'
-  | 'timeline'
-  | 'validation';
+// Stages that accept scientist corrections. Lit review and summary are excluded:
+// lit review is a search result, not a generated plan section; summary is purely derived.
+export type FeedbackStage = Exclude<StageName, 'lit_review' | 'summary'>;
 
 export type StageFeedback = {
   id: string;

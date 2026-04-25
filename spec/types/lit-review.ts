@@ -1,8 +1,4 @@
-import type { Hypothesis, Citation, ISO8601 } from './shared';
-
-export type LitReviewInput = {
-  hypothesis: Hypothesis;
-};
+import type { Citation, ISO8601 } from './shared';
 
 export type LitReviewOutput = {
   signal: 'not_found' | 'similar_work_exists' | 'exact_match_found';
