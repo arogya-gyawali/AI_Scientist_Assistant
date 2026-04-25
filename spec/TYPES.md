@@ -322,10 +322,11 @@ type StageStatus =
 ```typescript
 type LitReviewOutput = {
   signal: 'novel' | 'similar_work_exists' | 'exact_match_found';
-  description: string;                    // 2–3 sentences
+  description: string;                    // 2–3 sentences explaining the signal
   references: Citation[];                 // 1–3 most relevant; each carries `description`, `importance`, `matched_on`
   searched_at: ISO8601;
   tavily_query: string;                   // exact query sent to Tavily
+  summary: string;                        // 3–4 sentence holistic wrap-up for the researcher (HARD limit)
 };
 
 type LitReviewChatMessage = {

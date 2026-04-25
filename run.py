@@ -30,7 +30,7 @@ load_dotenv()
 
 from src.clients import llm, tavily  # noqa: E402
 from src.lib import plan as plan_lib  # noqa: E402
-from src.stages import lit_review  # noqa: E402
+from lit_review_pipeline import stage as lit_review  # noqa: E402
 from src.types import (  # noqa: E402
     Hypothesis,
     StageStatusComplete,
@@ -167,6 +167,13 @@ def run_full_pipeline(name: str) -> bool:
 
         print(f"\n# Stage 1 — Lit Review output ({name})")
         print(session.initial_result.model_dump_json(indent=2))
+
+        # Mirror the summary at the bottom for human reading.
+        print("\n" + "=" * 72)
+        print("LIT REVIEW SUMMARY")
+        print("=" * 72)
+        print(session.initial_result.summary)
+
         print(f"\n# Plan saved to: {plan_lib.plan_path(plan.id)}", file=sys.stderr)
         return True
 

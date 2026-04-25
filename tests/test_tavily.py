@@ -30,7 +30,7 @@ import pytest
 
 from src.clients import tavily as tavily_client
 from src.lib import cache
-from src.scripts.tavily_smoke import SAMPLE_QUERIES
+from lit_review_pipeline.tavily_smoke import SAMPLE_QUERIES
 
 
 # =============================================================================

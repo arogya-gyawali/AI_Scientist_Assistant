@@ -66,6 +66,28 @@ cat plans/plan_*.json | jq .status
 
 Re-runs build a new plan each time. Old plan JSONs accumulate in `plans/` (gitignored).
 
+## Repo layout
+
+```
+src/                       ← shared backbone (used by every stage)
+├── types.py
+├── cli.py
+├── clients/  (tavily, llm)
+└── lib/      (plan, cache)
+
+lit_review_pipeline/       ← Stage 1, self-contained
+├── stage.py               ← the Stage 1 runner
+├── tavily_smoke.py        ← Tavily-only smoke test
+└── README.md              ← what's in this folder + containerization note
+
+inputs/                    ← sample hypothesis YAMLs (shared test data)
+tests/                     ← pytest suite
+spec/                      ← TS types, JSON schema, architecture docs
+run.py                     ← single-command Stage 1 runner
+```
+
+To **containerize** Stage 1 as a standalone service, copy `src/`, `lit_review_pipeline/`, `inputs/`, and `requirements.txt`. That's the minimum runnable surface.
+
 ## Tests
 
 ```bash

@@ -172,14 +172,18 @@
 
     "LitReviewOutput": {
       "type": "object",
-      "required": ["signal", "description", "references", "searched_at", "tavily_query"],
+      "required": ["signal", "description", "references", "searched_at", "tavily_query", "summary"],
       "additionalProperties": false,
       "properties": {
         "signal": { "type": "string", "enum": ["novel", "similar_work_exists", "exact_match_found"] },
         "description": { "type": "string", "description": "2-3 sentence explanation of the novelty signal." },
         "references": { "type": "array", "items": { "$ref": "#/definitions/Citation" }, "maxItems": 3 },
         "searched_at": { "$ref": "#/definitions/ISO8601" },
-        "tavily_query": { "type": "string" }
+        "tavily_query": { "type": "string" },
+        "summary": {
+          "type": "string",
+          "description": "3-4 sentence holistic wrap-up for the researcher: novelty assessment + key literature takeaway + actionable next step. Hard sentence limit."
+        }
       }
     },
 

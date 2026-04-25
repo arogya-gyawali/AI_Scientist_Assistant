@@ -60,6 +60,7 @@ class LitReviewOutput(BaseModel):
     references: list[Citation] = Field(max_length=3)
     searched_at: str
     tavily_query: str
+    summary: str  # 3-4 sentence wrap-up at the bottom; LLM-generated. STRICT length cap.
 
 
 class LitReviewChatMessage(BaseModel):

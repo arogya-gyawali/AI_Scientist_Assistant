@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 
 from src.clients import llm
 from src.lib import plan as plan_lib
-from src.stages import lit_review
+from lit_review_pipeline import stage as lit_review
 from src.types import (
     Hypothesis,
     StageStatusComplete,

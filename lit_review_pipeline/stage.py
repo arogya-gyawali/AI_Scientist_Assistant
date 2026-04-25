@@ -46,7 +46,7 @@ Expected outcome: {expected}
 Research question: {research_question}"""
 
 
-CLASSIFY_SYSTEM = """You evaluate scientific novelty. Given a structured hypothesis and web search results, classify the novelty signal and return relevant references.
+CLASSIFY_SYSTEM = """You evaluate scientific novelty. Given a structured hypothesis and web search results, classify the novelty signal, return relevant references, and write a holistic wrap-up summary.
 
 Rules:
 - signal must be one of: "novel" (no close prior work), "similar_work_exists" (related but not identical), "exact_match_found" (this exact experiment has been published).
@@ -65,6 +65,15 @@ Rules:
     importance          (1-2 sentences, RELATIONAL: why does this paper match the user's hypothesis? Where does it overlap, where does it differ, what gap does the user's study fill? This is "why this matched.")
 - If a field can't be determined, set it to null (or empty array for matched_on). Never invent authors, DOIs, or venues.
 
+- summary (top-level, the final field): a HOLISTIC wrap-up for the researcher.
+  HARD LENGTH LIMIT: EXACTLY 3 OR 4 SENTENCES. Not 5. Not 6. Not a list. Not bullet points.
+  Count your sentences before responding. If you exceed 4 sentences, you have failed the task.
+  Cover, in order:
+    (a) novelty assessment in plain language ("This question is/isn't well-precedented because...");
+    (b) the key literature takeaway ("The closest precedent is X, which Y...");
+    (c) what gap the researcher's hypothesis fills, OR what to read first.
+  Do NOT restate the references list. Do NOT use markdown. Do NOT use phrases like "in summary" or "to summarize". Plain prose only.
+
 Return ONLY a single valid JSON object matching this shape:
 {
   "signal": "novel" | "similar_work_exists" | "exact_match_found",
@@ -82,7 +91,8 @@ Return ONLY a single valid JSON object matching this shape:
       "description": "string",
       "importance": "string"
     }
-  ]
+  ],
+  "summary": "string (3-4 sentences, hard limit)"
 }"""
 
 CLASSIFY_USER_TMPL = """Hypothesis (structured):
@@ -129,7 +139,7 @@ def _format_results(results: list[dict]) -> str:
     return "\n\n".join(lines)
 
 
-def _classify(h: Hypothesis, query: str, tavily_response: dict) -> tuple[NoveltySignal, str, list[Citation]]:
+def _classify(h: Hypothesis, query: str, tavily_response: dict) -> tuple[NoveltySignal, str, list[Citation], str]:
     s = h.structured
     results = tavily_response.get("results", [])
     user = CLASSIFY_USER_TMPL.format(
@@ -170,7 +180,8 @@ def _classify(h: Hypothesis, query: str, tavily_response: dict) -> tuple[Novelty
         for r in parsed.get("references", [])
     ][:3]
 
-    return parsed["signal"], parsed["description"], refs
+    summary = (parsed.get("summary") or "").strip()
+    return parsed["signal"], parsed["description"], refs, summary
 
 
 def run(plan: ExperimentPlan) -> LitReviewSession:
@@ -178,7 +189,7 @@ def run(plan: ExperimentPlan) -> LitReviewSession:
     h = plan.hypothesis
     query = _rewrite_query(h)
     tavily_response = tavily.search_for_lit_review(query)
-    signal, description, refs = _classify(h, query, tavily_response)
+    signal, description, refs, summary = _classify(h, query, tavily_response)
 
     initial = LitReviewOutput(
         signal=signal,
@@ -186,6 +197,7 @@ def run(plan: ExperimentPlan) -> LitReviewSession:
         references=refs,
         searched_at=now(),
         tavily_query=query,
+        summary=summary,
     )
 
     return LitReviewSession(

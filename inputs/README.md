@@ -35,7 +35,7 @@ python -m src.cli inputs/trehalose.yaml
 Tavily-only smoke test (no LLM, pre-baked queries):
 
 ```bash
-python -m src.scripts.tavily_smoke              # all bioscience samples
-python -m src.scripts.tavily_smoke trehalose    # just one
-python -m src.scripts.tavily_smoke --raw        # full JSON
+python -m lit_review_pipeline.tavily_smoke              # all bioscience samples
+python -m lit_review_pipeline.tavily_smoke trehalose    # just one
+python -m lit_review_pipeline.tavily_smoke --raw        # full JSON
 ```

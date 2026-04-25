@@ -1,16 +1,16 @@
 """Tavily smoke test — exercise Stage 1 search WITHOUT touching the LLM.
 
-Uses pre-baked queries for each of the four sample hypotheses (skipping the
+Uses pre-baked queries for each bioscience sample hypothesis (skipping the
 LLM query-rewrite step), calls Tavily directly, prints what came back.
 Lets you confirm:
   - TAVILY_API_KEY works
-  - Tavily returns useful content for our four test domains
+  - Tavily returns useful content for our test domains
   - The cache layer is writing under .cache/tavily/lit_review/
 
 Usage:
-  python -m src.scripts.tavily_smoke              # run all four
-  python -m src.scripts.tavily_smoke trehalose    # run one
-  python -m src.scripts.tavily_smoke --raw        # print full raw JSON
+  python -m lit_review_pipeline.tavily_smoke              # run all bioscience samples
+  python -m lit_review_pipeline.tavily_smoke trehalose    # run one
+  python -m lit_review_pipeline.tavily_smoke --raw        # print full raw JSON
 """
 
 from __future__ import annotations
