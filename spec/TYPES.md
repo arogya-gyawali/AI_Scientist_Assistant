@@ -275,15 +275,16 @@ type Hypothesis = {
   created_at: ISO8601;
 };
 
-// Names of the seven stages — used as keys on ExperimentPlan.status and in StageContract.
+// Names of the eight stages — used as keys on ExperimentPlan.status and in StageContract.
 type StageName =
-  | 'lit_review'
-  | 'protocol'
-  | 'materials'
-  | 'budget'
-  | 'timeline'
-  | 'validation'
-  | 'summary';
+  | 'lit_review'   // Stage 1
+  | 'protocol'     // Stage 2
+  | 'materials'    // Stage 3
+  | 'budget'       // Stage 4
+  | 'timeline'     // Stage 5
+  | 'validation'   // Stage 6
+  | 'critique'     // Stage 7
+  | 'summary';     // Stage 8
 
 // Lifecycle of a single stage. Discriminated union so UI/orchestrator can branch on `state`.
 type StageStatus =
@@ -690,6 +691,7 @@ type PlanField =
   | 'budget'
   | 'timeline'
   | 'validation'
+  | 'critique'
   | 'summary';
 
 type StageContract = {
@@ -706,7 +708,8 @@ const STAGE_CONTRACTS: Record<StageName, StageContract> = {
   timeline:   { stage: 'timeline',   reads: ['protocol'],   writes: ['timeline'],   parallel_safe: true },
   validation: { stage: 'validation', reads: ['hypothesis', 'protocol'], writes: ['validation'], parallel_safe: true },
   budget:     { stage: 'budget',     reads: ['materials'],  writes: ['budget'],     parallel_safe: true },
-  summary:    { stage: 'summary',    reads: ['hypothesis', 'lit_review', 'protocol', 'materials', 'budget', 'timeline', 'validation'], writes: ['summary'], parallel_safe: false },
+  critique:   { stage: 'critique',   reads: ['hypothesis', 'protocol', 'materials', 'budget', 'timeline', 'validation'], writes: ['critique'], parallel_safe: true },
+  summary:    { stage: 'summary',    reads: ['hypothesis', 'lit_review', 'protocol', 'materials', 'budget', 'timeline', 'validation', 'critique'], writes: ['summary'], parallel_safe: false },
 };
 ```
 
