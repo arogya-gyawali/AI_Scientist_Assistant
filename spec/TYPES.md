@@ -30,8 +30,8 @@ One-screen overview. Every stage column has the same six categories so you can s
 | **Input** | `Hypothesis` | `Hypothesis` + cached protocols | Stage 2 out | Stage 3 out | Stage 2 out | Stage 2 out + `Hypothesis` | All above |
 | **Output type** | `LitReviewSession` | `ProtocolGenerationOutput` | `MaterialsOutput` | `BudgetOutput` | `TimelineOutput` | `ValidationOutput` | `ExperimentPlan` |
 | **Core content** | `signal`, `refs[]`, `chat_history[]` | `steps[]`, `experiment_type` | `materials[]`, `by_category` | `line_items[]`, `total` | `phases[]`, `critical_path` | `success_criteria[]`, `controls[]` | `tldr`, full plan |
-| **External source** | Tavily | protocols.io `/steps` | protocols.io `/materials` | LLM estimate | Derived from steps | Derived from S2 | LLM synthesis |
-| **Citations** | `refs[].source` | `cited_protocols[]` | per-`Material.citation` | per-line `source` | (inherited) | (inherited) | `meta.feedback_session_ids` |
+| **External source** | Tavily | protocols.io `/steps` | protocols.io `/materials` + Tavily for gaps | Tavily supplier scrape + LLM fallback | Derived from steps | Derived from S2 | LLM synthesis |
+| **Citations** | `refs[].source` | `cited_protocols[]` | per-`Material.citation` | per-line `source` + `supplier_quotes[]` | (inherited) | (inherited) | `meta.feedback_session_ids` |
 | **Honesty fields** | `signal` itself | `assumptions[]` | `gaps[]` | `disclaimer`, `assumptions[]` | `assumptions[]` | `failure_modes[]` | `risk_assessment[]` |
 | **User-facing UI** | Chat panel | Step-by-step view | Materials table | Cost breakdown | Gantt-style chart | Criteria + controls list | TL;DR header |
 | **Feedback target** | — | yes (stretch) | yes (stretch) | yes (stretch) | yes (stretch) | yes (stretch) | — |
@@ -107,6 +107,14 @@ classDiagram
         +material_id: string
         +unit_cost: Money
         +source: enum
+        +supplier_quotes: SupplierQuote[]
+    }
+
+    class SupplierQuote {
+        +vendor: string
+        +catalog_number: string
+        +price: Money
+        +url: URL
     }
 
     class TimelineOutput {
@@ -151,6 +159,7 @@ classDiagram
     ProtocolGenerationOutput *-- ProtocolStep
     MaterialsOutput *-- Material
     BudgetOutput *-- BudgetLineItem
+    BudgetLineItem *-- SupplierQuote
     TimelineOutput *-- TimelinePhase
 
     BudgetLineItem ..> Material : references by id
@@ -329,7 +338,7 @@ type ProtocolGenerationOutput = {
 
 ## Stage 3 — Materials & Supply Chain
 
-Pulls structured materials data from protocols.io's materials endpoint, normalizes vendor/SKU.
+Pulls structured materials data from protocols.io's materials endpoint, normalizes vendor/SKU. When protocols.io leaves a material vague (no SKU, generic vendor), falls back to a Tavily search of supplier domains (Sigma, Thermo, Promega, Qiagen, IDT, ATCC, Addgene) to resolve the catalog number. Resolved items carry `Citation.source = 'supplier_lookup'`.
 
 ```typescript
 type MaterialCategory = string;           // 'reagent' | 'consumable' | 'equipment' | 'cell_line' | 'organism' | ...
@@ -369,10 +378,26 @@ type MaterialsOutput = {
 
 ## Stage 4 — Budget
 
-LLM estimates line-item costs from the materials list. No external pricing API — flag every estimate as such.
+For each material, queries supplier product pages (via Tavily) to pull current pricing. Falls back to LLM estimation when no quote can be resolved. Every line item is tagged with its `BudgetSource` so the UI can show a confidence badge.
 
 ```typescript
-type BudgetSource = 'protocols_io_listed' | 'llm_estimate' | 'recent_quote';
+type BudgetSource =
+  | 'protocols_io_listed'                 // price came with the protocols.io materials JSON
+  | 'supplier_lookup'                     // scraped from supplier product page via Tavily
+  | 'llm_estimate'                        // model-estimated, no quote found
+  | 'recent_quote';                       // cached supplier quote within TTL
+
+type SupplierQuote = {
+  vendor: string;                         // 'thermo_fisher' | 'sigma_aldrich' | 'promega' | 'qiagen' | 'idt' | 'atcc' | 'addgene' | other
+  product_name: string;
+  catalog_number: string;
+  pack_size?: string;                     // e.g. "100mg", "1L", "50 reactions"
+  price: Money;
+  url: URL;                               // direct product page link
+  in_stock?: boolean;
+  scraped_at: ISO8601;
+  source_via: 'tavily' | 'direct_api' | 'manual';
+};
 
 type BudgetLineItem = {
   material_id: string;                    // FK to Material.id
@@ -383,6 +408,8 @@ type BudgetLineItem = {
   source: BudgetSource;
   confidence: 'high' | 'medium' | 'low';
   notes?: string;
+  supplier_quotes?: SupplierQuote[];      // all quotes found (multiple vendors)
+  selected_quote?: SupplierQuote;         // which quote drove unit_cost
 };
 
 type BudgetOutput = {
@@ -393,8 +420,23 @@ type BudgetOutput = {
   total_with_contingency: Money;
   disclaimer: string;                     // "estimated retail; verify before ordering"
   assumptions: string[];                  // e.g. "academic pricing", "n=3 replicates"
+  preferred_suppliers?: string[];         // priority list, e.g. ['sigma_aldrich', 'thermo_fisher']
 };
 ```
+
+### Supplier domains queried
+
+Tavily searches restricted to (or preferring) these domains for catalog # + pricing:
+
+| Vendor key | Domain | Use |
+|---|---|---|
+| `thermo_fisher` | thermofisher.com | General reagents, kits, instruments |
+| `sigma_aldrich` | sigmaaldrich.com (Merck) | Chemicals, biochemicals |
+| `promega` | promega.com | Molecular biology kits |
+| `qiagen` | qiagen.com | Sample prep, extraction kits |
+| `idt` | idtdna.com | Oligos, primers, gBlocks |
+| `atcc` | atcc.org | Cell lines, organisms |
+| `addgene` | addgene.org | Plasmids, viral preps |
 
 ---
 
