@@ -10,6 +10,7 @@ Docs: https://europepmc.org/RestfulWebService
 
 from __future__ import annotations
 
+import threading
 import time
 from typing import Any
 
@@ -22,16 +23,22 @@ _LIT_REVIEW_TTL = 7 * 24 * 3600  # 7 days; bibliographic metadata is essentially
 
 # Module-level pooled client. Reuses TCP connections across calls — meaningful
 # when --all sweeps three samples back-to-back. Tests monkeypatch this attribute.
+# Lazy init guarded by a lock so concurrent Flask workers don't each construct
+# their own client (which would defeat the connection pool).
 _client: httpx.Client | None = None
+_client_lock = threading.Lock()
 
 
 def _get_client() -> httpx.Client:
     global _client
     if _client is None:
-        _client = httpx.Client(
-            timeout=30.0,
-            headers={"User-Agent": "ai-scientist-assistant/0.1 (hackathon)"},
-        )
+        with _client_lock:
+            # Re-check inside the lock — another thread may have raced ahead.
+            if _client is None:
+                _client = httpx.Client(
+                    timeout=30.0,
+                    headers={"User-Agent": "ai-scientist-assistant/0.1 (hackathon)"},
+                )
     return _client
 
 
@@ -75,7 +82,8 @@ def _get_with_retry(url: str, params: dict[str, Any], max_attempts: int = 4) -> 
     client = _get_client()
     delay = 2.0
     last_exc: Exception | None = None
-    for _ in range(max_attempts):
+    for attempt in range(max_attempts):
+        is_last = attempt == max_attempts - 1
         try:
             response = client.get(url, params=params, headers=_headers())
             if response.status_code == 429 or 500 <= response.status_code < 600:
@@ -84,6 +92,8 @@ def _get_with_retry(url: str, params: dict[str, Any], max_attempts: int = 4) -> 
                     request=response.request,
                     response=response,
                 )
+                if is_last:
+                    break  # don't sleep after the final attempt
                 time.sleep(delay)
                 delay = min(delay * 2, 8.0)
                 continue
@@ -91,6 +101,8 @@ def _get_with_retry(url: str, params: dict[str, Any], max_attempts: int = 4) -> 
             return response.json()
         except httpx.RequestError as exc:
             last_exc = exc
+            if is_last:
+                break
             time.sleep(delay)
             delay = min(delay * 2, 8.0)
 

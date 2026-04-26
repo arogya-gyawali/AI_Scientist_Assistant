@@ -126,15 +126,21 @@ def lit_review():
         return jsonify(session.initial_result.model_dump(mode="json"))
 
     except Exception as exc:
+        # Log the full traceback server-side for debugging, but DO NOT leak
+        # internal exception details to the client. Raw exception strings
+        # can include file paths, library versions, and upstream-service
+        # internals that an attacker could use to fingerprint the deployment.
         traceback.print_exc()
-        # Try to mark the plan as failed if we got that far.
         try:
             if plan is not None:
                 plan.status["lit_review"] = StageStatusFailed(failed_at=now(), error=str(exc))
                 plan_lib.save_plan(plan)
         except Exception:
             pass
-        return jsonify({"error": "pipeline_error", "detail": str(exc)}), 500
+        return jsonify({
+            "error": "pipeline_error",
+            "detail": "Stage 1 failed. Check server logs for the underlying cause.",
+        }), 500
 
 
 if __name__ == "__main__":

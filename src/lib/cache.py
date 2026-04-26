@@ -19,7 +19,10 @@ CACHE_DIR = Path(".cache")
 
 
 def _key(namespace: str, payload: dict[str, Any]) -> str:
-    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    # default=str gives us a safe fallback if a caller ever passes a payload
+    # containing non-JSON-native types like datetime, UUID, or Path. Since
+    # those types' str() is stable, the cache key stays deterministic.
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
     digest = hashlib.sha256(canonical.encode()).hexdigest()
     return f"{namespace}/{digest}.json"
 

@@ -136,29 +136,32 @@ def test_missing_structured_field_returns_422(client):
 
 
 def test_pipeline_error_returns_500(client, monkeypatch):
-    """If the runner raises, the endpoint surfaces a 500 with detail."""
+    """If the runner raises, the endpoint surfaces a 500 — and crucially
+    does NOT leak the raw exception string into the client response."""
     def _broken(plan):
-        raise RuntimeError("upstream blew up")
+        raise RuntimeError("upstream blew up with secret/path/info")
     monkeypatch.setattr(flask_app.stage, "run", _broken)
 
     r = client.post("/lit-review", json=_valid_body())
     assert r.status_code == 500
     body = r.get_json()
     assert body["error"] == "pipeline_error"
-    assert "upstream blew up" in body["detail"]
+    # Internal exception detail must not appear in the response (security).
+    assert "secret/path/info" not in body["detail"]
+    assert "upstream blew up" not in body["detail"]
 
 
 def test_create_plan_failure_returns_500_cleanly(client, monkeypatch):
     """If plan creation itself raises (before the runner is reached), the
     except handler must NOT explode trying to mark a non-existent plan as
-    failed. Exercises the `if plan is not None` guard.
-    """
+    failed. Exercises the `if plan is not None` guard. Also verifies
+    internal error details don't leak into the response."""
     def _broken_create(hypothesis, model_id):
-        raise RuntimeError("disk full")
+        raise RuntimeError("disk full at /var/lib/secret-path")
     monkeypatch.setattr(flask_app.plan_lib, "create_plan", _broken_create)
 
     r = client.post("/lit-review", json=_valid_body())
     assert r.status_code == 500
     body = r.get_json()
     assert body["error"] == "pipeline_error"
-    assert "disk full" in body["detail"]
+    assert "/var/lib/secret-path" not in body["detail"]

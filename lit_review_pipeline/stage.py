@@ -318,7 +318,13 @@ def _classify(
     # Hard-cap summary to 4 sentences. Prompt asks for 3-4 but the LLM
     # sometimes overshoots; truncating here is deterministic and silent.
     summary = _truncate_to_n_sentences((parsed.get("summary") or "").strip(), n=4)
-    return parsed["signal"], parsed["description"], refs, summary
+    # Defensive: if the LLM omits required keys, fall back to safe defaults
+    # rather than crashing the whole pipeline. similar_work_exists is the
+    # most defensible fallback (it's the modal classification across our
+    # bioscience samples; "novel" or "exact match" should require evidence).
+    signal = parsed.get("signal") or "similar_work_exists"
+    description = parsed.get("description") or ""
+    return signal, description, refs, summary
 
 
 def run(plan: ExperimentPlan) -> LitReviewSession:
