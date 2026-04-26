@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Iterable
+from typing import Iterable, Optional
 
 from src.clients import llm
 from src.types import (
@@ -135,7 +135,7 @@ WRITER_USER_TMPL = """Hypothesis (structured):
 - Conditions: {conditions}
 - Expected outcome: {expected}
 - Research question: {research_question}
-
+{researcher_notes_block}
 THIS procedure (you are writing this one only):
 - Name: {name}
 - Intent: {intent}
@@ -144,6 +144,19 @@ THIS procedure (you are writing this one only):
 
 Source protocols ({n_sources}):
 {sources}"""
+
+
+def _researcher_notes_block(notes: Optional[str]) -> str:
+    """Inject the user's supplemental guidance into the writer prompt.
+    Empty string when not provided so the prompt template stays clean.
+    Same shape as the architect's helper — when in conflict with source
+    protocols, the notes take precedence."""
+    if not notes or not notes.strip():
+        return ""
+    return (
+        "\nResearcher notes (additional guidance — TREAT AS BINDING when in conflict with the source protocols):\n"
+        f"{notes.strip()}\n"
+    )
 
 
 def _format_source(p: NormalizedProtocol) -> str:
@@ -177,8 +190,14 @@ def write_procedure(
     hypothesis: Hypothesis,
     outline: ProcedureOutline,
     sources_by_id: dict[str, NormalizedProtocol],
+    *,
+    researcher_notes: Optional[str] = None,
 ) -> Procedure:
-    """Write ONE procedure. Synchronous; the parallel orchestrator wraps this."""
+    """Write ONE procedure. Synchronous; the parallel orchestrator wraps this.
+
+    `researcher_notes` is optional supplemental guidance from the user
+    (same string passed to every writer in the parallel fan-out). When
+    present it's injected into the prompt as a binding override."""
     s = hypothesis.structured
 
     # Filter sources to only the ones the architect cited for this procedure.
@@ -196,6 +215,7 @@ def write_procedure(
         conditions=s.conditions,
         expected=s.expected,
         research_question=s.research_question,
+        researcher_notes_block=_researcher_notes_block(researcher_notes),
         name=outline.name,
         intent=outline.intent,
         key_params=json.dumps(outline.key_params, ensure_ascii=False),
@@ -233,19 +253,26 @@ def write_procedures_parallel(
     sources_by_id: dict[str, NormalizedProtocol],
     *,
     max_workers: int = 5,
+    researcher_notes: Optional[str] = None,
 ) -> list[Procedure]:
     """Fan out one writer agent per procedure; preserve outline order on return.
 
     max_workers caps concurrent LLM calls so we don't hit rate limits when
     a hypothesis produces 8 procedures. 5 is a safe default for OpenRouter
-    free tiers; raise to 8+ if you have headroom."""
+    free tiers; raise to 8+ if you have headroom.
+
+    `researcher_notes` propagates to each writer so the user's
+    supplemental guidance shapes every procedure consistently."""
     if not outlines:
         return []
     workers = min(max_workers, len(outlines))
     out: dict[int, Procedure] = {}
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {
-            pool.submit(write_procedure, hypothesis, o, sources_by_id): i
+            pool.submit(
+                write_procedure, hypothesis, o, sources_by_id,
+                researcher_notes=researcher_notes,
+            ): i
             for i, o in enumerate(outlines)
         }
         for fut in as_completed(futures):

@@ -103,9 +103,20 @@ ARCHITECT_USER_TMPL = """Hypothesis (structured):
 - Conditions: {conditions}
 - Expected outcome: {expected}
 - Research question: {research_question}
-
+{researcher_notes_block}
 Source protocols ({n}, sorted by relevance):
 {sources}"""
+
+# Optional researcher-notes block. Injected into the user prompt only
+# when the researcher provided supplemental guidance via the FE — empty
+# string when not present, so the prompt looks unchanged.
+def _researcher_notes_block(notes: Optional[str]) -> str:
+    if not notes or not notes.strip():
+        return ""
+    return (
+        "\nResearcher notes (additional guidance — TREAT AS BINDING when in conflict with the source protocols):\n"
+        f"{notes.strip()}\n"
+    )
 
 
 def _format_source(sp: ScoredProtocol, *, max_steps: int = 6, max_step_chars: int = 220) -> str:
@@ -133,8 +144,16 @@ def _format_source(sp: ScoredProtocol, *, max_steps: int = 6, max_step_chars: in
 def plan_outline(
     hypothesis: Hypothesis,
     scored: list[ScoredProtocol],
+    *,
+    researcher_notes: Optional[str] = None,
 ) -> ProtocolOutline:
-    """Single LLM call returning a structured ProtocolOutline."""
+    """Single LLM call returning a structured ProtocolOutline.
+
+    `researcher_notes` is freeform supplemental guidance the user can
+    enter on the candidate-selection screen ("focus on the
+    cryoprotectant ratio; don't bother with the freezing rate"). When
+    present it's injected into the prompt as a binding override that
+    takes precedence over conflicting source-protocol details."""
     s = hypothesis.structured
     sources_blob = "\n\n".join(_format_source(sp) for sp in scored) or "(no source protocols available)"
     user = ARCHITECT_USER_TMPL.format(
@@ -144,6 +163,7 @@ def plan_outline(
         conditions=s.conditions,
         expected=s.expected,
         research_question=s.research_question,
+        researcher_notes_block=_researcher_notes_block(researcher_notes),
         n=len(scored),
         sources=sources_blob,
     )

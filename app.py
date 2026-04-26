@@ -255,8 +255,32 @@ def protocol():
     plan.updated_at = started
     plan_lib.save_plan(plan)
 
+    # Optional researcher inputs from the candidate-selection screen:
+    # - selected_protocol_ids: list[str] of IDs the user picked from
+    #   the /protocol-candidates response. When present, skip auto-
+    #   resolution and pass exactly those into the pipeline.
+    # - researcher_notes: freeform supplemental guidance threaded into
+    #   the architect + writer prompts as a binding override.
+    selected_ids = body.get("selected_protocol_ids")
+    if selected_ids is not None and not isinstance(selected_ids, list):
+        return jsonify({
+            "error": "bad_request",
+            "detail": "selected_protocol_ids must be a list of strings.",
+        }), 400
+    selected_ids = [str(x) for x in (selected_ids or []) if str(x).strip()] or None
+    researcher_notes = body.get("researcher_notes")
+    if researcher_notes is not None and not isinstance(researcher_notes, str):
+        return jsonify({
+            "error": "bad_request",
+            "detail": "researcher_notes must be a string.",
+        }), 400
+
     try:
-        protocol_out, _outline = protocol_stage.run_protocol_only(plan.hypothesis)
+        protocol_out, _outline = protocol_stage.run_protocol_only(
+            plan.hypothesis,
+            selected_protocol_ids=selected_ids,
+            researcher_notes=researcher_notes,
+        )
     except Exception as exc:
         return _stage_failed_response("protocol", plan, exc)
 
@@ -270,6 +294,74 @@ def protocol():
         "plan_id": plan.id,
         "frontend_view": adapt_protocol(protocol_out).model_dump(mode="json"),
         "raw": protocol_out.model_dump(mode="json"),
+    })
+
+
+# ---------------------------------------------------------------------------
+# POST /protocol-candidates
+# ---------------------------------------------------------------------------
+
+@app.post("/protocol-candidates")
+def protocol_candidates():
+    """Fetch candidate protocols from protocols.io for the FE selection
+    screen. Doesn't run the full pipeline — just the search +
+    relevance-scoring step. The user picks 1-3 candidates on the FE
+    and posts their selection back to /protocol with researcher notes.
+
+    Request body — same `_resolve_plan` shape as /protocol:
+      Form A: {"plan_id": "plan_abc..."} (chain off /lit-review)
+      Form B: {"structured": {...}}      (fresh start)
+
+    Response:
+        {
+          "plan_id": "...",
+          "query_used": "trehalose",
+          "queries_tried": ["trehalose", "cryopreservation"],
+          "candidates": [
+            {
+              "id": "260183",
+              "title": "...",
+              "description": "...",
+              "url": "...",
+              "doi": "...",
+              "language": "es",
+              "step_count": 13,
+              "relevance_score": 0.55,
+              "relevance_reason": "Same technique class but different organism..."
+            },
+            ...
+          ]
+        }
+
+    `candidates` is sorted by relevance score descending. An empty list
+    means protocols.io returned nothing for any of the ranked queries —
+    the FE should show a "no matches; proceed with synthesis" path.
+    """
+    body = request.get_json(silent=True) or {}
+
+    try:
+        plan, _is_new = _resolve_plan(body)
+    except ValidationError as exc:
+        return jsonify({"error": "validation_error", "detail": exc.errors()}), 422
+    except ValueError as exc:
+        return jsonify({"error": "bad_request", "detail": str(exc)}), 400
+
+    try:
+        candidates, queries_tried, query_used = (
+            protocol_stage.fetch_candidates_for_hypothesis(plan.hypothesis, limit=5)
+        )
+    except Exception as exc:
+        traceback.print_exc()
+        return jsonify({
+            "error": "pipeline_error",
+            "detail": "Candidate fetch failed. Check server logs.",
+        }), 500
+
+    return jsonify({
+        "plan_id": plan.id,
+        "query_used": query_used,
+        "queries_tried": queries_tried,
+        "candidates": [c.model_dump(mode="json") for c in candidates],
     })
 
 
