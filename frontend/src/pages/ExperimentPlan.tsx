@@ -1776,6 +1776,8 @@ const ExperimentPlan = () => {
                       "Catalog",
                       "Quantity",
                       "Quantity context",
+                      "Price",
+                      "Source URL",
                       "Note",
                     ],
                     ...materialGroups.flatMap((g) =>
@@ -1787,6 +1789,8 @@ const ExperimentPlan = () => {
                         it.catalog ?? "",
                         it.qty,
                         it.qtyContext ?? "",
+                        it.price ?? "",
+                        it.source_url ?? "",
                         it.note?.text ?? "",
                       ])
                     ),
@@ -1950,8 +1954,12 @@ const ExperimentPlan = () => {
                           )}
                         </div>
 
-                        {/* RIGHT: structured procurement block */}
-                        <dl className="grid w-full shrink-0 grid-cols-3 gap-x-5 gap-y-1 border-t border-rule pt-4 sm:w-[20rem] sm:grid-cols-1 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+                        {/* RIGHT: structured procurement block. 4 fields:
+                            Supplier · Catalog · Quantity · Price. Mobile: 2x2
+                            grid (4 horizontal would crowd). Desktop: stacked.
+                            Price links to source_url when present so the
+                            researcher can verify the quote. */}
+                        <dl className="grid w-full shrink-0 grid-cols-2 gap-x-5 gap-y-2 border-t border-rule pt-4 sm:w-[20rem] sm:grid-cols-1 sm:gap-y-1 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
                           <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
                             <dt className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                               Supplier
@@ -1974,6 +1982,30 @@ const ExperimentPlan = () => {
                             </dt>
                             <dd className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink">
                               {it.qty}
+                            </dd>
+                          </div>
+                          <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
+                            <dt className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                              Price
+                            </dt>
+                            <dd className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink">
+                              {it.price ? (
+                                it.source_url ? (
+                                  <a
+                                    href={it.source_url}
+                                    target="_blank"
+                                    rel="noreferrer noopener"
+                                    className="text-ink underline-offset-2 transition-colors hover:text-primary hover:underline"
+                                    title={`Source: ${it.source_url}`}
+                                  >
+                                    {it.price}
+                                  </a>
+                                ) : (
+                                  it.price
+                                )
+                              ) : (
+                                <span className="text-ink-soft">—</span>
+                              )}
                             </dd>
                           </div>
                         </dl>
