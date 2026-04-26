@@ -912,6 +912,8 @@ const ExperimentPlan = () => {
   // procedure-grouped rendering can read procedures + deviations + gaps
   // + total_duration + assumptions without round-tripping the parent state.
   const [apiProtocolView, setApiProtocolView] = useState<FEProtocolView | null>(null);
+  const [apiPlanId, setApiPlanId] = useState<string | null>(null);
+  const [pdfDownloading, setPdfDownloading] = useState(false);
   const [apiMaterialsView, setApiMaterialsView] = useState<FEMaterialsView | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -943,6 +945,7 @@ const ExperimentPlan = () => {
       try {
         const proto = await postProtocol(protoBody, ac.signal);
         setApiProtocolView(proto.frontend_view);
+        setApiPlanId(proto.plan_id);
         setStageIdx(1);
         setReveal(1);
 
@@ -1476,11 +1479,69 @@ const ExperimentPlan = () => {
                   </div>
                 </div>
 
-                {/* View toggle */}
+                {/* View toggle + PDF download. The download button is
+                    suppressed in mock-only mode (no plan_id to send).
+                    Calls POST /protocol/pdf with plan_id and triggers a
+                    blob download. */}
+                <div className="flex shrink-0 flex-col items-end gap-3 self-start">
+                {apiPlanId && (
+                  <button
+                    type="button"
+                    disabled={pdfDownloading}
+                    onClick={async () => {
+                      if (!apiPlanId || pdfDownloading) return;
+                      setPdfDownloading(true);
+                      try {
+                        const res = await fetch("/protocol/pdf", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ plan_id: apiPlanId }),
+                        });
+                        if (!res.ok) {
+                          // Try to surface the JSON error detail; fall back
+                          // to status code if the body isn't JSON.
+                          let detail = `HTTP ${res.status}`;
+                          try {
+                            const j = await res.json();
+                            if (typeof j?.detail === "string") detail = j.detail;
+                          } catch {
+                            // ignore
+                          }
+                          throw new Error(detail);
+                        }
+                        const blob = await res.blob();
+                        // Pull filename out of Content-Disposition when present.
+                        const cd = res.headers.get("Content-Disposition") || "";
+                        const m = /filename="?([^";]+)"?/i.exec(cd);
+                        const filename = m?.[1] || "protocol.pdf";
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                      } catch (err) {
+                        const msg = err instanceof Error ? err.message : "Download failed";
+                        // Reuse the page-level error banner so the user sees
+                        // failed PDF requests in context.
+                        setApiError(`Protocol PDF download failed: ${msg}`);
+                      } finally {
+                        setPdfDownloading(false);
+                      }
+                    }}
+                    className="group inline-flex items-center gap-1.5 border-b border-transparent pb-0.5 font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-ink-soft transition-colors hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <Download className="h-3 w-3" strokeWidth={1.75} />
+                    {pdfDownloading ? "Generating PDF…" : "Download protocol (PDF)"}
+                  </button>
+                )}
+
                 <div
                   role="tablist"
                   aria-label="Protocol view mode"
-                  className="inline-flex shrink-0 items-center rounded-sm border border-rule bg-paper p-1 self-start"
+                  className="inline-flex items-center rounded-sm border border-rule bg-paper p-1"
                 >
                   {(
                     [
@@ -1509,6 +1570,7 @@ const ExperimentPlan = () => {
                       </button>
                     );
                   })}
+                </div>
                 </div>
               </header>
 

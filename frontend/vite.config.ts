@@ -15,10 +15,11 @@ export default defineConfig(({ mode }) => ({
     // as if they were same-origin. In production these are expected to live
     // behind a reverse proxy or under the same origin as the Flask app.
     proxy: {
-      "/lit-review": "http://localhost:5000",
-      "/protocol":   "http://localhost:5000",
-      "/materials":  "http://localhost:5000",
-      "/health":     "http://localhost:5000",
+      "/lit-review":   "http://localhost:5000",
+      "/protocol":     "http://localhost:5000",
+      "/protocol/pdf": "http://localhost:5000",
+      "/materials":    "http://localhost:5000",
+      "/health":       "http://localhost:5000",
     },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),

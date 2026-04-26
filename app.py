@@ -22,6 +22,7 @@ without a backend change.
 
 from __future__ import annotations
 
+import io
 import os
 import sys
 import traceback
@@ -37,7 +38,7 @@ for _stream in (sys.stdout, sys.stderr):
     if hasattr(_stream, "reconfigure"):
         _stream.reconfigure(encoding="utf-8", errors="replace")
 
-from flask import Flask, jsonify, request  # noqa: E402
+from flask import Flask, jsonify, request, send_file  # noqa: E402
 from flask_cors import CORS  # noqa: E402
 from pydantic import ValidationError  # noqa: E402
 
@@ -270,6 +271,85 @@ def protocol():
         "frontend_view": adapt_protocol(protocol_out).model_dump(mode="json"),
         "raw": protocol_out.model_dump(mode="json"),
     })
+
+
+# ---------------------------------------------------------------------------
+# POST /protocol/pdf
+# ---------------------------------------------------------------------------
+
+@app.post("/protocol/pdf")
+def protocol_pdf():
+    """Render the current protocol to a PDF and return the bytes.
+
+    Same `_resolve_plan` shape as the other stage endpoints (Form A
+    plan_id / Form B structured). When chaining via plan_id the plan
+    must already have `protocol` populated — returns 400 otherwise so
+    the FE can call /protocol first. Form B runs /protocol implicitly.
+
+    Response: application/pdf, with Content-Disposition: attachment
+    and a slugged filename derived from the experiment_type so the
+    user's download lands as e.g. `protocol-cryopreservation-comparison.pdf`.
+    """
+    body = request.get_json(silent=True) or {}
+
+    try:
+        plan, is_new = _resolve_plan(body)
+    except ValidationError as exc:
+        return jsonify({"error": "validation_error", "detail": exc.errors()}), 422
+    except ValueError as exc:
+        return jsonify({"error": "bad_request", "detail": str(exc)}), 400
+
+    # Same chaining rule as /materials, /timeline, /validation: chained
+    # plan must already have a protocol. New (Form B) plans run /protocol
+    # implicitly so curl users can one-shot a PDF from a hypothesis.
+    if not is_new and plan.protocol is None:
+        return jsonify({
+            "error": "protocol_not_run",
+            "detail": "This plan has no protocol yet. POST /protocol first, then retry /protocol/pdf.",
+        }), 400
+
+    if plan.protocol is None:
+        started = now()
+        plan.status["protocol"] = StageStatusRunning(started_at=started)
+        plan.updated_at = started
+        plan_lib.save_plan(plan)
+        try:
+            protocol_out, _outline = protocol_stage.run_protocol_only(plan.hypothesis)
+        except Exception as exc:
+            return _stage_failed_response("protocol", plan, exc)
+        completed = now()
+        plan.protocol = protocol_out
+        plan.status["protocol"] = StageStatusComplete(completed_at=completed)
+        plan.updated_at = completed
+        plan_lib.save_plan(plan)
+
+    # Lazy import — keeps reportlab off the critical-path startup for
+    # the more common JSON endpoints, and isolates PDF errors from the
+    # rest of the app.
+    from protocol_pipeline.pdf import render_protocol_pdf
+
+    try:
+        pdf_bytes = render_protocol_pdf(plan.protocol, plan.hypothesis)
+    except Exception as exc:
+        traceback.print_exc()
+        return jsonify({
+            "error": "pdf_render_error",
+            "detail": "Failed to render protocol PDF. Check server logs for the underlying cause.",
+        }), 500
+
+    # Slugify experiment_type for the download filename. Falls back to
+    # the plan_id when the experiment_type is empty.
+    raw_slug = (plan.protocol.experiment_type or plan.id).lower()
+    slug = "".join(ch if ch.isalnum() else "-" for ch in raw_slug)
+    slug = "-".join(part for part in slug.split("-") if part)[:60] or plan.id
+    filename = f"protocol-{slug}.pdf"
+
+    return send_file(
+        io.BytesIO(pdf_bytes),
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name=filename,
+    )
 
 
 # ---------------------------------------------------------------------------
