@@ -48,6 +48,12 @@ def _openrouter_complete(system: str, user: str, *, json_mode: bool) -> str:
         kwargs["response_format"] = {"type": "json_object"}
 
     resp = client.chat.completions.create(**kwargs)
+    # Defensive: content filtering or upstream errors can return empty choices.
+    if not resp.choices:
+        raise RuntimeError(
+            f"OpenRouter returned no choices for model {kwargs['model']!r}; "
+            "possibly content-filtered or upstream error."
+        )
     return resp.choices[0].message.content or ""
 
 

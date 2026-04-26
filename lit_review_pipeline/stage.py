@@ -291,10 +291,20 @@ def _classify(
             raw = raw.strip("`").lstrip("json").strip()
         return json.loads(raw)
 
+    # JSON-mode occasionally produces malformed output. We retry once on
+    # JSONDecodeError. The retry itself can also fail (JSON or network);
+    # we wrap it so the surfaced error is informative rather than a raw
+    # second-attempt traceback.
     try:
         parsed = _call_and_parse()
-    except json.JSONDecodeError:
-        parsed = _call_and_parse()  # one retry; JSON-mode occasionally hiccups
+    except json.JSONDecodeError as first_exc:
+        try:
+            parsed = _call_and_parse()
+        except json.JSONDecodeError as retry_exc:
+            raise RuntimeError(
+                f"LLM returned malformed JSON twice (first: {first_exc}; "
+                f"retry: {retry_exc}). Try LLM_PROVIDER=anthropic for stricter output."
+            ) from retry_exc
 
     refs: list[Citation] = []
     for r in parsed.get("references", [])[:3]:

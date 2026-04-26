@@ -37,35 +37,42 @@ class _FakeResponse:
             raise RuntimeError(f"HTTP {self.status_code}")
 
 
-class _CapturingHttpx:
+class _FakeClient:
+    """Stand-in for httpx.Client. Captures the per-request kwargs for assertions."""
     last_url: str = ""
     last_params: dict = {}
     last_headers: dict = {}
     call_count: int = 0
     return_payload: dict = {"resultList": {"result": []}}
 
-    @classmethod
-    def get(cls, url, params=None, headers=None, timeout=None):
-        cls.last_url = url
-        cls.last_params = dict(params or {})
-        cls.last_headers = dict(headers or {})
-        cls.call_count += 1
-        return _FakeResponse(cls.return_payload)
+    def get(self, url, params=None, headers=None, **_kwargs):
+        type(self).last_url = url
+        type(self).last_params = dict(params or {})
+        type(self).last_headers = dict(headers or {})
+        type(self).call_count += 1
+        return _FakeResponse(self.return_payload)
 
 
 @pytest.fixture
 def fake_httpx(monkeypatch):
-    monkeypatch.setattr(epmc, "httpx", _CapturingHttpx)
+    """Patch the module-level pooled client with a capturing fake.
+
+    The real client is now an `httpx.Client()` instance (for connection
+    pooling); tests replace it with `_FakeClient` and inspect the recorded
+    kwargs after each call.
+    """
+    fake = _FakeClient()
+    monkeypatch.setattr(epmc, "_client", fake)
     shutil.rmtree(cache.CACHE_DIR / "europe_pmc/lit_review", ignore_errors=True)
-    _CapturingHttpx.call_count = 0
-    _CapturingHttpx.last_url = ""
-    _CapturingHttpx.last_params = {}
-    _CapturingHttpx.last_headers = {}
-    _CapturingHttpx.return_payload = {
+    _FakeClient.call_count = 0
+    _FakeClient.last_url = ""
+    _FakeClient.last_params = {}
+    _FakeClient.last_headers = {}
+    _FakeClient.return_payload = {
         "resultList": {"result": [{"title": "fake paper", "doi": "10.1/x"}]},
         "hitCount": 1,
     }
-    yield _CapturingHttpx
+    yield _FakeClient
 
 
 # =============================================================================
