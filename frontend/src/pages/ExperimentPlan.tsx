@@ -323,7 +323,7 @@ const ExperimentPlan = () => {
   const generating = reveal < 4;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-paper text-ink">
+    <div className="relative min-h-screen bg-paper text-ink">
       <div aria-hidden className="pointer-events-none absolute inset-0 lab-grid" />
 
       {/* Faint chemical structure, top-right */}
@@ -473,37 +473,39 @@ const ExperimentPlan = () => {
           </div>
 
           {/* Plan at a glance — jump nav so users don't have to scroll the whole page */}
-          {reveal >= 4 && (
-            <nav
-              aria-label="Jump to plan section"
-              className="mt-6 rounded-md border border-rule bg-paper-raised px-5 py-4 sm:px-6"
-            >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                  Plan at a glance — jump to
-                </p>
-                <ul className="flex flex-wrap items-center gap-1.5">
-                  {[
-                    { id: "protocol-title", label: "Protocol" },
-                    { id: "materials-title", label: "Materials" },
-                    { id: "budget-title", label: "Budget" },
-                    { id: "validation-title", label: "Validation" },
-                    { id: "feasibility-title", label: "Feasibility" },
-                  ].map((item) => (
-                    <li key={item.id}>
-                      <a
-                        href={`#${item.id}`}
-                        className="inline-flex items-center rounded-sm border border-rule bg-paper px-2.5 py-1 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink-soft transition-colors hover:border-ink/40 hover:text-ink"
-                      >
-                        {item.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </nav>
-          )}
         </section>
+
+        {/* Plan at a glance — sticky jump nav so users don't have to scroll the whole page */}
+        {reveal >= 4 && (
+          <nav
+            aria-label="Jump to plan section"
+            className="sticky top-3 z-30 mb-8 rounded-md border border-rule bg-paper-raised/95 px-5 py-3 shadow-[0_4px_16px_-8px_hsl(var(--ink)/0.18)] backdrop-blur supports-[backdrop-filter]:bg-paper-raised/80 sm:px-6"
+          >
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                Plan at a glance — jump to
+              </p>
+              <ul className="flex flex-wrap items-center gap-1.5">
+                {[
+                  { id: "protocol-title", label: "Protocol" },
+                  { id: "materials-title", label: "Materials" },
+                  { id: "budget-title", label: "Budget" },
+                  { id: "validation-title", label: "Validation" },
+                  { id: "feasibility-title", label: "Feasibility" },
+                ].map((item) => (
+                  <li key={item.id}>
+                    <a
+                      href={`#${item.id}`}
+                      className="inline-flex items-center rounded-sm border border-rule bg-paper px-2.5 py-1 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink-soft transition-colors hover:border-ink/40 hover:text-ink"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
+        )}
 
         {/* Generation status */}
         {generating && (

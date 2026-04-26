@@ -12,6 +12,7 @@ import Drafts from "./pages/Drafts.tsx";
 import Library from "./pages/Library.tsx";
 import Account from "./pages/Account.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { AIAssistantLauncher } from "./components/AIAssistantLauncher.tsx";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <AIAssistantLauncher />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
