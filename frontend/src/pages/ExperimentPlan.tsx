@@ -1266,7 +1266,19 @@ const ExperimentPlan = () => {
               className="px-6 py-5 text-[20px] leading-[1.55] text-ink"
               style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
             >
-              {HYPOTHESIS_SUMMARY}
+              {/* Hypothesis recap from real router state when present;
+                  HYPOTHESIS_SUMMARY mock keeps direct-page-navigation
+                  demos from breaking. The research_question field is
+                  the most prose-friendly; falls back to a composed
+                  sentence if it's blank. */}
+              {incomingStructured?.research_question?.trim()
+                || (incomingStructured
+                    ? `Does ${incomingStructured.independent || "the intervention"} affect `
+                      + `${incomingStructured.dependent || "the outcome"} in `
+                      + `${incomingStructured.subject || "the system"}`
+                      + (incomingStructured.conditions ? ` under ${incomingStructured.conditions}` : "")
+                      + "?"
+                    : HYPOTHESIS_SUMMARY)}
             </p>
           </div>
 
@@ -1436,7 +1448,21 @@ const ExperimentPlan = () => {
                       className="mt-2 max-w-[28rem] text-[15px] italic leading-snug text-ink-soft"
                       style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
                     >
-                      Glucose-gradient kinetic assay in M9 minimal media, plate-reader readout.
+                      {/* Subtitle composed from real BE data: experiment_type
+                          + the first procedure's intent. Both are deterministic
+                          (no new LLM call); same plan -> same subtitle. */}
+                      {(() => {
+                        const expType = apiProtocolView?.experiment_type?.trim();
+                        const firstIntent = procedures[0]?.intent?.trim();
+                        if (expType && firstIntent) {
+                          // Lower-case experiment_type after the first word for
+                          // sentence-case feel, e.g. "Cryopreservation comparison"
+                          // stays as-is, "ELISA assay validation" stays as-is.
+                          return `${expType.charAt(0).toUpperCase() + expType.slice(1)} — ${firstIntent}`;
+                        }
+                        if (expType) return expType.charAt(0).toUpperCase() + expType.slice(1);
+                        return "Glucose-gradient kinetic assay in M9 minimal media, plate-reader readout.";
+                      })()}
                     </p>
                     {/* Phase 5a: total time chip — populated when ALL step
                         durations are present (BE returns null otherwise to
@@ -2059,34 +2085,105 @@ const ExperimentPlan = () => {
             </summary>
             <div className="border-t border-rule px-6 py-6 sm:px-7">
 
-            <div className="grid grid-cols-1 overflow-hidden rounded-md border border-rule bg-paper-raised sm:grid-cols-2">
-              <div className="border-rule px-7 py-6 sm:border-r">
-                <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                  What we measure
-                </p>
-                <ul className="mt-4 space-y-3">
-                  {VALIDATION.measured.map((m, i) => (
-                    <li key={i} className="flex gap-3 text-[15px] leading-[1.65] text-ink">
-                      <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink" />
-                      <span>{m}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="px-7 py-6">
-                <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-sage">
-                  Success criteria
-                </p>
-                <ul className="mt-4 space-y-3">
-                  {VALIDATION.success.map((m, i) => (
-                    <li key={i} className="flex gap-3 text-[15px] leading-[1.65] text-ink">
-                      <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-sage" />
-                      <span>{m}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            {(() => {
+              // Aggregate validation data from real procedures so the
+              // section actually reflects the generated plan instead of
+              // a hardcoded glucose-experiment template. Each success
+              // criterion is annotated with the procedure it came from
+              // (defensibility — researchers can audit by jumping to
+              // the procedure). Falls back to mock VALIDATION constant
+              // when in mock-only mode.
+              type AggCriterion = {
+                what: string;
+                threshold: string | null;
+                fromProcedure: string;
+                procedureIndex: number;
+                howMeasured: string;
+              };
+              const aggCriteria: AggCriterion[] = procedures.flatMap((p) =>
+                p.success_criteria.map((c) => ({
+                  what: c.what,
+                  threshold: c.threshold ?? null,
+                  fromProcedure: p.name,
+                  procedureIndex: p.procedure_index,
+                  howMeasured: c.how_measured,
+                }))
+              );
+              // Unique measurement methods (what we measure) — dedup
+              // case-insensitively to avoid showing "trypan blue" and
+              // "Trypan Blue" as separate items.
+              const seenLowered = new Set<string>();
+              const measuredMethods = aggCriteria
+                .map((c) => c.howMeasured.trim())
+                .filter((m) => {
+                  if (!m) return false;
+                  const k = m.toLowerCase();
+                  if (seenLowered.has(k)) return false;
+                  seenLowered.add(k);
+                  return true;
+                });
+
+              const useReal = aggCriteria.length > 0;
+              const measured = useReal ? measuredMethods : VALIDATION.measured;
+
+              return (
+                <div className="grid grid-cols-1 overflow-hidden rounded-md border border-rule bg-paper-raised sm:grid-cols-2">
+                  <div className="border-rule px-7 py-6 sm:border-r">
+                    <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                      What we measure
+                    </p>
+                    <ul className="mt-4 space-y-3">
+                      {measured.map((m, i) => (
+                        <li key={i} className="flex gap-3 text-[15px] leading-[1.65] text-ink">
+                          <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink" />
+                          <span>{m}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="px-7 py-6">
+                    <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-sage">
+                      Success criteria
+                    </p>
+                    <ul className="mt-4 space-y-3">
+                      {useReal ? (
+                        aggCriteria.map((c, i) => (
+                          <li key={i} className="text-[15px] leading-[1.65] text-ink">
+                            <div className="flex gap-3">
+                              <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-sage" />
+                              <div>
+                                <span>{c.what}</span>
+                                {c.threshold && (
+                                  <span className="ml-2 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-primary">
+                                    [{c.threshold}]
+                                  </span>
+                                )}
+                                {/* Citation chip — researcher can jump back to
+                                    the procedure that produced this criterion. */}
+                                <a
+                                  href={`#proc-${c.procedureIndex}`}
+                                  className="ml-2 inline-flex items-center gap-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-ink"
+                                  title="Jump to source procedure"
+                                >
+                                  ↑ {c.fromProcedure}
+                                </a>
+                              </div>
+                            </div>
+                          </li>
+                        ))
+                      ) : (
+                        VALIDATION.success.map((m, i) => (
+                          <li key={i} className="flex gap-3 text-[15px] leading-[1.65] text-ink">
+                            <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-sage" />
+                            <span>{m}</span>
+                          </li>
+                        ))
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              );
+            })()}
             </div>
           </details>
         )}
@@ -2135,17 +2232,22 @@ const ExperimentPlan = () => {
                     </p>
                   </div>
                   <ul className="mt-3 space-y-2.5">
-                    {FEASIBILITY.assumptions.map((a, i) => (
-                      <li
-                        key={i}
-                        className="flex gap-3 text-[15px] leading-[1.65] text-ink-soft"
-                      >
-                        <span className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-sage">
-                          A{i + 1}
-                        </span>
-                        <span>{a}</span>
-                      </li>
-                    ))}
+                    {/* Assumptions wired from real protocol output (the
+                        architect populates protocol.assumptions[]).
+                        Falls back to mock FEASIBILITY.assumptions when
+                        in mock-only mode. */}
+                    {(protocolAssumptions.length > 0 ? protocolAssumptions : FEASIBILITY.assumptions)
+                      .map((a, i) => (
+                        <li
+                          key={i}
+                          className="flex gap-3 text-[15px] leading-[1.65] text-ink-soft"
+                        >
+                          <span className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-sage">
+                            A{i + 1}
+                          </span>
+                          <span>{a}</span>
+                        </li>
+                      ))}
                   </ul>
                 </div>
 

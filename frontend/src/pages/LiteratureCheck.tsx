@@ -59,11 +59,15 @@ const CONCEPT_DOT = {
   condition: "bg-[hsl(38_70%_45%)]",
 } as const;
 
-// Structured hypothesis with color-coded concepts inline
-const HYPOTHESIS_PARTS: Array<{
+type HypothesisPart = {
   text: string;
   tone?: keyof typeof CONCEPT;
-}> = [
+};
+
+// Mock fallback when no structured hypothesis is in router state
+// (direct page navigation / design demo). Real users see a derived
+// breakdown — see deriveHypothesisParts() below.
+const HYPOTHESIS_PARTS: HypothesisPart[] = [
   { text: "Increasing " },
   { text: "glucose concentration", tone: "variable" },
   { text: " in M9 minimal media reduces the specific growth rate of " },
@@ -74,6 +78,36 @@ const HYPOTHESIS_PARTS: Array<{
   { text: "aerobic conditions at 37 °C", tone: "condition" },
   { text: "." },
 ];
+
+// Compose color-coded hypothesis prose from the structured fields.
+// Deterministic — same structured input → same parts. No LLM call;
+// the text is "Does {independent} affect {dependent} in {subject}
+// [under {conditions}]?" with each structured field highlighted by
+// its semantic role:
+//   subject    -> "subject" tone (deep ink blue)
+//   independent / dependent -> "variable" tone (sage)
+//   conditions -> "condition" tone (warm amber)
+function deriveHypothesisParts(
+  s: StructuredHypothesis | undefined,
+): HypothesisPart[] {
+  if (!s) return HYPOTHESIS_PARTS;
+  const parts: HypothesisPart[] = [];
+  parts.push({ text: "Does " });
+  if (s.independent) parts.push({ text: s.independent.trim(), tone: "variable" });
+  else parts.push({ text: "the intervention", tone: "variable" });
+  parts.push({ text: " affect " });
+  if (s.dependent) parts.push({ text: s.dependent.trim(), tone: "variable" });
+  else parts.push({ text: "the outcome", tone: "variable" });
+  parts.push({ text: " in " });
+  if (s.subject) parts.push({ text: s.subject.trim(), tone: "subject" });
+  else parts.push({ text: "the system", tone: "subject" });
+  if (s.conditions?.trim()) {
+    parts.push({ text: " under " });
+    parts.push({ text: s.conditions.trim(), tone: "condition" });
+  }
+  parts.push({ text: "?" });
+  return parts;
+}
 
 // ---- Mocked backend response ------------------------------------------------
 // In production these come from the literature-check service. Field names
@@ -440,7 +474,7 @@ const LiteratureCheck = () => {
                 letterSpacing: "0.005em",
               }}
             >
-              {HYPOTHESIS_PARTS.map((part, i) =>
+              {deriveHypothesisParts(inputHypothesis).map((part, i) =>
                 part.tone ? (
                   <span
                     key={i}
