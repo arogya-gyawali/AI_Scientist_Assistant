@@ -198,12 +198,171 @@ def _query_for(item: FEReagent) -> str:
     return (item.name or "").strip()
 
 
+# --------------------------------------------------------------------------
+# Price fallback (raw-content search)
+# --------------------------------------------------------------------------
+# The basic-depth supplier search returns short snippets — many product
+# pages (notably ThermoFisher) hide price behind a region selector or
+# JS-rendered widget that doesn't appear in the snippet. When that
+# happens, supplier + catalog come back populated but price is null.
+#
+# Fix: do a *second* targeted search via the existing
+# `search_for_pricing` helper, which uses include_raw_content=True and
+# is scoped to the single supplier domain we already identified.
+# Run a regex pass over the full page content for common price formats
+# first (no LLM cost, deterministic). LLM fallback only when regex
+# misses, since the page text is large and the cost is non-trivial.
+
+# Currency-amount patterns. Order: most specific first so we don't
+# accept "00" as a standalone price when "474,00 EUR" is in the same
+# page. Captures up to ~30 chars of trailing context for the unit
+# (e.g. "/ 500 g", "per 100 mL").
+_PRICE_PATTERNS = [
+    # USD / EUR / GBP with symbol, comma OR dot decimal, optional pack-size suffix.
+    re.compile(
+        r"(?P<sym>\$|€|£)\s*(?P<amt>\d{1,3}(?:[,.]\d{3})*(?:[.,]\d{2})?)"
+        r"(?:\s*(?:/|per|each|each\s+for|for)\s*(?P<unit>\d+\s*(?:[a-zA-Z]+\s*)?(?:x\s*\d+\s*[a-zA-Z]+)?))?",
+        re.IGNORECASE,
+    ),
+    # Trailing-currency form: "474,00 EUR / 20 x 100 ml"
+    re.compile(
+        r"(?P<amt>\d{1,3}(?:[,.]\d{3})*(?:[.,]\d{2})?)\s*"
+        r"(?P<sym>USD|EUR|GBP|JPY|CHF|CAD|AUD)"
+        r"(?:\s*(?:/|per)\s*(?P<unit>\d+\s*(?:[a-zA-Z]+\s*)?(?:x\s*\d+\s*[a-zA-Z]+)?))?",
+        re.IGNORECASE,
+    ),
+]
+
+
+def _regex_price_from_content(content: str) -> Optional[str]:
+    """Scan raw page content for a price string. Returns the first
+    match formatted as e.g. '$48.50 / 500g' — preserving the source
+    page's currency + format rather than fabricating a USD figure.
+    Returns None when nothing matches; caller falls back to LLM."""
+    if not content:
+        return None
+    text = content[:8000]  # cap so we don't run regex over a 100kb page
+    for pat in _PRICE_PATTERNS:
+        m = pat.search(text)
+        if not m:
+            continue
+        amt = (m.group("amt") or "").strip()
+        sym = (m.group("sym") or "").strip()
+        unit = (m.group("unit") or "").strip()
+        if not amt:
+            continue
+        # Reject single-digit "amounts" — usually false matches like
+        # "1 EUR" inside a "+1 EUR shipping" line.
+        digits_only = re.sub(r"[^\d]", "", amt)
+        if len(digits_only) < 2:
+            continue
+        # Prefix or suffix the symbol depending on which pattern hit.
+        if sym in {"$", "€", "£"}:
+            head = f"{sym}{amt}"
+        else:
+            head = f"{amt} {sym.upper()}"
+        if unit:
+            return f"{head} / {unit}"[:200]
+        return head[:200]
+    return None
+
+
+_PRICE_LLM_SYSTEM = """You extract a single product price from a supplier-page text dump.
+
+You receive:
+  - The product name
+  - The supplier domain
+  - The full text of the supplier's product page
+
+Return ONLY a JSON object:
+{
+  "price": "string | null",
+  "found_in_text": "string | null"
+}
+
+`price` should be the listed price WITH currency symbol/code AND pack size when visible. Examples: "$48.50 / 500 g", "€474,00 / 20 x 100 mL", "1,295.00 USD".
+
+`found_in_text` is the literal substring (≤80 chars) from the page where you saw the price. REQUIRED whenever price is non-null. If no price is visible, return both fields null. Do not fabricate."""
+
+
+def _llm_price_from_content(name: str, domain: str, content: str) -> Optional[str]:
+    """Last-resort LLM extraction over raw page content. Drops anything
+    where the LLM can't quote the literal substring it pulled from."""
+    if not content:
+        return None
+    user = (
+        f"Product: {name}\nSupplier domain: {domain}\n\n"
+        f"Page text:\n{content[:6000]}"
+    )
+    try:
+        parsed = llm.complete_json(_PRICE_LLM_SYSTEM, user, agent_name="Materials price")
+    except Exception:
+        return None
+    if not isinstance(parsed, dict):
+        return None
+    price = parsed.get("price")
+    snippet = parsed.get("found_in_text")
+    if not isinstance(price, str) or not price.strip():
+        return None
+    if not isinstance(snippet, str) or not snippet.strip():
+        # No grounding citation — drop it (matches the source_url
+        # discipline elsewhere in this module).
+        return None
+    if snippet.strip() not in content:
+        # The "literal substring" wasn't actually in the content. The
+        # LLM hallucinated. Drop.
+        return None
+    return price.strip()[:200]
+
+
+def _fetch_price_for(supplier: str, source_url: str, catalog: str, name: str) -> Optional[str]:
+    """Second-pass price search. Triggered only when supplier + catalog
+    are known but price came back null from the snippet-based extract.
+    Pricing search uses include_raw_content=True so we get the full
+    page text — much higher chance of finding a price string."""
+    try:
+        domain = urlparse(source_url).netloc.lower()
+    except Exception:
+        return None
+    if not domain:
+        return None
+    try:
+        response = tavily_client.search_for_pricing(supplier, domain, catalog)
+    except Exception as exc:
+        _LOG.warning("Tavily pricing search failed for %r (%s): %s",
+                     name, catalog, exc)
+        return None
+    results = response.get("results") if isinstance(response, dict) else None
+    if not isinstance(results, list) or not results:
+        return None
+    raw = (results[0].get("raw_content") or results[0].get("content") or "").strip()
+    if not raw:
+        return None
+    # Try regex first (free, deterministic). LLM fallback if it misses.
+    found = _regex_price_from_content(raw)
+    if found:
+        return found
+    return _llm_price_from_content(name, domain, raw)
+
+
 def enrich_one_item(item: FEReagent) -> FEReagent:
     """Fetch supplier/catalog/price for one material via Tavily +
-    LLM extraction. Returns a new FEReagent with enrichment fields
-    populated where extraction succeeded; original fields unchanged
-    when extraction fails (FE keeps showing 'TBD'). Never mutates
-    the input."""
+    LLM extraction. Two passes:
+
+      1. Snippet-based search (`search_for_supplier`) +
+         `_extract_one` LLM call. Usually finds supplier + catalog;
+         finds price only when the snippet happens to include it
+         (Sigma often does, ThermoFisher rarely).
+
+      2. If supplier + catalog were found but price is still null,
+         fall back to a price-targeted full-content search via
+         `search_for_pricing`. Tries regex over the raw page text
+         first (free, deterministic); LLM with substring-grounding
+         only if regex misses.
+
+    Returns a new FEReagent with enrichment fields populated where
+    extraction succeeded; original fields unchanged when extraction
+    fails. Never mutates the input."""
     name = (item.name or "").strip()
     if not name or len(name) < 3:
         return item
@@ -225,6 +384,20 @@ def enrich_one_item(item: FEReagent) -> FEReagent:
     # everything is None).
     if not extracted["source_url"]:
         return item
+
+    # Pass 2: price fallback. Only fire when we have enough to make
+    # a focused search (supplier + catalog) AND price is still null.
+    # Skipping otherwise keeps the cost bounded — this isn't a
+    # blanket second-pass over every item.
+    if extracted["supplier"] and extracted["catalog"] and not extracted["price"]:
+        fallback_price = _fetch_price_for(
+            extracted["supplier"],
+            extracted["source_url"],
+            extracted["catalog"],
+            name,
+        )
+        if fallback_price:
+            extracted["price"] = fallback_price
 
     # Don't clobber an existing supplier/catalog with None — the
     # original adapt_materials may have populated those from the BE.
