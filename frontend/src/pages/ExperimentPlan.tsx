@@ -400,9 +400,11 @@ function computePlanConfidence(
   // If the architect didn't classify any procedure as Measurement (rare
   // but possible — see lactobacillus run earlier), fall back to "any
   // procedure has success criteria". A weaker signal but better than
-  // false-grey when the writer did the right thing.
+  // false-grey when the writer did the right thing — this fallback
+  // applies regardless of procedure count, including single-procedure
+  // plans where the criteria are the only validation we have.
   const hasAnyCriteria = procs.some((p) => p.success_criteria.length > 0);
-  const establishedAssays = hasMeasurementWithCriteria || (hasAnyCriteria && procs.length > 1);
+  const establishedAssays = hasMeasurementWithCriteria || hasAnyCriteria;
 
   // 3. Standard equipment — sage when most equipment items have a
   // populated purpose (which the materials roll-up populates with the
@@ -412,8 +414,12 @@ function computePlanConfidence(
     .filter((g) => g.group.toLowerCase().includes("equipment"))
     .flatMap((g) => g.items);
   const totalEq = equipment.length;
+  // Any non-empty purpose counts. Length-based filters (the previous
+  // `> 5` guard) wrongly excluded valid concise lab purposes like
+  // "PCR", "Spin", "Wash", "Mix" — exactly the items most likely to
+  // have terse purpose copy.
   const speccedEq = equipment.filter(
-    (e) => e.purpose && e.purpose.trim().length > 5,
+    (e) => e.purpose && e.purpose.trim().length > 0,
   ).length;
   // If materials haven't loaded yet, treat this factor as not-yet-known
   // (default to inactive for the dial; the chip will simply be grey).
