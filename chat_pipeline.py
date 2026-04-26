@@ -89,12 +89,19 @@ _TOOL_UPDATE_PROTOCOL_STEP: dict[str, Any] = {
             "field": {
                 "type": "string",
                 "enum": list(_PROTOCOL_STEP_FIELDS),
-                "description": "Which field to update. duration is ISO 8601.",
+                "description": (
+                    "The NAME of the field to update. MUST be exactly one "
+                    "of the enum values: 'title', 'body_md', 'notes', "
+                    "'anticipated_outcome', 'duration', 'is_critical', or "
+                    "'is_pause_point'. Do NOT pass the literal string "
+                    "'value' here — 'value' is the next argument, which "
+                    "holds the new value you want to set this field to."
+                ),
             },
             "value": {
                 "type": "string",
                 "description": (
-                    "New value as a string. For duration use ISO 8601 "
+                    "The new value to set. For duration use ISO 8601 "
                     "(e.g. 'PT15M' for 15 minutes, 'PT1H' for 1 hour). "
                     "For is_critical / is_pause_point pass 'true' or 'false'."
                 ),
@@ -225,8 +232,19 @@ def chat(
         history=history or [],
     )
 
+    # Pre-validate every tool call against its schema BEFORE we build a
+    # ProposedMutation card for the FE. Gemini Flash sometimes ignores
+    # the `enum` constraint on `field` and stuffs the literal placeholder
+    # name "value" into it (or other off-enum strings), which then bubbles
+    # up as a generic apply-time error. Catching it here means the user
+    # never sees a card they can't apply.
     proposed: list[ProposedMutation] = []
+    dropped: list[tuple[str, str]] = []
     for tc in result.tool_calls:
+        validation_error = _validate_tool_call(tc.name, tc.arguments)
+        if validation_error:
+            dropped.append((tc.name, validation_error))
+            continue
         proposed.append(ProposedMutation(
             id=uuid.uuid4().hex,
             tool=tc.name,
@@ -234,13 +252,71 @@ def chat(
             summary=_summarize_mutation(tc.name, tc.arguments),
         ))
 
-    # If the LLM emitted only tool calls and no text, give a sane default
-    # so the chat bubble isn't empty.
-    text = result.text or (
-        f"I'd make {len(proposed)} change{'' if len(proposed) == 1 else 's'} — review below."
-        if proposed else "Done."
-    )
+    # Resolve the assistant's text. Three cases:
+    #   a) LLM produced text + valid proposals → show text, render proposals
+    #   b) LLM produced only valid proposals → friendly default text
+    #   c) LLM produced only unknown-tool calls → translate the intent
+    #      into useful prose so the user gets a real response, not
+    #      "Done. (Skipped …)" which reads like a non-answer.
+    text = (result.text or "").strip()
+    if not text:
+        if proposed:
+            text = (
+                f"I'd make {len(proposed)} change"
+                f"{'' if len(proposed) == 1 else 's'} — review below."
+            )
+        elif dropped:
+            text = _explain_dropped_tools(dropped)
+        else:
+            text = "Done."
+    elif dropped and not proposed:
+        # The LLM said something AND tried unknown tools — suffix the
+        # explanation so the user knows the requested action wasn't taken.
+        text = text + "\n\n" + _explain_dropped_tools(dropped)
+
     return ChatResponse(message=text, proposed_mutations=proposed)
+
+
+def _explain_dropped_tools(dropped: list[tuple[str, str]]) -> str:
+    """Translate a list of (tool_name, validation_error) into a useful
+    prose response. The LLM hallucinates tool names sometimes — for
+    those, point the user at where they CAN make that change. For
+    schema-violation cases (real tool, bad args), just say what failed
+    and ask them to retry."""
+    # Bucket by intent. The most common hallucination is the LLM trying
+    # to edit the hypothesis (e.g. update_hypothesis_field) — which we
+    # don't expose because mutating the hypothesis invalidates the
+    # downstream protocol/materials/critique cascade. Direct the user
+    # back to /lab where the hypothesis is owned.
+    hypothesis_attempt = any(
+        "hypothesis" in name.lower() for name, _ in dropped
+    )
+    schema_failures = [
+        (name, err) for name, err in dropped
+        if not name.lower().startswith("update_hypothesis")
+        and "unknown tool" not in err
+    ]
+
+    parts: list[str] = []
+    if hypothesis_attempt:
+        parts.append(
+            "I can't edit the hypothesis from here — changing it would "
+            "invalidate the protocol, materials, and validation that "
+            "are already grounded on the current version. Head back to "
+            "the Lab page to revise the hypothesis (subject, "
+            "intervention, measurement, conditions, or expected outcome) "
+            "and the rest of the plan will regenerate against your new "
+            "framing. Want suggestions for how to reword it before you "
+            "go?"
+        )
+    if schema_failures:
+        for name, err in schema_failures:
+            parts.append(f"I tried to call `{name}` but {err}. Try rephrasing.")
+    if not parts:
+        # Last-resort: surface the raw drop list so the user at least
+        # knows something happened.
+        parts.append("I tried to make a change, but the call didn't validate. Try rephrasing.")
+    return "\n\n".join(parts)
 
 
 @dataclass
@@ -306,17 +382,47 @@ def apply_mutations(
 def _build_system_prompt(plan: ExperimentPlan, *, page: str, has_tools: bool) -> str:
     plan_excerpt = _excerpt_plan_for_page(plan, page=page)
     tools_clause = (
-        "When the user asks for a change, propose it via the available tools. "
-        "Do NOT chain edits: emit each change as a separate tool call. "
-        "Always include a one-sentence rationale per call — the user sees it."
+        # Tools-available branch (e.g. /plan).
+        # Two failure modes the previous prompt fell into:
+        #   - Refusing aspirational asks ("make this cooler", "improve it")
+        #     because no single tool maps cleanly onto them.
+        #   - Asking the LLM to "always" use tools when the user is just
+        #     curious ("why was this protocol chosen?"), which forced
+        #     tool calls onto question-shaped messages.
+        # Fix: be explicit that tools are for CONCRETE field-level edits,
+        # and that aspirational / open-ended asks should be answered in
+        # prose with 2-4 specific suggestions the user can ask follow-ups
+        # on. The propose-then-apply loop only triggers when the LLM
+        # actually emits a tool_use block.
+        "Two response modes:\n"
+        "  1. CONCRETE EDITS — when the user asks for a specific change "
+        "('mark step p1-s3 as critical', 'change duration to 15 minutes', "
+        "'add 1 L PBS to materials'), propose it via the available tools. "
+        "One change per tool call; include a one-sentence rationale that "
+        "the user sees.\n"
+        "  2. SUGGESTIONS / DISCUSSION — when the user asks something "
+        "open-ended ('make it cooler', 'improve this', 'why is X done this "
+        "way?', 'what are the risks?'), answer in prose. For improvement "
+        "asks, list 2-4 SPECIFIC, plan-grounded suggestions ('add a "
+        "no-ATP control to step p2-s3', 'increase the wash volume from "
+        "1 mL to 2 mL'). The user can then ask you to apply any of them "
+        "as a follow-up — that triggers the tool call.\n\n"
+        "Never refuse a vague request. If 'make it cooler' is too vague, "
+        "interpret it generously (more rigorous? more publishable? "
+        "tighter controls?) and propose concrete suggestions in prose."
         if has_tools else
-        "You have no tools on this page; answer questions about the plan in prose."
+        "You have no tools on this page; answer questions about the plan "
+        "in prose. Be concrete and grounded in the JSON below — if the "
+        "user asks an aspirational question, give 2-4 specific suggestions "
+        "rather than a generic answer."
     )
     return (
         "You are Praxis, a research assistant embedded in an experiment-plan UI. "
         "Be precise, terse, and grounded in the plan below. Do not invent fields, "
-        "ids, or values. If the user asks for something the plan doesn't support, "
-        "say so plainly.\n\n"
+        "ids, or values that aren't in the JSON. But DO offer suggestions and "
+        "interpretations — refusing to engage with an aspirational ask "
+        "('make this cooler') is the wrong move; reinterpret it generously "
+        "and answer with specifics from the plan.\n\n"
         f"{tools_clause}\n\n"
         f"Current page: {page}\n\n"
         "Current plan (JSON excerpt):\n"
@@ -383,6 +489,51 @@ def _model_to_dict_safe(model: Any) -> Any:
     if hasattr(model, "model_dump"):
         return model.model_dump(mode="json")
     return model
+
+
+def _validate_tool_call(tool: str, args: dict[str, Any]) -> str | None:
+    """Return None if the tool call matches its schema, else a short
+    human-readable reason. Used to drop malformed proposals before they
+    reach the FE, so the user never sees an Apply card that errors.
+
+    Mirrors the constraints baked into the tool schemas in
+    `_TOOL_UPDATE_PROTOCOL_STEP` etc. — if the LLM ignored the `enum`
+    on `field` (Gemini Flash has been seen passing the literal
+    placeholder "value"), we catch it here. We DON'T validate types
+    deeply (the dispatcher does) — just the fields the LLM most often
+    gets wrong."""
+    if not isinstance(args, dict):
+        return "arguments must be an object"
+    if tool == "update_protocol_step":
+        if not args.get("step_id"):
+            return "missing step_id"
+        field = args.get("field")
+        if field not in _PROTOCOL_STEP_FIELDS:
+            return f"field must be one of {list(_PROTOCOL_STEP_FIELDS)} (got {field!r})"
+        if "value" not in args:
+            return "missing value"
+        return None
+    if tool == "add_material":
+        if not args.get("name"):
+            return "missing name"
+        cat = args.get("category")
+        if cat not in _MATERIAL_CATEGORIES:
+            return f"category must be one of {list(_MATERIAL_CATEGORIES)} (got {cat!r})"
+        return None
+    if tool == "update_material":
+        if not args.get("material_id"):
+            return "missing material_id"
+        field = args.get("field")
+        if field not in _MATERIAL_FIELDS:
+            return f"field must be one of {list(_MATERIAL_FIELDS)} (got {field!r})"
+        if "value" not in args:
+            return "missing value"
+        return None
+    if tool == "remove_material":
+        if not args.get("material_id"):
+            return "missing material_id"
+        return None
+    return f"unknown tool {tool!r}"
 
 
 def _summarize_mutation(tool: str, args: dict[str, Any]) -> str:

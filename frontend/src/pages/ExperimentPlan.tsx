@@ -1142,6 +1142,71 @@ const ExperimentPlan = () => {
     [apiMaterialsView],
   );
 
+  // Real budget — sum the Tavily-enriched USD prices per group. Items
+  // priced in non-USD currencies are excluded from the sum (we don't
+  // do currency conversion server-side; safer to under-report than to
+  // implicitly mix EUR/GBP into a USD total). The "priced of total"
+  // count surfaces incompleteness so the user knows the figure is a
+  // floor, not a ceiling.
+  //
+  // Falls back to the hardcoded BUDGET array when:
+  //   - mock-only mode (apiMaterialsView is null) — design demo
+  //   - no items in the live response have parseable USD prices —
+  //     sum would be 0 / misleading
+  //
+  // Limitations (documented in the "methodology" sub-line on the FE):
+  //   - Prices are pack-size from the supplier page (e.g. "$48 / 500 g")
+  //     not scaled to the experiment's actual quantity. A future Stage 4
+  //     should multiply by qty / pack-size.
+  //   - Equipment items show full purchase price, not amortized rental
+  //     or per-experiment cost.
+  const realBudget = useMemo(() => {
+    if (!apiMaterialsView) return null;
+    // Match a USD amount: optional $, digits with optional comma-thousands
+    // and dot-decimals, REQUIRES either a $ symbol or a USD suffix so
+    // "474,00 EUR" doesn't get sucked into the USD total.
+    const usdRe = /(?:\$\s*(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?)|(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?)\s*USD\b)/i;
+    type Row = { label: string; amount: number; priced: number; total: number };
+    const rows: Row[] = [];
+    let grandPriced = 0;
+    let grandTotal = 0;
+    for (const g of apiMaterialsView.groups) {
+      let groupSum = 0;
+      let groupPriced = 0;
+      for (const it of g.items) {
+        grandTotal += 1;
+        const m = it.price ? usdRe.exec(it.price) : null;
+        if (!m) continue;
+        const raw = (m[1] ?? m[2] ?? "").replace(/,/g, "");
+        const n = parseFloat(raw);
+        if (!Number.isFinite(n) || n <= 0) continue;
+        groupSum += n;
+        groupPriced += 1;
+      }
+      grandPriced += groupPriced;
+      if (groupPriced > 0) {
+        rows.push({
+          label: g.group,
+          amount: Math.round(groupSum),
+          priced: groupPriced,
+          total: g.items.length,
+        });
+      }
+    }
+    if (rows.length === 0) return null; // FE falls back to mock budget
+    const total = rows.reduce((a, r) => a + r.amount, 0);
+    return {
+      rows,
+      total,
+      currency: "USD" as const,
+      pricedCount: grandPriced,
+      totalCount: grandTotal,
+      // True when at least one item didn't have a parseable USD price —
+      // the budget is then a lower-bound, not a complete figure.
+      incomplete: grandPriced < grandTotal,
+    };
+  }, [apiMaterialsView]);
+
   // Compute plan confidence from real BE data when available; falls back
   // to null in mock-only mode (the JSX then renders the original hardcoded
   // banner so the design demo still looks complete).
@@ -2044,43 +2109,77 @@ const ExperimentPlan = () => {
             <div className="border-t border-rule px-6 py-6 sm:px-7">
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* Budget */}
+              {/* Budget — real Tavily-enriched material prices when
+                  available; falls back to the mock BUDGET array for
+                  mock-only mode and runs where no USD prices were
+                  found. Header chip flips between "ESTIMATED" /
+                  "PARTIAL" depending on coverage. */}
               <div className="rounded-md border border-rule bg-paper-raised">
                 <div className="flex items-baseline justify-between border-b border-rule px-7 py-4">
                   <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                    Estimated cost
+                    {realBudget?.incomplete
+                      ? "Partial cost (priced items only)"
+                      : "Estimated cost"}
                   </p>
                   <p className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-ink-soft">
                     USD
                   </p>
                 </div>
                 <ul className="divide-y divide-rule">
-                  {BUDGET.map((b) => (
-                    <li
-                      key={b.label}
-                      className="flex items-baseline justify-between gap-4 px-7 py-3.5"
-                    >
-                      <span className="text-[15px] text-ink-soft">{b.label}</span>
-                      <span
-                        className="text-[18px] italic text-ink"
-                        style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                  {realBudget ? (
+                    realBudget.rows.map((b) => (
+                      <li
+                        key={b.label}
+                        className="flex items-baseline justify-between gap-4 px-7 py-3.5"
                       >
-                        ${b.amount.toLocaleString()}
-                      </span>
-                    </li>
-                  ))}
+                        <span className="text-[15px] text-ink-soft">
+                          {b.label}{" "}
+                          <span className="font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground/80">
+                            ({b.priced}/{b.total} priced)
+                          </span>
+                        </span>
+                        <span
+                          className="text-[18px] italic text-ink"
+                          style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                        >
+                          ${b.amount.toLocaleString()}
+                        </span>
+                      </li>
+                    ))
+                  ) : (
+                    BUDGET.map((b) => (
+                      <li
+                        key={b.label}
+                        className="flex items-baseline justify-between gap-4 px-7 py-3.5"
+                      >
+                        <span className="text-[15px] text-ink-soft">{b.label}</span>
+                        <span
+                          className="text-[18px] italic text-ink"
+                          style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                        >
+                          ${b.amount.toLocaleString()}
+                        </span>
+                      </li>
+                    ))
+                  )}
                 </ul>
                 <div className="flex items-baseline justify-between border-t border-rule px-7 py-4">
                   <span className="font-mono-notebook text-[12px] uppercase tracking-[0.22em] text-ink">
-                    Total
+                    {realBudget?.incomplete ? "Subtotal" : "Total"}
                   </span>
                   <span
                     className="text-[26px] italic text-ink"
                     style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
                   >
-                    ${BUDGET_TOTAL.toLocaleString()}
+                    ${(realBudget ? realBudget.total : BUDGET_TOTAL).toLocaleString()}
                   </span>
                 </div>
+                {realBudget && (
+                  <p className="border-t border-rule px-7 py-3 font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    {realBudget.pricedCount}/{realBudget.totalCount} items priced ·
+                    pack-size pricing from supplier pages · USD only
+                  </p>
+                )}
               </div>
 
               {/* Timeline */}

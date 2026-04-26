@@ -82,6 +82,15 @@ Hard rules:
 - Do not invent prices. If the snippet doesn't show a price, leave price null.
 - source_url is REQUIRED whenever any other field is non-null. If you can't tie a value to a specific URL, return all-null.
 
+EXTRA STRICT — generic / non-laboratory items:
+Some materials in the input are NOT physical lab supplies and SHOULD NOT be matched to any product, even if the supplier search returns hits. These include:
+- Stationery and office supplies: pen, pencil, marker, "writing utensil", "writing instrument", paper, notebook, sticker, label.
+- Documents and forms: questionnaire, survey, interview template, consent form, "interview questionnaire", "interview form", protocol document, paper-based questionnaire.
+- Generic placeholders: "note-taking materials", "writing materials", "general supplies", "miscellaneous".
+- Software / files: spreadsheet, document, dataset (these aren't procured from labware suppliers).
+
+For ANY of these, return all-null fields. Do not match a "Sharpie pen" page to "Writing utensil"; do not match a paper-products SKU to "Note-taking materials". A generic name + a too-perfect SKU match is almost always wrong — bias toward null.
+
 Return ONLY a single valid JSON object:
 {
   "supplier": "string | null",
@@ -189,6 +198,44 @@ def _extract_one(
         "price": _clean(parsed.get("price")),
         "source_url": src.strip(),
     }
+
+
+# --------------------------------------------------------------------------
+# Deterministic skip-list (belt-and-suspenders to the LLM rule)
+# --------------------------------------------------------------------------
+# Items we never enrich, regardless of what Tavily returns. The LLM
+# extractor has a "do not match" instruction for these, but Gemini Flash
+# has been seen ignoring that and confidently assigning a SKU like
+# "PEN-40" to "Writing utensil". This regex catches the most obvious
+# generic / non-laboratory items at the gate so a rogue match never
+# reaches the FE.
+#
+# Patterns are word-boundary so "pen" doesn't match "Penicillin",
+# "paper" doesn't match "papermill enzyme", etc. If a real lab item
+# happens to share a substring with these (e.g. a real "writing-pad"
+# product), the user can still see it via the source link on a
+# neighboring item — false negatives are cheaper than fabricated SKUs.
+
+_NON_LAB_PATTERNS = [
+    re.compile(r"\b(?:writing|drawing|note[- ]?taking)\s+(?:utensil|instrument|materials?|tools?|supplies)\b", re.IGNORECASE),
+    re.compile(r"\b(?:pen|pencil|marker|sharpie|highlighter)s?\b", re.IGNORECASE),
+    re.compile(r"\b(?:notebook|paper|sticker|label[- ]?paper)\b", re.IGNORECASE),
+    re.compile(r"\b(?:questionnaire|survey|interview\s+template|interview\s+questionnaire|interview\s+form|consent\s+form)\b", re.IGNORECASE),
+    re.compile(r"\b(?:protocol\s+document|paper[- ]?based\s+questionnaire)\b", re.IGNORECASE),
+    re.compile(r"\b(?:general\s+supplies?|miscellaneous|misc\.?|sundries)\b", re.IGNORECASE),
+    re.compile(r"\b(?:spreadsheet|document|dataset|file)\b", re.IGNORECASE),
+]
+
+
+def _is_non_lab_item(name: str) -> bool:
+    """True when the material name looks like a stationery / paperwork
+    placeholder that shouldn't get a SKU. Used as an early skip in
+    enrich_one_item — saves a Tavily call AND a guaranteed-bad LLM
+    extraction."""
+    s = (name or "").strip()
+    if not s:
+        return False
+    return any(p.search(s) for p in _NON_LAB_PATTERNS)
 
 
 # --------------------------------------------------------------------------
@@ -358,6 +405,12 @@ def enrich_one_item(item: FEReagent) -> FEReagent:
     fails. Never mutates the input."""
     name = (item.name or "").strip()
     if not name or len(name) < 3:
+        return item
+    # Skip stationery / paperwork placeholders before paying for the
+    # Tavily call. The LLM has been seen confidently matching
+    # "Writing utensil" to "Sharpie pen #PEN-40" — better to leave
+    # these as TBD than ship a fabricated SKU.
+    if _is_non_lab_item(name):
         return item
 
     try:

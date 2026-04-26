@@ -117,8 +117,11 @@ type Props = {
 };
 
 export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => {
+  // ctx still drives the panel header label + subtitle; the suggestions
+  // panel was removed because the canned questions seeded "lowest-common-
+  // denominator" prompts that pushed users toward generic answers. Empty
+  // chat-state is the better blank-canvas affordance.
   const ctx = ROUTE_CONTEXT[route] ?? DEFAULT_CONTEXT;
-  const SUGGESTIONS = ctx.suggestions;
 
   const [messages, setMessages] = useState<LocalMessage[]>([]);
   const [input, setInput] = useState("");
@@ -246,11 +249,6 @@ export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => 
     );
   };
 
-  const handleSuggestion = (s: string) => {
-    setInput(s);
-    inputRef.current?.focus();
-  };
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -281,27 +279,6 @@ export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => 
             {ctx.subtitle}
           </SheetDescription>
         </SheetHeader>
-
-        {/* Suggestions — only when conversation is empty */}
-        {messages.length === 0 && (
-          <div className="border-b border-rule px-6 py-5">
-            <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-              Suggested questions
-            </p>
-            <div className="mt-3 flex flex-col gap-2">
-              {SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => handleSuggestion(s)}
-                  className="rounded-sm border border-rule bg-paper-raised px-3.5 py-2.5 text-left text-[14px] text-ink-soft transition-colors hover:border-ink/40 hover:bg-rule-soft/40 hover:text-ink"
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Messages */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-5">
