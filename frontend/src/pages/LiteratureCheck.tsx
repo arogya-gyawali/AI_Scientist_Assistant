@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   postLitReview,
   type Citation,
+  type KeyDifference,
   type LitReviewResponse,
   type StructuredHypothesis,
 } from "@/lib/api";
@@ -43,13 +44,9 @@ type Reference = {
   // Phase E: per-reference structured deltas, drawn straight from the
   // backend (Citation.key_differences). Optional (and defaulted to []
   // by citationToReference) so the mock REFERENCES — which don't have
-  // them — keep working without per-entry boilerplate.
-  key_differences?: {
-    dimension: "subject" | "intervention" | "measurement" | "conditions" | "scope" | "method";
-    their_approach: string;
-    our_approach: string;
-    gap_significance: string;
-  }[];
+  // them — keep working without per-entry boilerplate. Type imported
+  // from @/lib/api so FE/BE stay in lockstep.
+  key_differences?: KeyDifference[];
 };
 
 // Color legend for highlighted concepts in the hypothesis & papers
@@ -742,6 +739,7 @@ const LiteratureCheck = () => {
                   return (
                     <li
                       key={p.id}
+                      id={p.id}
                       className={
                         "group/paper relative transition-colors " +
                         (i > 0 ? "border-t border-rule " : "") +
@@ -969,12 +967,20 @@ const LiteratureCheck = () => {
                           <details className="diff-group group">
                             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-7 py-5 transition-colors hover:bg-rule-soft/30">
                               <div className="min-w-0 flex-1">
-                                <p
-                                  className="truncate font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground"
+                                {/* Title as anchor → jumps to the matching
+                                    <li id={p.id}> in the supporting-papers
+                                    list above. stopPropagation prevents the
+                                    click from also toggling the <details>
+                                    so navigation and disclosure stay
+                                    independent. */}
+                                <a
+                                  href={`#${r.id}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="block truncate font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-primary"
                                   title={r.title}
                                 >
                                   ↑ {r.title}
-                                </p>
+                                </a>
                                 <div className="mt-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                                   <span className="font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
                                     {r.year}
