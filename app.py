@@ -23,6 +23,7 @@ without a backend change.
 from __future__ import annotations
 
 import io
+import logging
 import os
 import sys
 import traceback
@@ -59,10 +60,18 @@ from protocol_pipeline.frontend_view import (  # noqa: E402
     adapt_materials,
     adapt_protocol,
 )
+import chat_pipeline  # noqa: E402
 
 
 app = Flask(__name__)
 CORS(app)  # allow cross-origin from the FE dev server / Vercel
+
+# Module-level logger so non-fatal background work (e.g. materials
+# enrichment best-effort) routes through the standard logging stack
+# rather than `traceback.print_exc()` to bare stderr. Production
+# deployments that configure logging via env / config get the
+# enrichment errors in their structured logs.
+_LOG = logging.getLogger(__name__)
 
 
 @app.get("/health")
@@ -520,11 +529,32 @@ def materials():
     plan.updated_at = completed
     plan_lib.save_plan(plan)
 
+    # Build the FE view first (groups, used_in_steps cross-links),
+    # then enrich with Tavily-sourced supplier/catalog/price. Enrichment
+    # is opt-out via `?enrich=false` for tests + offline dev — the
+    # default is on, since researcher procurement data is the whole
+    # reason this branch exists.
+    fe_view = adapt_materials(materials_out, protocol=plan.protocol)
+
+    enrich_flag = request.args.get("enrich", "true").lower()
+    if enrich_flag not in {"false", "0", "no"}:
+        try:
+            from protocol_pipeline.materials_enrichment import enrich_materials_view
+            fe_view = enrich_materials_view(fe_view)
+        except Exception:
+            # Best-effort. Enrichment failures fall back to the
+            # un-enriched view (FE renders "TBD" / null) rather than
+            # blocking the whole /materials response. Logger.exception()
+            # captures the traceback through the configured logging
+            # pipeline so production deployments see it in their
+            # structured logs (vs. raw stderr from traceback.print_exc).
+            _LOG.exception("Materials enrichment failed; falling back to un-enriched view")
+
     return jsonify({
         "plan_id": plan.id,
         # Pass the protocol so adapt_materials populates `used_in_steps`
         # cross-links from each material to the steps that reference it.
-        "frontend_view": adapt_materials(materials_out, protocol=plan.protocol).model_dump(mode="json"),
+        "frontend_view": fe_view.model_dump(mode="json"),
         "raw": materials_out.model_dump(mode="json"),
     })
 

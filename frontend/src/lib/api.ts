@@ -153,8 +153,8 @@ export type ProtocolResponse = {
 export type FEReagent = {
   name: string;
   purpose: string;
-  supplier?: string;     // "TBD" until Stage 4 backfills
-  catalog?: string;      // "TBD" until Stage 4 backfills
+  supplier?: string;     // populated by Tavily enrichment; "TBD" when not found
+  catalog?: string;      // populated by Tavily enrichment; "TBD" when not found
   qty: string;
   qtyContext?: string;
   note?: { kind: "cold" | "lead"; text: string };
@@ -162,6 +162,13 @@ export type FEReagent = {
   // "p{proc_idx}-s{step_idx}" (matches FEProtocolStep.step_id).
   used_in_steps?: string[];
   material_id?: string;
+  // Tavily enrichment (best-effort). The BE only emits these when it
+  // could tie the data to a specific source URL, so anything present
+  // here is auditable. `source_url` is REQUIRED by the BE schema —
+  // the FE can rely on it being non-null whenever the other enriched
+  // fields are non-null.
+  price?: string;        // e.g. "$45 / 500g"
+  source_url?: string;   // supplier page where supplier/catalog/price came from
 };
 
 export type FEMaterialGroup = {

@@ -26,6 +26,7 @@ import {
   ClipboardList,
   Coins,
   Download,
+  ExternalLink,
   FlaskConical,
   GitBranch,
   PauseCircle,
@@ -1918,14 +1919,20 @@ const ExperimentPlan = () => {
                           )}
                         </div>
 
-                        {/* RIGHT: structured procurement block */}
-                        <dl className="grid w-full shrink-0 grid-cols-3 gap-x-5 gap-y-1 border-t border-rule pt-4 sm:w-[20rem] sm:grid-cols-1 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+                        {/* RIGHT: structured procurement block.
+                            Tavily-enriched supplier / catalog / price
+                            when the BE could find them; falls back to
+                            "—" otherwise. The source-URL chip (when
+                            present) is the audit trail — the
+                            researcher can click through to the
+                            supplier page the data came from. */}
+                        <dl className="grid w-full shrink-0 grid-cols-2 gap-x-5 gap-y-1 border-t border-rule pt-4 sm:w-[22rem] sm:grid-cols-1 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
                           <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
                             <dt className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                               Supplier
                             </dt>
                             <dd className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink">
-                              {it.supplier ?? "—"}
+                              {it.supplier && it.supplier !== "TBD" ? it.supplier : "—"}
                             </dd>
                           </div>
                           <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
@@ -1933,9 +1940,19 @@ const ExperimentPlan = () => {
                               Catalog
                             </dt>
                             <dd className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink-soft">
-                              {it.catalog ?? "—"}
+                              {it.catalog && it.catalog !== "TBD" ? it.catalog : "—"}
                             </dd>
                           </div>
+                          {it.price && (
+                            <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
+                              <dt className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                                Price
+                              </dt>
+                              <dd className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-primary">
+                                {it.price}
+                              </dd>
+                            </div>
+                          )}
                           <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
                             <dt className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                               Quantity
@@ -1944,6 +1961,20 @@ const ExperimentPlan = () => {
                               {it.qty}
                             </dd>
                           </div>
+                          {it.source_url && (
+                            <div className="col-span-full sm:flex sm:items-baseline sm:justify-end">
+                              <a
+                                href={it.source_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-ink"
+                                title="Source the supplier / catalog / price was extracted from"
+                              >
+                                Source
+                                <ExternalLink className="h-3 w-3" strokeWidth={1.75} />
+                              </a>
+                            </div>
+                          )}
                         </dl>
                       </li>
                     ))}
