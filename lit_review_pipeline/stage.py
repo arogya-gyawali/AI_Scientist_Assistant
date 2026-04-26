@@ -125,7 +125,12 @@ def _rewrite_query(h: Hypothesis) -> str:
         expected=s.expected,
         research_question=s.research_question,
     )
-    return llm.complete(QUERY_REWRITE_SYSTEM, user).strip().strip('"').strip("'")
+    raw = llm.complete(QUERY_REWRITE_SYSTEM, user).strip().strip('"').strip("'")
+    # The system prompt forbids prefixes/labels, but LLMs sometimes inject
+    # "Query: ...", "Search for: ...", or "Here's the query: ..." anyway.
+    # Strip those before passing to Europe PMC.
+    raw = _QUERY_FILLER_PREFIX_RE.sub("", raw, count=1).strip().strip('"').strip("'")
+    return raw
 
 
 # ----------------------------------------------------------------------------
@@ -133,9 +138,30 @@ def _rewrite_query(h: Hypothesis) -> str:
 # ----------------------------------------------------------------------------
 
 _HTML_TAG_RE = re.compile(r"<[^>]+>")
-# Lookahead for an uppercase letter avoids false splits on common scientific
-# abbreviations like "et al.", "i.e.", "e.g.", "vs.", "Fig.".
+# Lookahead for an uppercase letter catches the common case but doesn't
+# help when "et al." is followed by an uppercase word. We protect the
+# most frequent scientific abbreviations by temporarily masking their
+# periods before splitting; see _truncate_to_n_sentences below.
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z])")
+_SCIENCE_ABBREVIATIONS = (
+    "et al.", "i.e.", "e.g.", "vs.", "Fig.", "Figs.",
+    "sp.", "spp.", "approx.", "ref.", "Ref.", "No.", "Vol.",
+    "cf.", "Eq.", "ca.",
+)
+_PERIOD_MASK = "\x00"
+
+# Strips common LLM-conversational prefixes from the rewritten query.
+# Longer alternatives come first so Python's left-to-right alternation
+# doesn't accept a shorter prefix match (e.g., "Search" before "Search for").
+_QUERY_FILLER_PREFIX_RE = re.compile(
+    r"^(?:here(?:'s|\s+is)\s+the\s+query"
+    r"|search\s+for"
+    r"|search\s+query"
+    r"|search"
+    r"|query"
+    r")\s*[:\-]?\s*",
+    re.IGNORECASE,
+)
 
 
 def _clean_text(s: str | None) -> str | None:
@@ -152,11 +178,21 @@ def _clean_text(s: str | None) -> str | None:
 def _truncate_to_n_sentences(s: str | None, n: int) -> str:
     """Hard cap on sentence count. The summary prompt asks for 3-4 sentences
     and Gemini Flash usually obeys, but it occasionally overruns. This is a
-    deterministic backstop so the FE doesn't see a 5-sentence wall of text."""
+    deterministic backstop so the FE doesn't see a 5-sentence wall of text.
+
+    Common scientific abbreviations (et al., i.e., e.g., Fig., sp., ...) are
+    protected from the splitter by temporarily masking their internal periods —
+    otherwise the regex would split on "et al." + capitalized next word.
+    """
     if not s:
         return s or ""
-    parts = _SENTENCE_SPLIT_RE.split(s.strip())
-    return " ".join(parts[:n]).strip()
+    # Mask periods inside known abbreviations so the splitter doesn't see them.
+    masked = s.strip()
+    for abbr in _SCIENCE_ABBREVIATIONS:
+        masked = masked.replace(abbr, abbr.replace(".", _PERIOD_MASK))
+    parts = _SENTENCE_SPLIT_RE.split(masked)
+    out = " ".join(parts[:n]).strip()
+    return out.replace(_PERIOD_MASK, ".")
 
 
 # ----------------------------------------------------------------------------

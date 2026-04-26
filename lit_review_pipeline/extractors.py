@@ -99,14 +99,16 @@ def extract_venue(url: Optional[str]) -> Optional[str]:
 
 
 def validate_authors(authors: Optional[list[str]], content: Optional[str]) -> list[str]:
-    """Drop the array when MOST authors' surnames don't appear in the source
+    """Drop the array when most authors' surnames don't appear in the source
     content. Catches LLM-invented author lists without being so strict that
-    a single unmatched name (e.g., truncated snippet, transliteration, the
-    LLM using a slightly different name format) discards a real list.
+    a single unmatched name (truncated snippet, transliteration, slight name
+    format difference) discards a real list.
 
     Threshold: at least half of authors must have their longest-token
-    (surname proxy) appear in the content. The original Haub-hallucination
-    case still fails this — 0/3 matches < 50%.
+    (surname proxy) appear in the content. The Haub-hallucination case
+    still fails (0/3 matches; 0 * 2 >= 3 is False). For a 2-author paper
+    where 1 surname matches, the list is kept (1 * 2 >= 2 is True) —
+    erring on the side of preserving real attribution.
     """
     if not authors:
         return []
@@ -121,8 +123,7 @@ def validate_authors(authors: Optional[list[str]], content: Optional[str]) -> li
         surname = max(tokens, key=len).lower()
         if len(surname) >= 2 and surname in haystack:
             matches += 1
-    # Require strict majority (>50%) so a 50/50 split can't sneak through;
-    # 2/3 valid + 1/3 fake passes, 1/3 valid + 2/3 fake fails.
-    if matches * 2 > len(authors):
+    # "at least half": 2x the matches must reach (>=) the count.
+    if matches * 2 >= len(authors):
         return authors
     return []
