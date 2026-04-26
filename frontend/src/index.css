@@ -200,6 +200,16 @@
   details.plan-section > summary { list-style: none; cursor: pointer; }
   details.plan-section > summary::-webkit-details-marker { display: none; }
   details.plan-section[open] > summary .plan-chevron { transform: rotate(180deg); }
+
+  /* Phase E: collapsible per-reference key-difference groups on /literature.
+     Match the plan-section pattern — hide the default marker, rotate the
+     chevron when open, and swap "View" / "Hide" labels via the [open]
+     attribute so no React state is needed per summary. */
+  details.diff-group > summary { list-style: none; cursor: pointer; }
+  details.diff-group > summary::-webkit-details-marker { display: none; }
+  details.diff-group[open] > summary .diff-chevron { transform: rotate(180deg); }
+  details.diff-group[open] > summary .diff-toggle-show { display: none; }
+  details.diff-group:not([open]) > summary .diff-toggle-hide { display: none; }
 }
 
 /* ==========================================================================

@@ -957,53 +957,90 @@ const LiteratureCheck = () => {
                 <ol className="divide-y divide-rule">
                   {references
                     .filter((r) => (r.key_differences ?? []).length > 0)
-                    .map((r) => (
-                      <li key={r.id} className="px-7 py-6">
-                        <div className="mb-3 flex items-baseline gap-3">
-                          <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                            ↑ {r.title}
-                          </p>
-                          <span className="font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
-                            {r.year}
-                          </span>
-                        </div>
-                        <ul className="space-y-4">
-                          {(r.key_differences ?? []).map((d, i) => (
-                            <li key={i} className="border-l-2 border-rule pl-4">
-                              <p className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-primary">
-                                {d.dimension}
-                              </p>
-                              <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                <div>
-                                  <p className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-sage">
-                                    Your approach
-                                  </p>
-                                  <p className="mt-1 flex gap-2 text-[14px] leading-[1.55] text-ink">
-                                    <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-sage" />
-                                    <span>{d.our_approach}</span>
-                                  </p>
-                                </div>
-                                <div className="sm:border-l sm:border-rule sm:pl-4">
-                                  <p className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                                    Their approach
-                                  </p>
-                                  <p className="mt-1 flex gap-2 text-[14px] leading-[1.55] text-ink-soft">
-                                    <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-rule" />
-                                    <span>{d.their_approach}</span>
-                                  </p>
+                    .map((r) => {
+                      const diffs = r.key_differences ?? [];
+                      // Pre-collected dimensions chip set so the collapsed
+                      // summary previews what's inside without revealing the
+                      // full body — the user can scan which axes differ
+                      // before deciding whether to open the group.
+                      const dims = Array.from(new Set(diffs.map((d) => d.dimension)));
+                      return (
+                        <li key={r.id} className="px-0 py-0">
+                          <details className="diff-group group">
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-7 py-5 transition-colors hover:bg-rule-soft/30">
+                              <div className="min-w-0 flex-1">
+                                <p
+                                  className="truncate font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground"
+                                  title={r.title}
+                                >
+                                  ↑ {r.title}
+                                </p>
+                                <div className="mt-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                  <span className="font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+                                    {r.year}
+                                  </span>
+                                  <span aria-hidden className="text-rule">·</span>
+                                  <span className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-sage">
+                                    {diffs.length} {diffs.length === 1 ? "difference" : "differences"}
+                                  </span>
+                                  {dims.length > 0 && (
+                                    <>
+                                      <span aria-hidden className="text-rule">·</span>
+                                      <span className="font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-ink-soft/80">
+                                        {dims.join(" · ")}
+                                      </span>
+                                    </>
+                                  )}
                                 </div>
                               </div>
-                              <p className="mt-2.5 text-[13px] leading-[1.55] text-ink-soft">
-                                <span className="font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                                  why it matters{" "}
-                                </span>
-                                {d.gap_significance}
-                              </p>
-                            </li>
-                          ))}
-                        </ul>
-                      </li>
-                    ))}
+                              <span className="inline-flex items-center gap-2 font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground transition-colors group-hover:text-ink">
+                                <span className="hidden sm:inline diff-toggle-show">View</span>
+                                <span className="hidden sm:inline diff-toggle-hide">Hide</span>
+                                <ChevronDown
+                                  className="diff-chevron h-4 w-4 transition-transform"
+                                  strokeWidth={1.75}
+                                />
+                              </span>
+                            </summary>
+                            <ul className="space-y-4 border-t border-rule px-7 py-5">
+                              {diffs.map((d, i) => (
+                                <li key={i} className="border-l-2 border-rule pl-4">
+                                  <p className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-primary">
+                                    {d.dimension}
+                                  </p>
+                                  <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                    <div>
+                                      <p className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-sage">
+                                        Your approach
+                                      </p>
+                                      <p className="mt-1 flex gap-2 text-[14px] leading-[1.55] text-ink">
+                                        <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-sage" />
+                                        <span>{d.our_approach}</span>
+                                      </p>
+                                    </div>
+                                    <div className="sm:border-l sm:border-rule sm:pl-4">
+                                      <p className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                                        Their approach
+                                      </p>
+                                      <p className="mt-1 flex gap-2 text-[14px] leading-[1.55] text-ink-soft">
+                                        <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-rule" />
+                                        <span>{d.their_approach}</span>
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <p className="mt-2.5 text-[13px] leading-[1.55] text-ink-soft">
+                                    <span className="font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                                      why it matters{" "}
+                                    </span>
+                                    {d.gap_significance}
+                                  </p>
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        </li>
+                      );
+                    })}
                 </ol>
               ) : (
                 <ol className="divide-y divide-rule">
