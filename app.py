@@ -144,6 +144,12 @@ def lit_review():
 
 
 if __name__ == "__main__":
+    # Flask's app.run() is for local development only. For deployment
+    # (Render / Railway / Fly / Cloud Run / etc.), run with a production
+    # WSGI server, e.g.:
+    #   gunicorn -b 0.0.0.0:5000 app:app
+    # FLASK_DEBUG defaults to "0" so dropping this onto a server doesn't
+    # accidentally enable the debugger and reloader.
     port = int(os.environ.get("PORT", 5000))
-    debug = os.environ.get("FLASK_DEBUG", "1") == "1"
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
     app.run(host="0.0.0.0", port=port, debug=debug)

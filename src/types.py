@@ -137,13 +137,18 @@ class ExperimentPlan(BaseModel):
     hypothesis: Hypothesis
 
     lit_review: Optional[LitReviewSession] = None
-    protocol: Optional[Any] = None        # ProtocolGenerationOutput (TBD)
-    materials: Optional[Any] = None       # MaterialsOutput (TBD)
-    budget: Optional[Any] = None          # BudgetOutput (TBD)
-    timeline: Optional[Any] = None        # TimelineOutput (TBD)
-    validation: Optional[Any] = None      # ValidationOutput (TBD)
-    critique: Optional[Any] = None        # DesignCritique (TBD)
-    summary: Optional[Any] = None         # SummaryOutput (TBD)
+    # Stages 2-8 will get their own concrete Pydantic models as their
+    # runners are implemented. Until then, dict[str, Any] keeps these
+    # fields JSON-shaped while still letting downstream code treat
+    # them like ordinary mappings — preferable to bare Any, which
+    # bypasses Pydantic validation entirely.
+    protocol: Optional[dict[str, Any]] = None        # -> ProtocolGenerationOutput
+    materials: Optional[dict[str, Any]] = None       # -> MaterialsOutput
+    budget: Optional[dict[str, Any]] = None          # -> BudgetOutput
+    timeline: Optional[dict[str, Any]] = None        # -> TimelineOutput
+    validation: Optional[dict[str, Any]] = None      # -> ValidationOutput
+    critique: Optional[dict[str, Any]] = None        # -> DesignCritique
+    summary: Optional[dict[str, Any]] = None         # -> SummaryOutput
 
     status: dict[StageName, StageStatus]
     created_at: str
