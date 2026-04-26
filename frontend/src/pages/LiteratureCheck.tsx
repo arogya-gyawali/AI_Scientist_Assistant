@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
+  postLitReview,
+  type Citation,
+  type LitReviewResponse,
+  type StructuredHypothesis,
+} from "@/lib/api";
+import {
+  AlertTriangle,
   ArrowRight,
   Check,
   ChevronDown,
@@ -217,8 +224,50 @@ const LOADING_STAGES = [
 
 const SOURCES = ["PubMed", "Semantic Scholar", "arXiv"];
 
+// Map backend NoveltySignal -> frontend NoveltyStatus enum (different naming).
+function mapSignal(s: LitReviewResponse["signal"]): NoveltyStatus {
+  if (s === "novel") return "not_found";
+  if (s === "exact_match_found") return "exact_match";
+  return "similar_work_exists";
+}
+
+// Backend Citation -> frontend Reference. Authors get joined into a string
+// (FE renders them as a single line). matched_on tones cycle through the
+// three buckets — the backend doesn't classify chips by tone; an upgrade
+// is in scope for a follow-up where the LLM emits {label, tone} directly.
+function citationToReference(c: Citation, idx: number): Reference {
+  const tones: Array<"subject" | "variable" | "condition"> = [
+    "subject", "variable", "condition",
+  ];
+  return {
+    id: `p${idx + 1}`,
+    title: c.title || "(untitled)",
+    authors: (c.authors && c.authors.length > 0)
+      ? c.authors.join(", ")
+      : "Authors not available",
+    venue: c.venue || "",
+    year: c.year ?? 0,
+    description: c.description || c.snippet || "",
+    url: c.url || (c.doi ? `https://doi.org/${c.doi}` : "#"),
+    relevance_score: c.relevance_score ?? 0,
+    matched_on: (c.matched_on || []).map((label, i) => ({
+      label,
+      tone: tones[i % tones.length],
+    })),
+    importance: c.importance || "",
+  };
+}
+
 const LiteratureCheck = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  // The hypothesis is passed via router state from HypothesisInput. If it's
+  // missing (user navigated here directly), the page falls back to mocks
+  // so the design-mockup mode still renders.
+  const navState = (location.state as
+    { structured?: StructuredHypothesis; domain?: string } | null) ?? null;
+  const inputHypothesis = navState?.structured;
+
   const [stageIdx, setStageIdx] = useState(0);
   const [done, setDone] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -226,17 +275,56 @@ const LiteratureCheck = () => {
     keyof typeof CONCEPT | null
   >(null);
 
-  useEffect(() => {
-    const t1 = window.setTimeout(() => setStageIdx(1), 1100);
-    const t2 = window.setTimeout(() => setDone(true), 2400);
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-    };
-  }, []);
+  // Real API state. `litResult` null = either still loading or the page is
+  // running in mock-only mode (no hypothesis in router state).
+  const [litResult, setLitResult] = useState<LitReviewResponse | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  const status = NOVELTY_COPY[NOVELTY_SIGNAL];
+  useEffect(() => {
+    if (!inputHypothesis) {
+      // Mock-only path: pages design used a 2.4s scripted reveal; preserve it.
+      const t1 = window.setTimeout(() => setStageIdx(1), 1100);
+      const t2 = window.setTimeout(() => setDone(true), 2400);
+      return () => {
+        window.clearTimeout(t1);
+        window.clearTimeout(t2);
+      };
+    }
+    // Live path: kick off /lit-review and let the second loading-stage
+    // text appear after a short delay. The "done" flag flips when the
+    // response (or an error) arrives.
+    const ac = new AbortController();
+    const stageTimer = window.setTimeout(() => setStageIdx(1), 2500);
+    postLitReview({ structured: inputHypothesis }, ac.signal)
+      .then((res) => {
+        setLitResult(res);
+        setDone(true);
+      })
+      .catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setApiError(
+          err instanceof Error ? err.message : "Lit review request failed.",
+        );
+        setDone(true);
+      });
+    return () => {
+      ac.abort();
+      window.clearTimeout(stageTimer);
+    };
+  }, [inputHypothesis]);
+
+  // Derived display values: prefer real API data; fall back to mock
+  // constants so design-mockup mode (no hypothesis) still renders.
+  const signalKey = litResult ? mapSignal(litResult.signal) : NOVELTY_SIGNAL;
+  const status = NOVELTY_COPY[signalKey];
   const confidence = CONFIDENCE_COPY[NOVELTY_CONFIDENCE];
+  const novelDescription = litResult?.description ?? NOVELTY_DESCRIPTION;
+  const recommendationSummary = litResult?.summary ?? RECOMMENDATION_SUMMARY;
+  const references: Reference[] = useMemo(() => {
+    if (!litResult) return REFERENCES;
+    return litResult.references.map(citationToReference);
+  }, [litResult]);
+
   const progressPct = done ? 100 : stageIdx === 0 ? 35 : 75;
 
   return (
@@ -296,6 +384,27 @@ const LiteratureCheck = () => {
       </header>
 
       <main className="relative mx-auto max-w-5xl px-6 pb-24 pt-12 sm:px-10 sm:pt-16">
+        {apiError && (
+          <section
+            aria-label="Literature check error"
+            role="alert"
+            className="mb-8 relative overflow-hidden rounded-md border border-destructive/30 bg-paper-raised"
+          >
+            <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-destructive" />
+            <div className="flex items-start gap-4 px-7 py-5">
+              <AlertTriangle aria-hidden className="mt-0.5 h-4 w-4 flex-shrink-0 text-destructive" />
+              <div className="space-y-1.5">
+                <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-destructive">
+                  Literature lookup failed — showing demo data
+                </p>
+                <p className="text-[14px] leading-[1.55] text-ink-soft">
+                  {apiError}
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Step indicator + hypothesis recap */}
         <section aria-labelledby="page-title" className="mb-12">
           <p className="font-mono-notebook text-[13px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -485,7 +594,7 @@ const LiteratureCheck = () => {
 
               <div className="grid grid-cols-1 gap-6 px-7 py-6 sm:grid-cols-[1fr_auto] sm:items-end">
                 <p className="max-w-2xl text-[16px] leading-[1.7] text-ink-soft">
-                  {NOVELTY_DESCRIPTION}
+                  {novelDescription}
                 </p>
                 <div className="flex flex-col items-start gap-2 sm:items-end">
                   <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -555,7 +664,7 @@ const LiteratureCheck = () => {
                     letterSpacing: "0.005em",
                   }}
                 >
-                  {RECOMMENDATION_SUMMARY}
+                  {recommendationSummary}
                 </p>
               </div>
             </section>
@@ -570,12 +679,12 @@ const LiteratureCheck = () => {
                   Supporting papers
                 </h2>
                 <p className="font-mono-notebook text-[12px] uppercase tracking-[0.2em] text-muted-foreground">
-                  {REFERENCES.length} found · ranked by relevance
+                  {references.length} found · ranked by relevance
                 </p>
               </div>
 
               <ol className="overflow-hidden rounded-md border border-rule bg-paper-raised">
-                {REFERENCES.map((p, i) => {
+                {references.map((p, i) => {
                   const isOpen = expandedId === p.id;
                   const pct = Math.round(p.relevance_score * 100);
                   // Bar color tier by relevance score
@@ -888,7 +997,12 @@ const LiteratureCheck = () => {
                   </p>
                 </div>
                 <Button
-                  onClick={() => navigate("/plan")}
+                  onClick={() => navigate("/plan", {
+                    state: {
+                      plan_id: litResult?.plan_id,
+                      structured: inputHypothesis,
+                    },
+                  })}
                   className="group h-14 gap-3 rounded-sm bg-ink px-7 text-[15px] font-medium text-paper shadow-[0_8px_24px_-12px_hsl(var(--ink)/0.6)] transition-all hover:bg-ink/90 hover:shadow-[0_10px_28px_-10px_hsl(var(--ink)/0.7)]"
                 >
                   <span className="font-mono-notebook text-[10px] uppercase tracking-[0.24em] opacity-70">

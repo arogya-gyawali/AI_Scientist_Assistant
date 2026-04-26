@@ -1,6 +1,14 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
+  postMaterials,
+  postProtocol,
+  type FEMaterialGroup,
+  type FEProtocolStep,
+  type StructuredHypothesis,
+} from "@/lib/api";
+import {
+  AlertTriangle,
   ArrowRight,
   Beaker,
   Check,
@@ -295,30 +303,99 @@ const STAGES = [
 
 const ExperimentPlan = () => {
   const navigate = useNavigate();
-  // Section reveal index: 0 nothing, 1 protocol, 2 + materials, 3 + budget+timeline, 4 + validation+feasibility
+  const location = useLocation();
+  // Either a plan_id (chained from /literature) OR a structured hypothesis
+  // (skipped lit-review). Either is sufficient input for /protocol; if both
+  // are missing the page falls back to mocks so the design-only demo runs.
+  const navState = (location.state as
+    {
+      plan_id?: string;
+      structured?: StructuredHypothesis;
+      domain?: string;
+    } | null) ?? null;
+  const incomingPlanId = navState?.plan_id;
+  const incomingStructured = navState?.structured;
+
+  // Section reveal index: 0 nothing, 1 protocol, 2 + materials, 3 + budget+timeline, 4 + validation+feasibility.
+  // Real-API path advances reveal as each backend call resolves; mock path
+  // ticks through it on a scripted timer (preserved below for the design demo).
   const [stageIdx, setStageIdx] = useState(0);
   const [reveal, setReveal] = useState(0);
   const [protocolView, setProtocolView] = useState<"text" | "flow">("text");
 
+  // Real protocol + materials data from the backend. null = still loading
+  // (or mock-only mode, in which case `useMockData` below is true).
+  const [apiProtocolSteps, setApiProtocolSteps] = useState<FEProtocolStep[] | null>(null);
+  const [apiMaterialGroups, setApiMaterialGroups] = useState<FEMaterialGroup[] | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  const useMockData = !incomingPlanId && !incomingStructured;
+
   useEffect(() => {
-    const t1 = window.setTimeout(() => {
-      setStageIdx(1);
-      setReveal(1);
-    }, 900);
-    const t2 = window.setTimeout(() => {
-      setStageIdx(2);
-      setReveal(2);
-    }, 1900);
-    const t3 = window.setTimeout(() => {
-      setReveal(3);
-    }, 2700);
-    const t4 = window.setTimeout(() => {
-      setReveal(4);
-    }, 3400);
-    return () => {
-      [t1, t2, t3, t4].forEach((t) => window.clearTimeout(t));
-    };
-  }, []);
+    if (useMockData) {
+      // Design-mockup path: scripted reveal so the page demos without a backend.
+      const t1 = window.setTimeout(() => { setStageIdx(1); setReveal(1); }, 900);
+      const t2 = window.setTimeout(() => { setStageIdx(2); setReveal(2); }, 1900);
+      const t3 = window.setTimeout(() => { setReveal(3); }, 2700);
+      const t4 = window.setTimeout(() => { setReveal(4); }, 3400);
+      return () => { [t1, t2, t3, t4].forEach((t) => window.clearTimeout(t)); };
+    }
+
+    // Live path: chain /protocol → /materials. The status checklist already
+    // shows two stages (Protocol, Materials), so we map them onto stageIdx
+    // and bump `reveal` as each section's data arrives.
+    const ac = new AbortController();
+    const protoBody = incomingPlanId
+      ? { plan_id: incomingPlanId }
+      : { structured: incomingStructured! };
+    const matsBody = (planId: string) => ({ plan_id: planId });
+
+    setStageIdx(0);
+    setReveal(0);
+
+    (async () => {
+      try {
+        const proto = await postProtocol(protoBody, ac.signal);
+        setApiProtocolSteps(proto.frontend_view.steps);
+        setStageIdx(1);
+        setReveal(1);
+
+        const mats = await postMaterials(matsBody(proto.plan_id), ac.signal);
+        setApiMaterialGroups(mats.frontend_view.groups);
+        setStageIdx(2);
+        setReveal(2);
+        // The remaining reveal stages (3, 4) gate budget/timeline/validation,
+        // which are still hardcoded in this mockup. Reveal them on a short
+        // delay so they stagger into view as the user scrolls.
+        const t3 = window.setTimeout(() => setReveal(3), 600);
+        const t4 = window.setTimeout(() => setReveal(4), 1200);
+        // Stash the timeouts on the abort controller's signal handler.
+        ac.signal.addEventListener("abort", () => {
+          window.clearTimeout(t3);
+          window.clearTimeout(t4);
+        });
+      } catch (err: unknown) {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setApiError(err instanceof Error ? err.message : "Plan generation failed.");
+        // Reveal everything anyway so the user sees the (mock) layout rather
+        // than a blank page; the error message will be surfaced near the top.
+        setReveal(4);
+      }
+    })();
+
+    return () => ac.abort();
+  }, [incomingPlanId, incomingStructured, useMockData]);
+
+  // Display data: prefer backend-driven; fall back to mock constants for
+  // mock-only mode or if a section's API call hasn't resolved yet.
+  const protocolSteps = useMemo<FEProtocolStep[]>(
+    () => apiProtocolSteps ?? PROTOCOL_STEPS,
+    [apiProtocolSteps],
+  );
+  const materialGroups = useMemo<FEMaterialGroup[]>(
+    () => apiMaterialGroups ?? MATERIALS,
+    [apiMaterialGroups],
+  );
 
   const generating = reveal < 4;
 
@@ -378,6 +455,27 @@ const ExperimentPlan = () => {
       </header>
 
       <main className="relative mx-auto max-w-5xl px-6 pb-24 pt-12 sm:px-10 sm:pt-16">
+        {apiError && (
+          <section
+            aria-label="Generation error"
+            role="alert"
+            className="mb-8 relative overflow-hidden rounded-md border border-destructive/30 bg-paper-raised"
+          >
+            <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-destructive" />
+            <div className="flex items-start gap-4 px-7 py-5">
+              <AlertTriangle aria-hidden className="mt-0.5 h-4 w-4 flex-shrink-0 text-destructive" />
+              <div className="space-y-1.5">
+                <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-destructive">
+                  Live generation failed — showing demo data
+                </p>
+                <p className="text-[14px] leading-[1.55] text-ink-soft">
+                  {apiError}
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Step indicator + recap */}
         <section aria-labelledby="page-title" className="mb-12">
           <p className="font-mono-notebook text-[13px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -575,7 +673,7 @@ const ExperimentPlan = () => {
                   </span>
                   <div>
                     <p className="font-mono-notebook text-[12px] uppercase tracking-[0.22em] text-muted-foreground">
-                      Primary · {PROTOCOL_STEPS.length} steps
+                      Primary · {protocolSteps.length} steps
                     </p>
                     <h2
                       id="protocol-title"
@@ -631,7 +729,7 @@ const ExperimentPlan = () => {
               {/* TEXT VIEW (default, unchanged) */}
               {protocolView === "text" && (
                 <ol className="divide-y divide-rule">
-                  {PROTOCOL_STEPS.map((s, i) => (
+                  {protocolSteps.map((s, i) => (
                     <li
                       key={i}
                       className="group/step grid grid-cols-[auto_1fr] gap-5 px-7 py-6 transition-colors hover:bg-rule-soft/30 sm:px-9 sm:py-7"
@@ -640,7 +738,7 @@ const ExperimentPlan = () => {
                         <span className="font-mono-notebook text-[12px] uppercase tracking-[0.22em] text-muted-foreground">
                           {String(i + 1).padStart(2, "0")}
                         </span>
-                        {i < PROTOCOL_STEPS.length - 1 && (
+                        {i < protocolSteps.length - 1 && (
                           <span
                             aria-hidden
                             className="mt-3 h-full w-px flex-1 bg-rule"
@@ -671,7 +769,7 @@ const ExperimentPlan = () => {
                 <div className="px-7 py-8 sm:px-9 sm:py-10 animate-in fade-in duration-300">
                   <div className="mx-auto flex max-w-2xl flex-col">
                     {PHASE_ORDER.map((phase, phaseIdx) => {
-                      const stepsInPhase = PROTOCOL_STEPS
+                      const stepsInPhase = protocolSteps
                         .map((s, idx) => ({ ...s, idx }))
                         .filter((s) => s.phase === phase);
                       if (stepsInPhase.length === 0) return null;
@@ -846,7 +944,7 @@ const ExperimentPlan = () => {
                       "Quantity context",
                       "Note",
                     ],
-                    ...MATERIALS.flatMap((g) =>
+                    ...materialGroups.flatMap((g) =>
                       g.items.map((it) => [
                         g.group,
                         it.name,
@@ -891,7 +989,7 @@ const ExperimentPlan = () => {
             <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-sm border border-rule bg-paper-raised px-5 py-3 font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-ink-soft">
               <span className="inline-flex items-center gap-1.5">
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-ink" />
-                {MATERIALS.reduce((a, g) => a + g.items.length, 0)} items
+                {materialGroups.reduce((a, g) => a + g.items.length, 0)} items
               </span>
               <span aria-hidden className="text-rule">·</span>
               <span>
@@ -908,7 +1006,7 @@ const ExperimentPlan = () => {
             </div>
 
             <div className="overflow-hidden rounded-md border border-rule bg-paper-raised">
-              {MATERIALS.map((group, gi) => (
+              {materialGroups.map((group, gi) => (
                 <div
                   key={group.group}
                   className={gi > 0 ? "border-t border-rule" : ""}

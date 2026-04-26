@@ -455,7 +455,26 @@ const HypothesisInput = () => {
               </p>
             </div>
             <Button
-              onClick={() => navigate("/literature")}
+              onClick={() => {
+                // Pass the structured hypothesis forward via router state
+                // so /literature can call POST /lit-review with it.
+                // The backend StructuredHypothesis includes a research_question
+                // field this form doesn't collect — derive a sensible default
+                // ("Does X affect Y in Z under conditions?") rather than
+                // adding another input.
+                const research_question =
+                  `Does ${structured.independent || "the intervention"} affect ` +
+                  `${structured.dependent || "the outcome"} in ` +
+                  `${structured.subject || "the system"}` +
+                  (structured.conditions ? ` under ${structured.conditions}` : "") +
+                  "?";
+                navigate("/literature", {
+                  state: {
+                    structured: { ...structured, research_question },
+                    domain: undefined,
+                  },
+                });
+              }}
               disabled={!hasStructure}
               className="group h-14 gap-3 rounded-sm bg-ink px-7 text-[15px] font-medium text-paper shadow-[0_8px_24px_-12px_hsl(var(--ink)/0.6)] transition-all hover:bg-ink/90 hover:shadow-[0_10px_28px_-10px_hsl(var(--ink)/0.7)] disabled:bg-ink/20 disabled:text-paper/70 disabled:shadow-none"
             >
