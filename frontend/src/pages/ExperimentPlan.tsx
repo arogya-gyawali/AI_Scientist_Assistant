@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
+  CHAT_APPLIED_EVENT,
   postCritique,
   postMaterials,
   postProtocol,
   postTimeline,
   postValidation,
+  setActivePlanId,
+  type ChatAppliedEventDetail,
   type CritiqueOutput,
   type FEMaterialGroup,
   type FEMaterialsView,
@@ -26,7 +29,6 @@ import {
   ClipboardList,
   Coins,
   Download,
-  ExternalLink,
   FlaskConical,
   GitBranch,
   PauseCircle,
@@ -937,6 +939,36 @@ const ExperimentPlan = () => {
 
   const useMockData = !incomingPlanId && !incomingStructured;
 
+  // Register the active plan_id with the AI Assistant — the launcher is
+  // mounted globally and otherwise can't see this page's plan_id. Updates
+  // when /protocol resolves a fresh plan_id, or when one comes in via
+  // router state from /literature. Cleared on unmount so the launcher
+  // doesn't fire chat against a stale plan after the user navigates away.
+  useEffect(() => {
+    const id = apiPlanId || incomingPlanId || null;
+    setActivePlanId(id);
+    return () => setActivePlanId(null);
+  }, [apiPlanId, incomingPlanId]);
+
+  // Listen for the AI Assistant applying mutations — refresh the affected
+  // sections in place from the BE-rendered frontend_views the apply endpoint
+  // returns. Cheaper and tighter than re-running the whole /protocol -> ...
+  // chain after every chatbot edit.
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ev = e as CustomEvent<ChatAppliedEventDetail>;
+      if (!ev.detail) return;
+      if (ev.detail.frontend_views.protocol) {
+        setApiProtocolView(ev.detail.frontend_views.protocol);
+      }
+      if (ev.detail.frontend_views.materials) {
+        setApiMaterialsView(ev.detail.frontend_views.materials);
+      }
+    };
+    window.addEventListener(CHAT_APPLIED_EVENT, handler);
+    return () => window.removeEventListener(CHAT_APPLIED_EVENT, handler);
+  }, []);
+
   useEffect(() => {
     if (useMockData) {
       // Design-mockup path: scripted reveal so the page demos without a backend.
@@ -1109,6 +1141,71 @@ const ExperimentPlan = () => {
     () => apiMaterialsView?.groups ?? MATERIALS,
     [apiMaterialsView],
   );
+
+  // Real budget — sum the Tavily-enriched USD prices per group. Items
+  // priced in non-USD currencies are excluded from the sum (we don't
+  // do currency conversion server-side; safer to under-report than to
+  // implicitly mix EUR/GBP into a USD total). The "priced of total"
+  // count surfaces incompleteness so the user knows the figure is a
+  // floor, not a ceiling.
+  //
+  // Falls back to the hardcoded BUDGET array when:
+  //   - mock-only mode (apiMaterialsView is null) — design demo
+  //   - no items in the live response have parseable USD prices —
+  //     sum would be 0 / misleading
+  //
+  // Limitations (documented in the "methodology" sub-line on the FE):
+  //   - Prices are pack-size from the supplier page (e.g. "$48 / 500 g")
+  //     not scaled to the experiment's actual quantity. A future Stage 4
+  //     should multiply by qty / pack-size.
+  //   - Equipment items show full purchase price, not amortized rental
+  //     or per-experiment cost.
+  const realBudget = useMemo(() => {
+    if (!apiMaterialsView) return null;
+    // Match a USD amount: optional $, digits with optional comma-thousands
+    // and dot-decimals, REQUIRES either a $ symbol or a USD suffix so
+    // "474,00 EUR" doesn't get sucked into the USD total.
+    const usdRe = /(?:\$\s*(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?)|(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?)\s*USD\b)/i;
+    type Row = { label: string; amount: number; priced: number; total: number };
+    const rows: Row[] = [];
+    let grandPriced = 0;
+    let grandTotal = 0;
+    for (const g of apiMaterialsView.groups) {
+      let groupSum = 0;
+      let groupPriced = 0;
+      for (const it of g.items) {
+        grandTotal += 1;
+        const m = it.price ? usdRe.exec(it.price) : null;
+        if (!m) continue;
+        const raw = (m[1] ?? m[2] ?? "").replace(/,/g, "");
+        const n = parseFloat(raw);
+        if (!Number.isFinite(n) || n <= 0) continue;
+        groupSum += n;
+        groupPriced += 1;
+      }
+      grandPriced += groupPriced;
+      if (groupPriced > 0) {
+        rows.push({
+          label: g.group,
+          amount: Math.round(groupSum),
+          priced: groupPriced,
+          total: g.items.length,
+        });
+      }
+    }
+    if (rows.length === 0) return null; // FE falls back to mock budget
+    const total = rows.reduce((a, r) => a + r.amount, 0);
+    return {
+      rows,
+      total,
+      currency: "USD" as const,
+      pricedCount: grandPriced,
+      totalCount: grandTotal,
+      // True when at least one item didn't have a parseable USD price —
+      // the budget is then a lower-bound, not a complete figure.
+      incomplete: grandPriced < grandTotal,
+    };
+  }, [apiMaterialsView]);
 
   // Compute plan confidence from real BE data when available; falls back
   // to null in mock-only mode (the JSX then renders the original hardcoded
@@ -1655,7 +1752,6 @@ const ExperimentPlan = () => {
                       : "Download PDF"}
                   </button>
                 )}
-
                 </div>
               </header>
 
@@ -1745,6 +1841,8 @@ const ExperimentPlan = () => {
                       "Catalog",
                       "Quantity",
                       "Quantity context",
+                      "Price",
+                      "Source URL",
                       "Note",
                     ],
                     ...materialGroups.flatMap((g) =>
@@ -1756,6 +1854,8 @@ const ExperimentPlan = () => {
                         it.catalog ?? "",
                         it.qty,
                         it.qtyContext ?? "",
+                        it.price ?? "",
+                        it.source_url ?? "",
                         it.note?.text ?? "",
                       ])
                     ),
@@ -1919,20 +2019,18 @@ const ExperimentPlan = () => {
                           )}
                         </div>
 
-                        {/* RIGHT: structured procurement block.
-                            Tavily-enriched supplier / catalog / price
-                            when the BE could find them; falls back to
-                            "—" otherwise. The source-URL chip (when
-                            present) is the audit trail — the
-                            researcher can click through to the
-                            supplier page the data came from. */}
-                        <dl className="grid w-full shrink-0 grid-cols-2 gap-x-5 gap-y-1 border-t border-rule pt-4 sm:w-[22rem] sm:grid-cols-1 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+                        {/* RIGHT: structured procurement block. 4 fields:
+                            Supplier · Catalog · Quantity · Price. Mobile: 2x2
+                            grid (4 horizontal would crowd). Desktop: stacked.
+                            Price links to source_url when present so the
+                            researcher can verify the quote. */}
+                        <dl className="grid w-full shrink-0 grid-cols-2 gap-x-5 gap-y-2 border-t border-rule pt-4 sm:w-[20rem] sm:grid-cols-1 sm:gap-y-1 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
                           <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
                             <dt className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                               Supplier
                             </dt>
                             <dd className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink">
-                              {it.supplier && it.supplier !== "TBD" ? it.supplier : "—"}
+                              {it.supplier ?? "—"}
                             </dd>
                           </div>
                           <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
@@ -1940,19 +2038,9 @@ const ExperimentPlan = () => {
                               Catalog
                             </dt>
                             <dd className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink-soft">
-                              {it.catalog && it.catalog !== "TBD" ? it.catalog : "—"}
+                              {it.catalog ?? "—"}
                             </dd>
                           </div>
-                          {it.price && (
-                            <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
-                              <dt className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                                Price
-                              </dt>
-                              <dd className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-primary">
-                                {it.price}
-                              </dd>
-                            </div>
-                          )}
                           <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
                             <dt className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                               Quantity
@@ -1961,20 +2049,30 @@ const ExperimentPlan = () => {
                               {it.qty}
                             </dd>
                           </div>
-                          {it.source_url && (
-                            <div className="col-span-full sm:flex sm:items-baseline sm:justify-end">
-                              <a
-                                href={it.source_url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-1 font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-ink"
-                                title="Source the supplier / catalog / price was extracted from"
-                              >
-                                Source
-                                <ExternalLink className="h-3 w-3" strokeWidth={1.75} />
-                              </a>
-                            </div>
-                          )}
+                          <div className="sm:flex sm:items-baseline sm:justify-between sm:gap-3">
+                            <dt className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                              Price
+                            </dt>
+                            <dd className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink">
+                              {it.price ? (
+                                it.source_url ? (
+                                  <a
+                                    href={it.source_url}
+                                    target="_blank"
+                                    rel="noreferrer noopener"
+                                    className="text-ink underline-offset-2 transition-colors hover:text-primary hover:underline"
+                                    title={`Source: ${it.source_url}`}
+                                  >
+                                    {it.price}
+                                  </a>
+                                ) : (
+                                  it.price
+                                )
+                              ) : (
+                                <span className="text-ink-soft">—</span>
+                              )}
+                            </dd>
+                          </div>
                         </dl>
                       </li>
                     ))}
@@ -2011,43 +2109,77 @@ const ExperimentPlan = () => {
             <div className="border-t border-rule px-6 py-6 sm:px-7">
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* Budget */}
+              {/* Budget — real Tavily-enriched material prices when
+                  available; falls back to the mock BUDGET array for
+                  mock-only mode and runs where no USD prices were
+                  found. Header chip flips between "ESTIMATED" /
+                  "PARTIAL" depending on coverage. */}
               <div className="rounded-md border border-rule bg-paper-raised">
                 <div className="flex items-baseline justify-between border-b border-rule px-7 py-4">
                   <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                    Estimated cost
+                    {realBudget?.incomplete
+                      ? "Partial cost (priced items only)"
+                      : "Estimated cost"}
                   </p>
                   <p className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-ink-soft">
                     USD
                   </p>
                 </div>
                 <ul className="divide-y divide-rule">
-                  {BUDGET.map((b) => (
-                    <li
-                      key={b.label}
-                      className="flex items-baseline justify-between gap-4 px-7 py-3.5"
-                    >
-                      <span className="text-[15px] text-ink-soft">{b.label}</span>
-                      <span
-                        className="text-[18px] italic text-ink"
-                        style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                  {realBudget ? (
+                    realBudget.rows.map((b) => (
+                      <li
+                        key={b.label}
+                        className="flex items-baseline justify-between gap-4 px-7 py-3.5"
                       >
-                        ${b.amount.toLocaleString()}
-                      </span>
-                    </li>
-                  ))}
+                        <span className="text-[15px] text-ink-soft">
+                          {b.label}{" "}
+                          <span className="font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground/80">
+                            ({b.priced}/{b.total} priced)
+                          </span>
+                        </span>
+                        <span
+                          className="text-[18px] italic text-ink"
+                          style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                        >
+                          ${b.amount.toLocaleString()}
+                        </span>
+                      </li>
+                    ))
+                  ) : (
+                    BUDGET.map((b) => (
+                      <li
+                        key={b.label}
+                        className="flex items-baseline justify-between gap-4 px-7 py-3.5"
+                      >
+                        <span className="text-[15px] text-ink-soft">{b.label}</span>
+                        <span
+                          className="text-[18px] italic text-ink"
+                          style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                        >
+                          ${b.amount.toLocaleString()}
+                        </span>
+                      </li>
+                    ))
+                  )}
                 </ul>
                 <div className="flex items-baseline justify-between border-t border-rule px-7 py-4">
                   <span className="font-mono-notebook text-[12px] uppercase tracking-[0.22em] text-ink">
-                    Total
+                    {realBudget?.incomplete ? "Subtotal" : "Total"}
                   </span>
                   <span
                     className="text-[26px] italic text-ink"
                     style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
                   >
-                    ${BUDGET_TOTAL.toLocaleString()}
+                    ${(realBudget ? realBudget.total : BUDGET_TOTAL).toLocaleString()}
                   </span>
                 </div>
+                {realBudget && (
+                  <p className="border-t border-rule px-7 py-3 font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                    {realBudget.pricedCount}/{realBudget.totalCount} items priced ·
+                    pack-size pricing from supplier pages · USD only
+                  </p>
+                )}
               </div>
 
               {/* Timeline */}

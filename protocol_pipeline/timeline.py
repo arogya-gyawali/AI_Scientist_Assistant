@@ -51,9 +51,18 @@ def compute_timeline(protocol: ProtocolGenerationOutput) -> TimelineOutput:
     # numbering (matches ProtocolGenerationOutput.steps[].n).
     flat_step_counter = 1
 
+    # Lazy import — timeline.py is itself imported lazily by stage.py,
+    # but _iso_duration_to_seconds lives in stage.py and we use it here
+    # to distinguish "has a duration string" from "parses as ISO 8601".
+    # The two counts diverge when the writer emits "30 min" or "PT" or
+    # other non-conforming strings.
+    from .stage import _iso_duration_to_seconds
+
     for proc_index, proc in enumerate(protocol.procedures, start=1):
         tasks: list[TimelineTask] = []
-        n_with_duration = 0
+        n_with_duration = 0      # has a non-empty string
+        n_parseable = 0          # parses to ISO 8601 seconds
+        unparseable: list[str] = []  # list of (step_title, raw_string) for the methodology
         for step in proc.steps:
             tasks.append(TimelineTask(
                 step_n=flat_step_counter,
@@ -64,10 +73,22 @@ def compute_timeline(protocol: ProtocolGenerationOutput) -> TimelineOutput:
             ))
             if step.duration:
                 n_with_duration += 1
+                if _iso_duration_to_seconds(step.duration) is not None:
+                    n_parseable += 1
+                else:
+                    # Cap each example at ~30 chars so the methodology
+                    # line stays scannable when 4-5 steps fail.
+                    raw = (step.duration or "").strip()
+                    if len(raw) > 30:
+                        raw = raw[:30] + "…"
+                    unparseable.append(f"step {step.n} ({raw!r})")
             flat_step_counter += 1
 
         n_steps = len(tasks)
-        coverage = (n_with_duration / n_steps) if n_steps > 0 else 0.0
+        # Coverage reflects PARSEABLE durations — "has a string" without
+        # "parses cleanly" doesn't actually contribute to the sum, so it
+        # shouldn't pad the coverage chip.
+        coverage = (n_parseable / n_steps) if n_steps > 0 else 0.0
 
         # Sum step durations — _sum_iso8601_durations returns None if any
         # step is missing or malformed. That's the conservative behavior
@@ -76,14 +97,33 @@ def compute_timeline(protocol: ProtocolGenerationOutput) -> TimelineOutput:
         phase_duration = _sum_iso8601_durations([t.duration for t in tasks])
 
         # Methodology — explicit, plain-English description so the user
-        # can audit / reproduce.
+        # can audit / reproduce. Three failure shapes to distinguish:
+        #   - 0/N steps have any duration: nothing to sum, period.
+        #   - K/N have a string, K parse: missing M steps; can't sum.
+        #   - K/N have a string, J<K parse: writer emitted non-ISO 8601
+        #     for K-J of them. Surface examples so the user can fix.
         if phase_duration is None:
             if n_with_duration == 0:
                 methodology = (
                     f"Duration not available — none of {n_steps} steps in "
                     f"procedure '{proc.name}' have a duration value."
                 )
+            elif n_parseable < n_with_duration:
+                # All N have strings but some don't parse as ISO 8601.
+                examples = ", ".join(unparseable[:3])
+                more = (
+                    f" (and {len(unparseable) - 3} more)"
+                    if len(unparseable) > 3 else ""
+                )
+                methodology = (
+                    f"Duration not summable — {n_with_duration} of "
+                    f"{n_steps} steps in '{proc.name}' have a duration "
+                    f"string but only {n_parseable} parse as valid "
+                    f"ISO 8601. Non-conforming: {examples}{more}. "
+                    f"Conservative: not reporting a partial sum."
+                )
             else:
+                # Some steps simply have no duration set.
                 methodology = (
                     f"Duration not summable — only {n_with_duration} of "
                     f"{n_steps} steps in procedure '{proc.name}' have "
@@ -92,8 +132,8 @@ def compute_timeline(protocol: ProtocolGenerationOutput) -> TimelineOutput:
                 )
         else:
             methodology = (
-                f"Sum of {n_with_duration} step duration"
-                f"{'s' if n_with_duration != 1 else ''} from procedure "
+                f"Sum of {n_parseable} step duration"
+                f"{'s' if n_parseable != 1 else ''} from procedure "
                 f"'{proc.name}'."
             )
 

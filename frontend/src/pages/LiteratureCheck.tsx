@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   postLitReview,
+  setActivePlanId,
   type Citation,
   type KeyDifference,
   type LitReviewResponse,
@@ -320,6 +321,14 @@ const LiteratureCheck = () => {
   // Real API state. `litResult` null = either still loading or the page is
   // running in mock-only mode (no hypothesis in router state).
   const [litResult, setLitResult] = useState<LitReviewResponse | null>(null);
+
+  // Register plan_id with the AI Assistant launcher so the chatbot knows
+  // which plan to operate on. /lit-review writes a fresh plan and returns
+  // its id; we publish it here and clear on unmount.
+  useEffect(() => {
+    setActivePlanId(litResult?.plan_id ?? null);
+    return () => setActivePlanId(null);
+  }, [litResult?.plan_id]);
   const [apiError, setApiError] = useState<string | null>(null);
 
   useEffect(() => {

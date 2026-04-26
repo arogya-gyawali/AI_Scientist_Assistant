@@ -469,3 +469,105 @@ export function postValidation(body: StageRequest, signal?: AbortSignal): Promis
 export function postCritique(body: StageRequest, signal?: AbortSignal): Promise<CritiqueResponse> {
   return postJson("/critique", body, signal);
 }
+
+// ----- /chat + /chat/apply (AI Assistant -> blackboard) ----------------------
+//
+// Two-step propose-then-apply:
+//   1) postChat({plan_id, page, message, history}) -> proposed_mutations[]
+//   2) user reviews; on Apply, postChatApply({plan_id, mutations}) commits
+//      and returns frontend_views for the stages that changed so the page
+//      can refresh just those sections in place (see CHAT_APPLIED_EVENT).
+
+export type ChatRole = "user" | "assistant";
+
+export type ChatMessage = {
+  role: ChatRole;
+  content: string;
+};
+
+export type ProposedMutation = {
+  id: string;
+  tool: string;
+  arguments: Record<string, unknown>;
+  summary: string;          // human-readable, rendered on the proposal card
+};
+
+export type ChatRequest = {
+  plan_id: string;
+  page: string;             // route the user is on; gates which tools the BE exposes
+  message: string;
+  history?: ChatMessage[];
+};
+
+export type ChatResponse = {
+  message: string;
+  proposed_mutations: ProposedMutation[];
+};
+
+export type ChatApplyRequest = {
+  plan_id: string;
+  mutations: ProposedMutation[];
+};
+
+export type ChatApplyResponse = {
+  plan_id: string;
+  applied_ids: string[];
+  errors: { mutation_id: string; error: string }[];
+  // Only stages that changed are present. Shape mirrors the FE views from
+  // /protocol and /materials so the host page can drop the new view in
+  // without any transformation.
+  frontend_views: {
+    protocol?: FEProtocolView;
+    materials?: FEMaterialsView;
+  };
+};
+
+export function postChat(body: ChatRequest, signal?: AbortSignal): Promise<ChatResponse> {
+  return postJson("/chat", body, signal);
+}
+
+export function postChatApply(body: ChatApplyRequest, signal?: AbortSignal): Promise<ChatApplyResponse> {
+  return postJson("/chat/apply", body, signal);
+}
+
+// ----- Plan-updated event ----------------------------------------------------
+// The AI Assistant panel dispatches this event on `window` after a successful
+// /chat/apply. Pages (ExperimentPlan, LiteratureCheck, ...) listen for it
+// and update their local state with the fresh frontend_views, which avoids
+// prop-drilling the panel through every page.
+
+export const CHAT_APPLIED_EVENT = "praxis:chat-applied";
+
+export type ChatAppliedEventDetail = {
+  plan_id: string;
+  frontend_views: ChatApplyResponse["frontend_views"];
+};
+
+export function dispatchChatApplied(detail: ChatAppliedEventDetail): void {
+  window.dispatchEvent(new CustomEvent<ChatAppliedEventDetail>(CHAT_APPLIED_EVENT, { detail }));
+}
+
+// ----- Active plan id (sessionStorage) ---------------------------------------
+// The AIAssistantLauncher is mounted globally; it doesn't have access to a
+// page's router state. Pages with a plan_id call setActivePlanId() on mount;
+// the panel reads it before each /chat call. sessionStorage keeps the value
+// across in-app navigation but clears when the tab closes — sane scope.
+
+const ACTIVE_PLAN_KEY = "praxis:active_plan_id";
+
+export function setActivePlanId(planId: string | null): void {
+  try {
+    if (planId) sessionStorage.setItem(ACTIVE_PLAN_KEY, planId);
+    else sessionStorage.removeItem(ACTIVE_PLAN_KEY);
+  } catch {
+    // sessionStorage can throw in some private-browsing modes; ignore.
+  }
+}
+
+export function getActivePlanId(): string | null {
+  try {
+    return sessionStorage.getItem(ACTIVE_PLAN_KEY);
+  } catch {
+    return null;
+  }
+}

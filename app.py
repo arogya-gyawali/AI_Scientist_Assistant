@@ -794,6 +794,140 @@ def critique():
     })
 
 
+# ---------------------------------------------------------------------------
+# POST /chat   |   POST /chat/apply
+# ---------------------------------------------------------------------------
+# AI Assistant panel — researcher-driven chat that proposes blackboard
+# mutations the user reviews + applies. /chat returns a proposal; nothing
+# is mutated server-side until the FE round-trips the proposal back to
+# /chat/apply. See chat_pipeline.py for tool definitions and dispatch.
+
+@app.post("/chat")
+def chat_endpoint():
+    """Generate an assistant reply + zero or more proposed mutations.
+
+    Request body:
+        {
+          "plan_id": "plan_abc123",        // required
+          "page": "/plan",                  // route the user is on; gates tool exposure
+          "message": "Change step p1-s3 to 15 minutes",
+          "history": [                      // optional, conversation so far
+            {"role": "user", "content": "..."},
+            {"role": "assistant", "content": "..."}
+          ]
+        }
+
+    Response:
+        {
+          "message": "I'll update step p1-s3's duration to 15 minutes.",
+          "proposed_mutations": [
+            {
+              "id": "...",                  // round-trip this id back to /chat/apply
+              "tool": "update_protocol_step",
+              "arguments": {...},
+              "summary": "Update step p1-s3: duration -> PT15M. ..."
+            }
+          ]
+        }
+    """
+    body = request.get_json(silent=True) or {}
+    plan_id = (body.get("plan_id") or "").strip()
+    page = (body.get("page") or "/").strip()
+    message = (body.get("message") or "").strip()
+    history = body.get("history") or []
+
+    if not plan_id:
+        return jsonify({"error": "bad_request", "detail": "plan_id is required."}), 400
+    if not message:
+        return jsonify({"error": "bad_request", "detail": "message is required."}), 400
+
+    try:
+        plan_lib.load_plan(plan_id)
+    except FileNotFoundError:
+        return jsonify({"error": "plan_not_found", "detail": f"No plan with id {plan_id!r}."}), 404
+
+    try:
+        result = chat_pipeline.chat(plan_id=plan_id, page=page, message=message, history=history)
+    except Exception as exc:  # noqa: BLE001 — pipeline boundary
+        _LOG.exception("chat pipeline failed for plan %s", plan_id)
+        return jsonify({"error": "chat_error", "detail": str(exc)}), 500
+
+    return jsonify({
+        "message": result.message,
+        "proposed_mutations": [
+            {
+                "id": m.id,
+                "tool": m.tool,
+                "arguments": m.arguments,
+                "summary": m.summary,
+            }
+            for m in result.proposed_mutations
+        ],
+    })
+
+
+@app.post("/chat/apply")
+def chat_apply_endpoint():
+    """Apply previously-proposed mutations and return updated FE views.
+
+    Request body:
+        {
+          "plan_id": "plan_abc123",
+          "mutations": [
+            {"id": "...", "tool": "update_protocol_step", "arguments": {...}}
+          ]
+        }
+
+    Response:
+        {
+          "plan_id": "...",
+          "applied_ids": ["..."],
+          "errors": [{"mutation_id": "...", "error": "..."}],
+          "frontend_views": {
+            "protocol": FEProtocolView | None,
+            "materials": FEMaterialsView | None
+          }
+        }
+
+    `frontend_views` only includes stages that actually changed; the FE
+    listens for these and replaces only the affected sections in place.
+    """
+    body = request.get_json(silent=True) or {}
+    plan_id = (body.get("plan_id") or "").strip()
+    mutations = body.get("mutations") or []
+
+    if not plan_id:
+        return jsonify({"error": "bad_request", "detail": "plan_id is required."}), 400
+    if not isinstance(mutations, list) or not mutations:
+        return jsonify({"error": "bad_request", "detail": "mutations must be a non-empty list."}), 400
+
+    try:
+        plan_lib.load_plan(plan_id)
+    except FileNotFoundError:
+        return jsonify({"error": "plan_not_found", "detail": f"No plan with id {plan_id!r}."}), 404
+
+    try:
+        result = chat_pipeline.apply_mutations(plan_id=plan_id, mutations=mutations)
+    except Exception as exc:  # noqa: BLE001 — pipeline boundary
+        _LOG.exception("chat apply failed for plan %s", plan_id)
+        return jsonify({"error": "chat_apply_error", "detail": str(exc)}), 500
+
+    # Reload the now-saved plan so adapters see the post-mutation state.
+    plan_after = plan_lib.load_plan(plan_id)
+    frontend_views: dict[str, object] = {}
+    if "protocol" in result.affected_stages and plan_after.protocol is not None:
+        frontend_views["protocol"] = adapt_protocol(plan_after.protocol).model_dump(mode="json")
+    if "materials" in result.affected_stages and plan_after.materials is not None:
+        frontend_views["materials"] = adapt_materials(plan_after.materials).model_dump(mode="json")
+
+    return jsonify({
+        "plan_id": result.plan_id,
+        "applied_ids": result.applied_ids,
+        "errors": [{"mutation_id": e.mutation_id, "error": e.error} for e in result.errors],
+        "frontend_views": frontend_views,
+    })
+
+
 if __name__ == "__main__":
     # Flask's app.run() is for local development only. For deployment
     # (Render / Railway / Fly / Cloud Run / etc.), run with a production

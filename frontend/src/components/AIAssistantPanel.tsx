@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Send, Sparkles } from "lucide-react";
+import { Check, Send, Sparkles, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -9,14 +9,45 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  dispatchChatApplied,
+  getActivePlanId,
+  postChat,
+  postChatApply,
+  type ChatMessage,
+  type ProposedMutation,
+} from "@/lib/api";
 
-type Message = {
+// ----------------------------------------------------------------------------
+// AI Assistant — propose-then-apply chat over the experiment-plan blackboard.
+//
+// On send, we POST /chat with the current plan_id (from sessionStorage —
+// pages register it via setActivePlanId), the route the user is on, and the
+// conversation history. The backend may return zero or more proposed
+// mutations alongside the assistant's prose reply; we render those as cards
+// with Apply / Reject buttons. Apply round-trips the mutation back to
+// /chat/apply, then dispatches a `praxis:chat-applied` event so the host
+// page can refresh the affected sections in place from the BE-rendered
+// frontend_views the apply endpoint returns.
+//
+// Read-only routes (e.g. `/lab` before there's a plan) just answer questions
+// — the backend exposes no mutator tools there, so `proposed_mutations` is
+// always empty.
+// ----------------------------------------------------------------------------
+
+type LocalMessage = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  // Only on assistant turns: proposals attached to this reply.
+  proposals?: ProposedMutation[];
+  // Per-proposal applied / rejected ids so the buttons disable + the card
+  // reflects state without having to mutate the proposals[] in place.
+  appliedIds?: Set<string>;
+  rejectedIds?: Set<string>;
+  applyError?: string;  // shown if /chat/apply itself fails
 };
 
-// Per-route context: what the assistant "sees" and what it suggests
 type RouteContext = {
   label: string;
   subtitle: string;
@@ -53,37 +84,11 @@ const ROUTE_CONTEXT: Record<string, RouteContext> = {
   },
   "/plan": {
     label: "Experiment plan",
-    subtitle: "Ask about the protocol, materials, or design",
+    subtitle: "Ask about the protocol or propose an edit",
     suggestions: [
-      "Why was this protocol chosen?",
-      "What are the risks in this experiment?",
-      "How could this be improved?",
-      "What assumptions are being made?",
-    ],
-  },
-  "/review": {
-    label: "Review",
-    subtitle: "Ask about refining the plan",
-    suggestions: [
-      "What should I refine before running this?",
-      "Are the controls sufficient?",
-      "What's the weakest part of this plan?",
-    ],
-  },
-  "/drafts": {
-    label: "Drafts",
-    subtitle: "Ask about your in-progress work",
-    suggestions: [
-      "Which draft is closest to ready?",
-      "Suggest next steps for my drafts.",
-    ],
-  },
-  "/library": {
-    label: "Library",
-    subtitle: "Ask about your saved plans",
-    suggestions: [
-      "Which plans use E. coli?",
-      "Find plans related to growth rate.",
+      "Make step p1-s1 a critical step.",
+      "Add 1 L of PBS to materials.",
+      "Set step p1-s3 duration to 15 minutes.",
     ],
   },
   "/account": {
@@ -105,34 +110,6 @@ const DEFAULT_CONTEXT: RouteContext = {
   ],
 };
 
-// Mock context-aware responses keyed by intent
-const MOCK_RESPONSES: Record<string, string> = {
-  why: "This protocol was chosen because OD600 kinetic assays in M9 minimal media are the established readout for measuring specific growth rate (µ) in E. coli. Using a glucose gradient (0–25 mM) lets us resolve catabolite repression effects above ~10 mM, which directly addresses the hypothesis. The 96-well format with triplicates gives statistical power without consuming significant plate-reader time.",
-  risk: "Three main risks: (1) wall growth or biofilm at high OD can bias the µ fit — the orbital shake before each read mitigates this; (2) glucose carryover from the acclimation step could mask the low end of the gradient — the protocol washes twice in carbon-free M9; (3) edge-well effects in the 96-well plate — randomizing layout across replicates is recommended.",
-  improve: "A few refinements would strengthen this design: add a carbon-free control to confirm the inoculum is fully starved before the gradient; include a second strain (e.g. ΔptsG) to confirm the catabolite-repression mechanism; and consider HPLC measurement of residual glucose at endpoint to correlate µ with substrate consumption directly.",
-  assumption: "The plan assumes: (1) the plate reader's OD600 measurements are within the linear range (≤ 0.8); (2) aerobic conditions are maintained uniformly across all wells via the breathable seal and shake; (3) the MG1655 stock is genetically stable with no contaminating colonies; and (4) standard lab equipment (37 °C shaker, −80 °C storage) is available.",
-  default:
-    "Based on what you're looking at, I'd focus on the experimental setup. The acclimation step in M9 + 5 mM glucose pre-adapts the cells to minimal media so the first hour of the kinetic run reflects steady-state metabolism rather than nutrient shift-up — which improves measurement reliability.",
-};
-
-const matchResponse = (q: string, route: string): string => {
-  const lower = q.toLowerCase();
-  if (lower.includes("why")) return MOCK_RESPONSES.why;
-  if (lower.includes("risk") || lower.includes("fail") || lower.includes("wrong"))
-    return MOCK_RESPONSES.risk;
-  if (lower.includes("improve") || lower.includes("better") || lower.includes("refine"))
-    return MOCK_RESPONSES.improve;
-  if (lower.includes("assum")) return MOCK_RESPONSES.assumption;
-  // Lightly route-aware default
-  if (route === "/literature")
-    return "The retrieved papers cover similar experimental approaches with overlapping organisms and methods. The closest precedent reports a comparable effect, but with a narrower glucose range — your gradient extends well beyond, which is where the novelty sits.";
-  if (route === "/lab")
-    return "A strong hypothesis names the variable, the system, and the expected direction of effect. Yours does — it specifies the substrate, the strain, the threshold, and the proposed mechanism. That's enough to design a falsifiable test.";
-  if (route === "/")
-    return "Praxis turns a research question into a literature scan, an experiment plan, and a refinable protocol — in that order. Start by writing a hypothesis on the lab page.";
-  return MOCK_RESPONSES.default;
-};
-
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -140,9 +117,13 @@ type Props = {
 };
 
 export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => {
+  // ctx still drives the panel header label + subtitle; the suggestions
+  // panel was removed because the canned questions seeded "lowest-common-
+  // denominator" prompts that pushed users toward generic answers. Empty
+  // chat-state is the better blank-canvas affordance.
   const ctx = ROUTE_CONTEXT[route] ?? DEFAULT_CONTEXT;
-  const SUGGESTIONS = ctx.suggestions;
-  const [messages, setMessages] = useState<Message[]>([]);
+
+  const [messages, setMessages] = useState<LocalMessage[]>([]);
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -154,33 +135,118 @@ export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => 
     }
   }, [messages, pending]);
 
-  const send = (text: string) => {
+  // Build the wire-format history the backend expects: prior turns only,
+  // text content only (proposals are server-state — we don't replay them).
+  const buildHistory = (msgs: LocalMessage[]): ChatMessage[] =>
+    msgs.map((m) => ({ role: m.role, content: m.content }));
+
+  const send = async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || pending) return;
-    const userMsg: Message = {
+
+    const planId = getActivePlanId();
+    const userMsg: LocalMessage = {
       id: crypto.randomUUID(),
       role: "user",
       content: trimmed,
     };
     setMessages((m) => [...m, userMsg]);
     setInput("");
-    setPending(true);
-    window.setTimeout(() => {
+
+    if (!planId) {
+      // No plan loaded — surface a clear stub rather than calling the BE
+      // (which would 400 anyway). This shows up on /lab before a hypothesis
+      // is submitted, or on routes that don't carry a plan.
       setMessages((m) => [
         ...m,
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          content: matchResponse(trimmed, route),
+          content: "No plan is loaded yet. Submit a hypothesis on the Lab page to start one — I can then answer questions and propose edits against it.",
         },
       ]);
+      return;
+    }
+
+    setPending(true);
+    try {
+      const historyForApi = buildHistory(
+        messages.filter((m) => !m.applyError).slice(-12),
+      );
+      const res = await postChat({
+        plan_id: planId,
+        page: route,
+        message: trimmed,
+        history: historyForApi,
+      });
+      setMessages((m) => [
+        ...m,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: res.message,
+          proposals: res.proposed_mutations.length ? res.proposed_mutations : undefined,
+        },
+      ]);
+    } catch (err: unknown) {
+      const detail = err instanceof Error ? err.message : "Chat request failed.";
+      setMessages((m) => [
+        ...m,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: `(error) ${detail}`,
+        },
+      ]);
+    } finally {
       setPending(false);
-    }, 900);
+    }
   };
 
-  const handleSuggestion = (s: string) => {
-    setInput(s);
-    inputRef.current?.focus();
+  // Apply one proposal: round-trip it back to /chat/apply, dispatch the
+  // applied event so the host page refreshes its sections, then mark it
+  // applied locally so the button flips to a check.
+  const applyProposal = async (assistantMsgId: string, proposal: ProposedMutation) => {
+    const planId = getActivePlanId();
+    if (!planId) return;
+    try {
+      const res = await postChatApply({ plan_id: planId, mutations: [proposal] });
+      // Tell the host page to refresh its affected sections from the
+      // updated frontend_views the apply endpoint returned.
+      dispatchChatApplied({ plan_id: res.plan_id, frontend_views: res.frontend_views });
+      const wasApplied = res.applied_ids.includes(proposal.id);
+      const errorEntry = res.errors.find((e) => e.mutation_id === proposal.id);
+      setMessages((msgs) =>
+        msgs.map((m) => {
+          if (m.id !== assistantMsgId) return m;
+          if (wasApplied) {
+            const next = new Set(m.appliedIds ?? []);
+            next.add(proposal.id);
+            return { ...m, appliedIds: next };
+          }
+          return {
+            ...m,
+            applyError: errorEntry?.error ?? "Apply failed.",
+          };
+        }),
+      );
+    } catch (err: unknown) {
+      const detail = err instanceof Error ? err.message : "Apply request failed.";
+      setMessages((msgs) =>
+        msgs.map((m) => (m.id === assistantMsgId ? { ...m, applyError: detail } : m)),
+      );
+    }
+  };
+
+  const rejectProposal = (assistantMsgId: string, proposalId: string) => {
+    setMessages((msgs) =>
+      msgs.map((m) => {
+        if (m.id !== assistantMsgId) return m;
+        const next = new Set(m.rejectedIds ?? []);
+        next.add(proposalId);
+        return { ...m, rejectedIds: next };
+      }),
+    );
   };
 
   return (
@@ -214,32 +280,8 @@ export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => 
           </SheetDescription>
         </SheetHeader>
 
-        {/* Suggestions — only when conversation is empty */}
-        {messages.length === 0 && (
-          <div className="border-b border-rule px-6 py-5">
-            <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-              Suggested questions
-            </p>
-            <div className="mt-3 flex flex-col gap-2">
-              {SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => handleSuggestion(s)}
-                  className="rounded-sm border border-rule bg-paper-raised px-3.5 py-2.5 text-left text-[14px] text-ink-soft transition-colors hover:border-ink/40 hover:bg-rule-soft/40 hover:text-ink"
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Messages */}
-        <div
-          ref={scrollRef}
-          className="flex-1 overflow-y-auto px-6 py-5"
-        >
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-5">
           {messages.length === 0 && (
             <p
               className="text-center text-[14px] italic text-muted-foreground"
@@ -253,8 +295,8 @@ export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => 
               <div
                 key={m.id}
                 className={cn(
-                  "flex",
-                  m.role === "user" ? "justify-end" : "justify-start"
+                  "flex flex-col",
+                  m.role === "user" ? "items-end" : "items-start",
                 )}
               >
                 <div
@@ -262,7 +304,7 @@ export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => 
                     "max-w-[85%] rounded-md px-3.5 py-2.5 text-[14.5px] leading-[1.55]",
                     m.role === "user"
                       ? "bg-ink text-paper"
-                      : "border border-rule bg-paper-raised text-ink-soft"
+                      : "border border-rule bg-paper-raised text-ink-soft",
                   )}
                 >
                   {m.role === "assistant" && (
@@ -272,6 +314,84 @@ export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => 
                   )}
                   <p className="whitespace-pre-wrap">{m.content}</p>
                 </div>
+
+                {/* Proposed mutations — only on assistant turns */}
+                {m.role === "assistant" && m.proposals && m.proposals.length > 0 && (
+                  <div className="mt-2.5 flex w-full max-w-[85%] flex-col gap-2">
+                    {m.proposals.map((p) => {
+                      const applied = m.appliedIds?.has(p.id);
+                      const rejected = m.rejectedIds?.has(p.id);
+                      const settled = applied || rejected;
+                      return (
+                        <div
+                          key={p.id}
+                          className={cn(
+                            "relative overflow-hidden rounded-md border bg-paper-raised px-3.5 py-3 text-[13px] transition-colors",
+                            applied
+                              ? "border-sage/40"
+                              : rejected
+                                ? "border-rule/60 opacity-60"
+                                : "border-primary/30",
+                          )}
+                        >
+                          <span
+                            aria-hidden
+                            className={cn(
+                              "absolute inset-y-0 left-0 w-[2px]",
+                              applied ? "bg-sage" : rejected ? "bg-rule" : "bg-primary",
+                            )}
+                          />
+                          <p className="font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                            Proposed change
+                          </p>
+                          <p className="mt-1 leading-[1.5] text-ink">{p.summary}</p>
+                          {!settled && (
+                            <div className="mt-2.5 flex gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() => applyProposal(m.id, p)}
+                                className="h-7 gap-1.5 rounded-sm bg-ink px-3 text-[11px] font-mono-notebook uppercase tracking-[0.22em] text-paper hover:bg-ink/90"
+                              >
+                                <Check className="h-3 w-3" strokeWidth={2.25} />
+                                Apply
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => rejectProposal(m.id, p.id)}
+                                className="h-7 gap-1.5 rounded-sm border-rule bg-paper px-3 text-[11px] font-mono-notebook uppercase tracking-[0.22em] text-ink-soft hover:bg-rule-soft/40"
+                              >
+                                <X className="h-3 w-3" strokeWidth={2.25} />
+                                Reject
+                              </Button>
+                            </div>
+                          )}
+                          {applied && (
+                            <p className="mt-2 inline-flex items-center gap-1.5 font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-sage">
+                              <Check className="h-3 w-3" strokeWidth={2.25} />
+                              Applied
+                            </p>
+                          )}
+                          {rejected && (
+                            <p className="mt-2 inline-flex items-center gap-1.5 font-mono-notebook text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                              Rejected
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {m.applyError && (
+                      <p
+                        role="alert"
+                        className="rounded-sm border border-destructive/30 bg-paper px-3 py-2 font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-destructive"
+                      >
+                        {m.applyError}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
             {pending && (
@@ -286,7 +406,7 @@ export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => 
                       <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ink-soft/60 [animation-delay:150ms]" />
                       <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ink-soft/60 [animation-delay:300ms]" />
                     </span>
-                    Analyzing experiment…
+                    Thinking…
                   </p>
                 </div>
               </div>
@@ -314,7 +434,7 @@ export const AIAssistantPanel = ({ open, onOpenChange, route = "/" }: Props) => 
                 }
               }}
               rows={1}
-              placeholder="Ask about the protocol, materials, or design decisions…"
+              placeholder="Ask about the plan, or propose an edit…"
               className="max-h-32 flex-1 resize-none bg-transparent py-1.5 text-[14.5px] leading-[1.5] text-ink placeholder:text-muted-foreground focus:outline-none"
             />
             <Button

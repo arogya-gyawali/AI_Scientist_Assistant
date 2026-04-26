@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => ({
       "/timeline":            "http://localhost:5000",
       "/validation":          "http://localhost:5000",
       "/critique":            "http://localhost:5000",
+      "/chat":                "http://localhost:5000",
       "/health":              "http://localhost:5000",
     },
   },

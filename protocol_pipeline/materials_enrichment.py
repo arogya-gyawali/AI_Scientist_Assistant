@@ -38,7 +38,13 @@ from __future__ import annotations
 
 import logging
 import re
-from concurrent.futures import ThreadPoolExecutor
+import time
+from concurrent.futures import (
+    FIRST_COMPLETED,
+    ThreadPoolExecutor,
+    TimeoutError as FuturesTimeoutError,
+    wait,
+)
 from typing import Any, Optional
 from urllib.parse import urlparse
 
@@ -75,6 +81,15 @@ Hard rules:
 - Do not invent catalog numbers. If the snippet doesn't show the SKU, leave catalog null.
 - Do not invent prices. If the snippet doesn't show a price, leave price null.
 - source_url is REQUIRED whenever any other field is non-null. If you can't tie a value to a specific URL, return all-null.
+
+EXTRA STRICT — generic / non-laboratory items:
+Some materials in the input are NOT physical lab supplies and SHOULD NOT be matched to any product, even if the supplier search returns hits. These include:
+- Stationery and office supplies: pen, pencil, marker, "writing utensil", "writing instrument", paper, notebook, sticker, label.
+- Documents and forms: questionnaire, survey, interview template, consent form, "interview questionnaire", "interview form", protocol document, paper-based questionnaire.
+- Generic placeholders: "note-taking materials", "writing materials", "general supplies", "miscellaneous".
+- Software / files: spreadsheet, document, dataset (these aren't procured from labware suppliers).
+
+For ANY of these, return all-null fields. Do not match a "Sharpie pen" page to "Writing utensil"; do not match a paper-products SKU to "Note-taking materials". A generic name + a too-perfect SKU match is almost always wrong — bias toward null.
 
 Return ONLY a single valid JSON object:
 {
@@ -183,6 +198,44 @@ def _extract_one(
         "price": _clean(parsed.get("price")),
         "source_url": src.strip(),
     }
+
+
+# --------------------------------------------------------------------------
+# Deterministic skip-list (belt-and-suspenders to the LLM rule)
+# --------------------------------------------------------------------------
+# Items we never enrich, regardless of what Tavily returns. The LLM
+# extractor has a "do not match" instruction for these, but Gemini Flash
+# has been seen ignoring that and confidently assigning a SKU like
+# "PEN-40" to "Writing utensil". This regex catches the most obvious
+# generic / non-laboratory items at the gate so a rogue match never
+# reaches the FE.
+#
+# Patterns are word-boundary so "pen" doesn't match "Penicillin",
+# "paper" doesn't match "papermill enzyme", etc. If a real lab item
+# happens to share a substring with these (e.g. a real "writing-pad"
+# product), the user can still see it via the source link on a
+# neighboring item — false negatives are cheaper than fabricated SKUs.
+
+_NON_LAB_PATTERNS = [
+    re.compile(r"\b(?:writing|drawing|note[- ]?taking)\s+(?:utensil|instrument|materials?|tools?|supplies)\b", re.IGNORECASE),
+    re.compile(r"\b(?:pen|pencil|marker|sharpie|highlighter)s?\b", re.IGNORECASE),
+    re.compile(r"\b(?:notebook|paper|sticker|label[- ]?paper)\b", re.IGNORECASE),
+    re.compile(r"\b(?:questionnaire|survey|interview\s+template|interview\s+questionnaire|interview\s+form|consent\s+form)\b", re.IGNORECASE),
+    re.compile(r"\b(?:protocol\s+document|paper[- ]?based\s+questionnaire)\b", re.IGNORECASE),
+    re.compile(r"\b(?:general\s+supplies?|miscellaneous|misc\.?|sundries)\b", re.IGNORECASE),
+    re.compile(r"\b(?:spreadsheet|document|dataset|file)\b", re.IGNORECASE),
+]
+
+
+def _is_non_lab_item(name: str) -> bool:
+    """True when the material name looks like a stationery / paperwork
+    placeholder that shouldn't get a SKU. Used as an early skip in
+    enrich_one_item — saves a Tavily call AND a guaranteed-bad LLM
+    extraction."""
+    s = (name or "").strip()
+    if not s:
+        return False
+    return any(p.search(s) for p in _NON_LAB_PATTERNS)
 
 
 # --------------------------------------------------------------------------
@@ -353,6 +406,12 @@ def enrich_one_item(item: FEReagent) -> FEReagent:
     name = (item.name or "").strip()
     if not name or len(name) < 3:
         return item
+    # Skip stationery / paperwork placeholders before paying for the
+    # Tavily call. The LLM has been seen confidently matching
+    # "Writing utensil" to "Sharpie pen #PEN-40" — better to leave
+    # these as TBD than ship a fabricated SKU.
+    if _is_non_lab_item(name):
+        return item
 
     try:
         response = tavily_client.search_for_supplier(name)
@@ -407,15 +466,24 @@ def enrich_materials_view(
     view: FEMaterialsView,
     *,
     max_workers: int = 6,
+    overall_timeout: float = 45.0,
 ) -> FEMaterialsView:
     """Walk every item across every group, enrich in parallel, and
     return a new view with the enrichment fields populated. Never
     raises — best-effort across the whole list. Cached upstream
     (30-day TTL on supplier searches) so reruns of the same plan
-    are essentially free."""
-    # Flatten in iteration order. We pool.map over `flat`, so the
-    # output list is index-aligned with `flat` — reassembly is a
-    # single linear pass via an iterator (O(N), not O(G×N)).
+    are essentially free.
+
+    Bounded by `overall_timeout`: items that haven't completed by the
+    deadline are returned unenriched (FE renders "TBD"). The stuck
+    worker threads are abandoned via shutdown(wait=False, cancel_futures=
+    True) so the response returns on time even when Tavily / the LLM
+    hangs on a particular item. Without this bound, one slow item
+    serializes the whole enrichment behind it and the user sees a
+    timeout instead of a partial result.
+    """
+    # Flatten in iteration order. We submit each as a future indexed by
+    # position so reassembly is a single linear pass.
     flat: list[FEReagent] = [
         item for group in view.groups for item in group.items
     ]
@@ -423,8 +491,48 @@ def enrich_materials_view(
         return view
 
     n_workers = min(len(flat), max_workers)
-    with ThreadPoolExecutor(max_workers=n_workers) as pool:
-        enriched = list(pool.map(enrich_one_item, flat))
+    # Start with originals — anything we can't enrich in time stays as-is.
+    enriched: list[FEReagent] = list(flat)
+
+    pool = ThreadPoolExecutor(max_workers=n_workers)
+    try:
+        future_to_idx = {
+            pool.submit(enrich_one_item, item): idx
+            for idx, item in enumerate(flat)
+        }
+        deadline = time.monotonic() + overall_timeout
+        pending = set(future_to_idx.keys())
+
+        while pending:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                _LOG.warning(
+                    "Materials enrichment overall budget (%.1fs) exhausted; "
+                    "%d/%d items still in flight, falling back to TBD for the rest.",
+                    overall_timeout, len(pending), len(flat),
+                )
+                break
+            done, pending = wait(pending, timeout=remaining, return_when=FIRST_COMPLETED)
+            if not done:
+                # wait() returned with no progress before remaining elapsed —
+                # likely the timeout fired. Loop checks `remaining` next.
+                continue
+            for fut in done:
+                idx = future_to_idx[fut]
+                try:
+                    # Already done; tiny timeout just to be defensive.
+                    enriched[idx] = fut.result(timeout=0.1)
+                except Exception as exc:  # noqa: BLE001 — best-effort
+                    _LOG.warning(
+                        "Materials enrichment for item %d (%r) failed: %s",
+                        idx, flat[idx].name, exc,
+                    )
+                    # Leave enriched[idx] as the original — falls through to TBD.
+    finally:
+        # Don't block on hung Tavily / LLM calls. cancel_futures=True asks
+        # any not-yet-started futures to skip; in-flight ones continue in
+        # the background but we no longer wait for them.
+        pool.shutdown(wait=False, cancel_futures=True)
 
     # Reassemble: walk groups in the same order and pull len(group.items)
     # results off the front of the iterator each time.

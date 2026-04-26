@@ -61,6 +61,15 @@ def search_for_lit_review(query: str) -> dict[str, Any]:
     return response
 
 
+# Per-call HTTP timeouts (seconds). Tavily's SDK default is 60s, which is
+# way too long for a synchronous Flask request that fans out N items in
+# parallel — one stuck call blocks a whole worker until the SDK gives up.
+# Keep these tight; the calling code (enrich_materials_view) layers on
+# its own overall deadline as belt + suspenders.
+_SUPPLIER_HTTP_TIMEOUT = 10.0
+_PRICING_HTTP_TIMEOUT = 12.0  # slightly higher: include_raw_content=True returns more data
+
+
 def search_for_supplier(reagent_name: str) -> dict[str, Any]:
     """Stage 3 catalog gap-fill: scoped to supplier domains, basic depth."""
     payload = {
@@ -75,7 +84,7 @@ def search_for_supplier(reagent_name: str) -> dict[str, Any]:
     if cached is not None:
         return cached
 
-    response = _client().search(**payload)
+    response = _client().search(**payload, timeout=_SUPPLIER_HTTP_TIMEOUT)
     cache.put("tavily/gap_fill", payload, response)
     return response
 
@@ -94,6 +103,6 @@ def search_for_pricing(vendor: str, vendor_domain: str, sku: str) -> dict[str, A
     if cached is not None:
         return cached
 
-    response = _client().search(**payload)
+    response = _client().search(**payload, timeout=_PRICING_HTTP_TIMEOUT)
     cache.put("tavily/pricing", payload, response)
     return response
