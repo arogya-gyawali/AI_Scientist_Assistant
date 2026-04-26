@@ -33,14 +33,14 @@ flowchart LR
         Cache[("cache.py<br/>HTTP / LLM cache")]
     end
 
-    External1[(Europe PMC)]
-    External2[(protocols.io samples)]
-    External3[(Tavily)]
-    External4[(Anthropic /<br/>OpenRouter)]
+    External1[("Europe PMC")]
+    External2[("protocols.io samples")]
+    External3[("Tavily")]
+    External4[("Anthropic /<br/>OpenRouter")]
 
     User -->|fills form| Pages
     Pages --> ApiClient
-    ApiClient -->|POST JSON<br/>(Vite proxy in dev)| Endpoints
+    ApiClient -->|POST JSON · Vite proxy in dev| Endpoints
 
     Endpoints -->|reads / writes plan| Plan
     Endpoints --> S1
