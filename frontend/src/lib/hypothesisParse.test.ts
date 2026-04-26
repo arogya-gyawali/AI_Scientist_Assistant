@@ -17,10 +17,11 @@ describe("mockParseHypothesis", () => {
 
   it("still supports growth/catabolite-style phrasing (glucose, E. coli)", () => {
     const p = mockParseHypothesis(ECOLI_GLUCOSE);
-    expect(p.independent).toBeTruthy();
-    expect(p.dependent).toBeTruthy();
-    expect(p.conditions).toBeTruthy();
-    expect(p.expected).toBeTruthy();
+    expect(p.independent).toMatch(/glucose|M9|media/i);
+    expect(p.dependent).toMatch(/growth|rate|E\.|coli/i);
+    expect(p.conditions).toMatch(/37|aerobic|M9|mM|°C/i);
+    expect(p.expected).toMatch(/catabolite|repression|Positive|Negative|correlation/i);
+    expect(p.subject).toMatch(/E\.|coli|K-12|MG1655/i);
   });
 
   it("does not collapse enzyme abbreviations to two-letter prefixes (SD vs SDH)", () => {
