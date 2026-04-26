@@ -46,4 +46,6 @@ Thumbs.db
 
 # TypeScript
 *.tsbuildinfo
->>>>>>> origin/shaun/lit_review
+
+# Throwaway exploration script (real protocols.io client lives elsewhere).
+tools/protocols_io_smoke.py
