@@ -242,9 +242,21 @@
       }
     },
 
+    "ReagentRecipe": {
+      "type": "object",
+      "required": ["name", "components"],
+      "additionalProperties": false,
+      "description": "Recipe for a custom buffer / mix the researcher must prepare. Only emitted for non-commercial reagents.",
+      "properties": {
+        "name": { "type": "string" },
+        "components": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      }
+    },
+
     "ProtocolStep": {
       "type": "object",
-      "required": ["n", "title", "body_md", "equipment_needed", "reagents_referenced", "params", "controls", "todo_for_researcher", "source_step_refs"],
+      "required": ["n", "title", "body_md", "equipment_needed", "reagents_referenced", "params", "controls", "todo_for_researcher", "source_step_refs", "is_critical", "is_pause_point", "troubleshooting", "reagent_recipes"],
       "additionalProperties": false,
       "properties": {
         "n": { "type": "integer", "minimum": 1 },
@@ -258,7 +270,12 @@
         "todo_for_researcher": { "type": "array", "items": { "type": "string" }, "description": "Items the LLM flagged as needing a researcher decision before running." },
         "source_step_refs": { "type": "array", "items": { "type": "string" }, "description": "protocols.io step ids that informed this step (auditability)." },
         "notes": { "type": "string" },
-        "cited_doi": { "$ref": "#/definitions/DOI" }
+        "cited_doi": { "$ref": "#/definitions/DOI" },
+        "anticipated_outcome": { "type": "string", "description": "What to expect at the bench after this step." },
+        "is_critical": { "type": "boolean", "description": "Steps where ~80% of failures happen; sparingly used." },
+        "is_pause_point": { "type": "boolean", "description": "Safe stopping point — researcher can resume later." },
+        "troubleshooting": { "type": "array", "items": { "type": "string" } },
+        "reagent_recipes": { "type": "array", "items": { "$ref": "#/definitions/ReagentRecipe" } }
       }
     },
 
@@ -302,7 +319,8 @@
         "reagents": { "type": "array", "items": { "type": "string" } },
         "deviations_from_source": { "type": "array", "items": { "$ref": "#/definitions/Deviation" } },
         "source_protocol_ids": { "type": "array", "items": { "type": "string" } },
-        "success_criteria": { "type": "array", "items": { "$ref": "#/definitions/ProcedureSuccessCriterion" } }
+        "success_criteria": { "type": "array", "items": { "$ref": "#/definitions/ProcedureSuccessCriterion" } },
+        "total_duration": { "$ref": "#/definitions/Duration", "description": "ISO 8601 sum of step durations (deterministic, computed by orchestrator)." }
       }
     },
 
@@ -345,7 +363,8 @@
         "assumptions": { "type": "array", "items": { "type": "string" } },
         "total_steps": { "type": "integer", "minimum": 0 },
         "source_protocol_ids": { "type": "array", "items": { "type": "string" } },
-        "generated_at": { "$ref": "#/definitions/ISO8601" }
+        "generated_at": { "$ref": "#/definitions/ISO8601" },
+        "total_duration": { "$ref": "#/definitions/Duration", "description": "ISO 8601 sum across all procedures." }
       }
     },
 

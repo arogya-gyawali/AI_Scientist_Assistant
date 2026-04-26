@@ -12,11 +12,13 @@ from __future__ import annotations
 import pytest
 
 from protocol_pipeline.frontend_view import (
+    _format_params_summary,
     adapt_materials,
     adapt_protocol,
     classify_phase,
 )
 from src.types import (
+    Deviation,
     Material,
     MaterialsOutput,
     Procedure,
@@ -24,6 +26,7 @@ from src.types import (
     ProtocolGenerationOutput,
     ProtocolStep,
     Quantity,
+    ReagentRecipe,
     StepParams,
 )
 
@@ -291,3 +294,281 @@ def test_adapt_materials_preserves_gaps():
     )
     fe = adapt_materials(mats)
     assert fe.gaps == ["Specific manufacturer not specified for trehalose."]
+
+
+# ---- Phase 2: rich-shape adapter -----------------------------------------
+# These tests pin the new FE contract surface: procedure grouping, the
+# params_summary list (vs. just the priority `meta` chip), per-step
+# anticipated-outcome / critical / pause / troubleshooting / recipes
+# pass-through, deviations + success_criteria projection, total_duration
+# pass-through, and bidirectional step↔material cross-links.
+
+
+def _step_with(**kwargs) -> ProtocolStep:
+    base = {"n": 1, "title": "Step", "body_md": "do x"}
+    base.update(kwargs)
+    return ProtocolStep(**base)
+
+
+# ---- params_summary -----------------------------------------------------
+
+def test_params_summary_orders_by_priority():
+    """Order is fixed: temperature → volume → duration → conc → speed.
+    The first item is also what `meta` shows."""
+    p = StepParams(
+        volume=Quantity(value=10, unit="mL"),
+        temperature=Quantity(value=37, unit="°C"),
+        duration="PT5M",
+        concentration=Quantity(value=0.5, unit="M"),
+        speed=Quantity(value=300, unit="rpm"),
+    )
+    assert _format_params_summary(p) == ["37 °C", "10 mL", "5 min", "0.5 M", "300 rpm"]
+
+
+def test_params_summary_skips_unset():
+    p = StepParams(volume=Quantity(value=1.5, unit="mL"))
+    assert _format_params_summary(p) == ["1.5 mL"]
+
+
+def test_params_summary_empty_for_bare_params():
+    assert _format_params_summary(StepParams()) == []
+
+
+# ---- adapt_protocol: new rich shape -------------------------------------
+
+def test_adapt_protocol_emits_procedures_with_index():
+    proto = ProtocolGenerationOutput(
+        experiment_type="t",
+        procedures=[
+            _proc("HeLa Culture Preparation", n_steps=3),
+            _proc("Cell Freezing", n_steps=2),
+        ],
+        steps=[],
+        total_steps=5,
+    )
+    fe = adapt_protocol(proto)
+    assert len(fe.procedures) == 2
+    assert fe.procedures[0].procedure_index == 1
+    assert fe.procedures[1].procedure_index == 2
+    # Each procedure's steps are FE-shape; step_number_in_procedure is 1-based.
+    assert [s.step_number_in_procedure for s in fe.procedures[0].steps] == [1, 2, 3]
+    assert [s.step_number_in_procedure for s in fe.procedures[1].steps] == [1, 2]
+
+
+def test_adapt_protocol_step_id_format():
+    """step_id is "p{proc_idx}-s{step_idx}" so the FE can deep-link from
+    a material back to a step. Pin the format so the FE can rely on it."""
+    proto = ProtocolGenerationOutput(
+        experiment_type="t",
+        procedures=[
+            _proc("First", n_steps=2),
+            _proc("Second", n_steps=1),
+        ],
+        steps=[],
+        total_steps=3,
+    )
+    fe = adapt_protocol(proto)
+    ids = [s.step_id for p in fe.procedures for s in p.steps]
+    assert ids == ["p1-s1", "p1-s2", "p2-s1"]
+
+
+def test_adapt_protocol_passes_through_new_step_fields():
+    """All the Phase-1 ProtocolStep fields appear on FEProtocolStep."""
+    step = _step_with(
+        is_critical=False,  # 1/1 critical would trip the bound; keep False
+        is_pause_point=True,
+        anticipated_outcome="Pellet visible",
+        troubleshooting=["if X: do Y"],
+        equipment_needed=["centrifuge"],
+        reagents_referenced=["PBS"],
+        todo_for_researcher=["confirm Z"],
+        reagent_recipes=[ReagentRecipe(name="M9", components=["3g salt"])],
+        duration="PT5M",
+        params=StepParams(temperature=Quantity(value=37, unit="°C")),
+    )
+    proto = ProtocolGenerationOutput(
+        experiment_type="t",
+        procedures=[Procedure(name="P1", intent="t", steps=[step])],
+        steps=[],
+        total_steps=1,
+    )
+    fe = adapt_protocol(proto)
+    fe_step = fe.procedures[0].steps[0]
+    assert fe_step.is_pause_point is True
+    assert fe_step.anticipated_outcome == "Pellet visible"
+    assert fe_step.troubleshooting == ["if X: do Y"]
+    assert fe_step.equipment == ["centrifuge"]
+    assert fe_step.reagents == ["PBS"]
+    assert fe_step.todos == ["confirm Z"]
+    assert len(fe_step.reagent_recipes) == 1
+    assert fe_step.reagent_recipes[0].name == "M9"
+    assert fe_step.duration == "PT5M"
+    assert fe_step.meta == "37 °C"
+    assert fe_step.params_summary == ["37 °C"]
+
+
+def test_adapt_protocol_projects_deviations_and_success_criteria():
+    """Per-procedure audit data must reach the FE shape — this is the
+    killer feature, the part that makes the protocol look trustworthy."""
+    dev = Deviation(
+        from_source="C. elegans wash",
+        to_adapted="HeLa wash with 10 mL PBS",
+        reason="hypothesis specifies HeLa not C. elegans",
+        source_protocol_id="260183",
+        confidence="high",
+    )
+    sc = ProcedureSuccessCriterion(
+        what="cells reach >=85% confluence within 48h",
+        how_measured="trypan blue exclusion",
+        threshold=">=85%",
+        pass_fail=True,
+    )
+    proto = ProtocolGenerationOutput(
+        experiment_type="t",
+        procedures=[Procedure(
+            name="P1", intent="t", steps=[_step_with()],
+            deviations_from_source=[dev],
+            success_criteria=[sc],
+            source_protocol_ids=["260183"],
+        )],
+        steps=[],
+        total_steps=1,
+    )
+    fe = adapt_protocol(proto)
+    [pg] = fe.procedures
+    assert len(pg.deviations_from_source) == 1
+    assert pg.deviations_from_source[0].confidence == "high"
+    assert pg.deviations_from_source[0].source_protocol_id == "260183"
+    assert len(pg.success_criteria) == 1
+    assert pg.success_criteria[0].threshold == ">=85%"
+    assert pg.source_protocol_ids == ["260183"]
+
+
+def test_adapt_protocol_passes_through_total_durations():
+    proto = ProtocolGenerationOutput(
+        experiment_type="t",
+        procedures=[Procedure(
+            name="P1", intent="t", steps=[_step_with()],
+            total_duration="PT30M",
+        )],
+        steps=[],
+        total_steps=1,
+        total_duration="P1DT2H",
+    )
+    fe = adapt_protocol(proto)
+    assert fe.total_duration == "P1DT2H"
+    assert fe.procedures[0].total_duration == "PT30M"
+
+
+def test_adapt_protocol_keeps_flat_steps_for_backward_compat():
+    """The flat `steps` list is still populated even when `procedures` is
+    used — preserves the mock-fallback path in the existing FE."""
+    proto = ProtocolGenerationOutput(
+        experiment_type="t",
+        procedures=[
+            _proc("P1", n_steps=2),
+            _proc("P2", n_steps=2),
+        ],
+        steps=[],
+        total_steps=4,
+    )
+    fe = adapt_protocol(proto)
+    assert len(fe.steps) == 4
+    assert fe.total_steps == 4
+
+
+def test_adapt_protocol_passes_through_assumptions():
+    proto = ProtocolGenerationOutput(
+        experiment_type="t",
+        procedures=[_proc("P1", n_steps=1)],
+        steps=[],
+        total_steps=1,
+        assumptions=["BSL-1 facility available", "Standard cell-culture incubator"],
+    )
+    fe = adapt_protocol(proto)
+    assert fe.assumptions == [
+        "BSL-1 facility available", "Standard cell-culture incubator",
+    ]
+
+
+# ---- adapt_materials: used_in_steps cross-link --------------------------
+
+def test_adapt_materials_populates_used_in_steps_when_protocol_provided():
+    """The FE renders 'Used in 2.1, 3.4' next to each material — verify
+    those step IDs come from the protocol walk (case-insensitive match)."""
+    step1 = _step_with(reagents_referenced=["PBS", "DMEM"])
+    step2 = _step_with(reagents_referenced=["pbs"], equipment_needed=["centrifuge"])
+    proto = ProtocolGenerationOutput(
+        experiment_type="t",
+        procedures=[Procedure(name="P1", intent="t", steps=[step1, step2])],
+        steps=[],
+        total_steps=2,
+    )
+    mats = MaterialsOutput(
+        materials=[
+            _mat("PBS", category="reagent"),
+            _mat("DMEM", category="reagent"),
+            _mat("Centrifuge", category="equipment"),
+            _mat("Unused thing", category="reagent"),
+        ],
+        total_unique_items=4,
+    )
+    fe = adapt_materials(mats, protocol=proto)
+    by_name = {it.name: it for g in fe.groups for it in g.items}
+    assert by_name["PBS"].used_in_steps == ["p1-s1", "p1-s2"]  # case-insensitive
+    assert by_name["DMEM"].used_in_steps == ["p1-s1"]
+    assert by_name["Centrifuge"].used_in_steps == ["p1-s2"]
+    assert by_name["Unused thing"].used_in_steps == []
+
+
+def test_adapt_materials_used_in_steps_deduped_per_step():
+    """A material referenced in BOTH equipment_needed AND reagents_referenced
+    on the same step must NOT appear twice in used_in_steps. Same goes
+    for duplicate entries within a single list (LLMs occasionally repeat
+    items). Without dedup the FE renders "Used in 2.1, 2.1" chips."""
+    step1 = _step_with(
+        # "PBS" appears in both lists on the SAME step:
+        reagents_referenced=["PBS"],
+        equipment_needed=["PBS"],
+    )
+    step2 = _step_with(
+        # "PBS" appears twice in the same list:
+        reagents_referenced=["PBS", "pbs"],  # also tests case-insensitivity
+    )
+    proto = ProtocolGenerationOutput(
+        experiment_type="t",
+        procedures=[Procedure(name="P1", intent="t", steps=[step1, step2])],
+        steps=[],
+        total_steps=2,
+    )
+    mats = MaterialsOutput(
+        materials=[_mat("PBS", category="reagent")],
+        total_unique_items=1,
+    )
+    fe = adapt_materials(mats, protocol=proto)
+    [item] = [it for g in fe.groups for it in g.items]
+    # Each step appears at most once even though PBS is referenced twice
+    # on each step. Order = first appearance.
+    assert item.used_in_steps == ["p1-s1", "p1-s2"]
+
+
+def test_adapt_materials_used_in_steps_empty_without_protocol():
+    """When no protocol is passed, used_in_steps stays empty — adapter
+    is still callable standalone (e.g., from tests or FE design mode)."""
+    mats = MaterialsOutput(
+        materials=[_mat("PBS", category="reagent")],
+        total_unique_items=1,
+    )
+    fe = adapt_materials(mats)
+    [item] = [it for g in fe.groups for it in g.items]
+    assert item.used_in_steps == []
+
+
+def test_adapt_materials_propagates_material_id():
+    mats = MaterialsOutput(
+        materials=[Material(id="mat_abc123", name="PBS", category="reagent")],
+        total_unique_items=1,
+    )
+    fe = adapt_materials(mats)
+    [item] = [it for g in fe.groups for it in g.items]
+    assert item.material_id == "mat_abc123"

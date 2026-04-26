@@ -350,7 +350,9 @@ def materials():
 
     return jsonify({
         "plan_id": plan.id,
-        "frontend_view": adapt_materials(materials_out).model_dump(mode="json"),
+        # Pass the protocol so adapt_materials populates `used_in_steps`
+        # cross-links from each material to the steps that reference it.
+        "frontend_view": adapt_materials(materials_out, protocol=plan.protocol).model_dump(mode="json"),
         "raw": materials_out.model_dump(mode="json"),
     })
 

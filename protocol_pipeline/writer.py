@@ -34,6 +34,7 @@ from src.types import (
     ProcedureSuccessCriterion,
     ProtocolStep,
     Quantity,
+    ReagentRecipe,
     StepParams,
 )
 
@@ -60,13 +61,20 @@ Your job:
 - Emit per-step structured params (volume, temperature, duration, concentration, speed) when applicable. Use ISO 8601 duration strings (PT5M, PT1H30M, PT24H).
 - Emit per-procedure success_criteria: how does the researcher know this procedure WORKED before moving to the next one?
 
-Quality bar: would a real PI look at these steps and say "yes, I could order the materials and start running this on Monday"?
+Quality-of-life fields (Nature Protocols / protocols.io style — make this feel like a real bench protocol):
+- anticipated_outcome: 1-line description of what the researcher should see at the bench after this step. REQUIRED on measurement / harvest / readout steps. Optional on simple prep steps. Examples: "Pellet ~3 mm³, no visible debris", "OD600 should reach 0.6-0.8 within 4h", "Cells at ~70% confluence, no vacuolation".
+- is_critical: true ONLY for steps where ~80% of failures happen — the steps a senior PI would warn a new lab member about. AT MOST 1-2 critical steps per procedure (5 steps -> max 1; 10 steps -> max 2). DO NOT mark every difficult step critical; that defeats the purpose. Common critical steps: cryoprotectant equilibration time, controlled-rate freeze ramp, transfection efficiency window, antigen retrieval pH/temperature, primer extension temperature.
+- is_pause_point: true at clean state transitions where the researcher can safely stop and resume later (after a wash, after fixation, before an overnight incubation, after long-term storage step). Most steps are NOT pause points — only mark genuinely safe stopping places.
+- troubleshooting: 0-3 short bullets per step covering the most common failure modes, ONLY for the most failure-prone steps. Format: "If <observation>: <action>." Empty list if the step is robust.
+- reagent_recipes: ONLY for custom/non-commercial buffers the researcher must mix themselves. DO NOT include recipes for things that are bought as kits (PBS, DMEM, ELISA reagents, commercial cryoprotectant). DO include for: M9 minimal media salts, custom lysis buffers, gradient solutions, dilution series prepped in lab. Components should be specific quantities ("3 g Na2HPO4 per 1 L"). Notes can specify sterilization, storage, pH adjust.
 
 Hard rules:
 - Step numbers start at 1 within this procedure.
 - Each Deviation MUST cite a specific source_protocol_id (one you were given).
 - Do NOT include steps that belong to other procedures (cell prep, downstream analysis, etc. are someone else's job unless your outline says otherwise).
 - If a source step is in non-English, translate inline — do NOT leave foreign-language text in the body_md.
+
+Quality bar: would a real PI look at these steps and say "yes, I could order the materials and start running this on Monday"? Would they trust the critical-step markers as genuinely informative rather than overcautious?
 
 Return ONLY a single valid JSON object:
 {
@@ -89,7 +97,14 @@ Return ONLY a single valid JSON object:
       "controls": ["string"],
       "todo_for_researcher": ["string"],
       "source_step_refs": ["string (protocols.io step ids that informed this step)"],
-      "notes": "string or null"
+      "notes": "string or null",
+      "anticipated_outcome": "string or null",
+      "is_critical": false,
+      "is_pause_point": false,
+      "troubleshooting": ["string"],
+      "reagent_recipes": [
+        {"name": "string", "components": ["string"], "notes": "string or null"}
+      ]
     }
   ],
   "equipment": ["string"],
@@ -275,6 +290,57 @@ def _coerce_params(raw) -> StepParams:
     )
 
 
+# Hallucination defenses for the new quality-of-life fields.
+# Caps are intentionally generous — these are upper bounds for "obviously
+# something went wrong" output, not editorial limits.
+_MAX_TROUBLESHOOTING_PER_STEP = 10
+_MAX_RECIPES_PER_STEP = 5
+_MAX_RECIPE_COMPONENTS = 30
+# If the LLM flags more than this fraction of steps as critical, the rubric
+# wasn't honored and ALL critical flags get demoted. The point of "critical"
+# is to draw the eye to the few highest-risk steps; if everything is critical,
+# nothing is.
+_CRITICAL_STEP_FRACTION_BOUND = 0.30
+
+
+def _coerce_bool(v) -> bool:
+    """Lenient bool coercion that handles every shape we've seen LLMs emit
+    for boolean fields. Crucially, `bool("false")` is True in Python (any
+    non-empty string is truthy), so a naive `bool(v)` would mis-flag steps
+    as critical / pause points when the model emits a JSON string. This
+    helper accepts:
+      - actual booleans
+      - strings: "true"/"yes"/"1" -> True; everything else -> False
+      - integers: 1 -> True; anything else -> False
+      - None / missing -> False
+    """
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, str):
+        return v.strip().lower() in ("true", "yes", "1")
+    if isinstance(v, (int, float)):
+        return v == 1
+    return False
+
+
+def _coerce_reagent_recipe(raw) -> ReagentRecipe | None:
+    if not isinstance(raw, dict):
+        return None
+    name = str(raw.get("name") or "").strip()
+    if not name:
+        return None
+    components = [str(c) for c in (raw.get("components") or []) if str(c).strip()]
+    components = components[:_MAX_RECIPE_COMPONENTS]
+    if not components:
+        return None  # a recipe with no components is useless
+    notes = raw.get("notes")
+    return ReagentRecipe(
+        name=name,
+        components=components,
+        notes=str(notes) if notes else None,
+    )
+
+
 def _build_steps(raw_steps: Iterable, *, known_source_ids: set[str]) -> list[ProtocolStep]:
     steps: list[ProtocolStep] = []
     for i, raw in enumerate(raw_steps, start=1):
@@ -289,6 +355,23 @@ def _build_steps(raw_steps: Iterable, *, known_source_ids: set[str]) -> list[Pro
         n_raw = raw.get("n")
         duration = raw.get("duration")
         notes = raw.get("notes")
+        anticipated = raw.get("anticipated_outcome")
+        # Troubleshooting + recipe arrays — accept only well-formed entries,
+        # drop empties, cap counts. is_critical / is_pause_point go through
+        # _coerce_bool because the LLM occasionally emits string "false",
+        # which Python's bool() would treat as truthy.
+        troubleshooting_raw = raw.get("troubleshooting") or []
+        troubleshooting = [
+            str(t).strip() for t in troubleshooting_raw if str(t).strip()
+        ][:_MAX_TROUBLESHOOTING_PER_STEP] if isinstance(troubleshooting_raw, list) else []
+        recipes_raw = raw.get("reagent_recipes") or []
+        recipes: list[ReagentRecipe] = []
+        if isinstance(recipes_raw, list):
+            for r in recipes_raw[:_MAX_RECIPES_PER_STEP]:
+                rec = _coerce_reagent_recipe(r)
+                if rec is not None:
+                    recipes.append(rec)
+
         steps.append(ProtocolStep(
             n=n_raw if isinstance(n_raw, int) else i,
             title=str(raw.get("title") or f"Step {i}"),
@@ -301,7 +384,22 @@ def _build_steps(raw_steps: Iterable, *, known_source_ids: set[str]) -> list[Pro
             todo_for_researcher=[str(x) for x in (raw.get("todo_for_researcher") or [])],
             source_step_refs=refs,
             notes=str(notes) if notes else None,
+            anticipated_outcome=str(anticipated).strip() if anticipated else None,
+            is_critical=_coerce_bool(raw.get("is_critical")),
+            is_pause_point=_coerce_bool(raw.get("is_pause_point")),
+            troubleshooting=troubleshooting,
+            reagent_recipes=recipes,
         ))
+
+    # Critical-step bound: if the LLM over-tagged, demote all to False.
+    # This is a known failure mode of the rubric — without the bound, models
+    # default to flagging every difficult-looking step rather than picking
+    # the genuinely highest-risk 1-2.
+    n_critical = sum(1 for s in steps if s.is_critical)
+    if steps and n_critical / len(steps) > _CRITICAL_STEP_FRACTION_BOUND:
+        for s in steps:
+            s.is_critical = False
+
     return steps
 
 

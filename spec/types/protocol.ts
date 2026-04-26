@@ -13,6 +13,14 @@ export type StepParams = {
   other?: Record<string, string>;
 };
 
+// How to prepare a custom buffer / mix the researcher must make themselves.
+// Only emitted for non-commercial reagents (not "PBS" or "DMEM" if bought).
+export type ReagentRecipe = {
+  name: string;                  // 'M9 buffer (10x)'
+  components: string[];          // ['3 g Na2HPO4', '0.5 g NaCl', ...]
+  notes?: string;                // 'Sterilize by autoclaving'
+};
+
 export type ProtocolStep = {
   n: number;
   title: string;
@@ -26,6 +34,12 @@ export type ProtocolStep = {
   source_step_refs: string[];      // protocols.io step ids that informed this
   notes?: string;
   cited_doi?: DOI;
+  // Quality-of-life additions (Nature Protocols / protocols.io style):
+  anticipated_outcome?: string;    // 'Pellet ~3 mm³, no debris'
+  is_critical: boolean;            // ▲ — flag steps where most failures happen
+  is_pause_point: boolean;         // ▶ — safe stopping point
+  troubleshooting: string[];       // known failure modes
+  reagent_recipes: ReagentRecipe[];
 };
 
 // An adaptation the LLM made from a source protocol. Required so the
@@ -59,6 +73,7 @@ export type Procedure = {
   deviations_from_source: Deviation[];
   source_protocol_ids: string[];
   success_criteria: ProcedureSuccessCriterion[];
+  total_duration?: Duration;       // ISO 8601 sum of step durations (deterministic)
 };
 
 export type CitedProtocol = {
@@ -90,4 +105,5 @@ export type ProtocolGenerationOutput = {
   total_steps: number;
   source_protocol_ids: string[];
   generated_at: string;            // ISO 8601
+  total_duration?: Duration;       // ISO 8601 sum across all procedures
 };

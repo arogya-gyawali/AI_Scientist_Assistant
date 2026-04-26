@@ -105,11 +105,32 @@ class StepParams(BaseModel):
     other: dict[str, str] = Field(default_factory=dict)
 
 
+class ReagentRecipe(BaseModel):
+    """How to prepare a custom buffer or working stock referenced by a step.
+
+    Only emitted for non-commercial reagents — we don't include recipes for
+    "PBS" or "DMEM" if the lab is buying them; we only include recipes when
+    the protocol genuinely calls for the researcher to mix something."""
+    name: str                                       # "M9 buffer (10x)"
+    components: list[str]                           # ["3 g Na2HPO4", "0.5 g NaCl", ...]
+    notes: Optional[str] = None                     # "Sterilize by autoclaving"
+
+
 class ProtocolStep(BaseModel):
     """A single executable instruction. `body_md` is the human-readable
     action; `params` is the structured extraction the FE can render as a
     parameters table. `source_step_refs` cites the protocols.io step ids
-    that informed this step (auditability)."""
+    that informed this step (auditability).
+
+    Quality-of-life fields (Nature Protocols / protocols.io style):
+      - is_critical: ▲ steps where ~80% of failures happen. Sparingly used —
+        the writer is instructed to flag at most ~20% of steps.
+      - is_pause_point: ▶ clean state transitions (after a wash, before an
+        overnight incubation) where the researcher can safely stop.
+      - anticipated_outcome: what to expect at the bench after this step.
+      - troubleshooting: short bullets for known failure modes.
+      - reagent_recipes: when a step introduces a custom buffer / mix that
+        the researcher must prepare themselves."""
     n: int
     title: str
     body_md: str
@@ -122,6 +143,12 @@ class ProtocolStep(BaseModel):
     source_step_refs: list[str] = Field(default_factory=list)
     notes: Optional[str] = None
     cited_doi: Optional[str] = None
+    # New quality-of-life fields:
+    anticipated_outcome: Optional[str] = None
+    is_critical: bool = False
+    is_pause_point: bool = False
+    troubleshooting: list[str] = Field(default_factory=list)
+    reagent_recipes: list[ReagentRecipe] = Field(default_factory=list)
 
 
 class Deviation(BaseModel):
@@ -150,7 +177,12 @@ class ProcedureSuccessCriterion(BaseModel):
 class Procedure(BaseModel):
     """A logical group of steps (e.g., "Cell preparation", "Cryoprotectant
     mix", "Controlled-rate freeze"). Each procedure is the unit a single
-    procedure-writer agent owns — context isolation by construction."""
+    procedure-writer agent owns — context isolation by construction.
+
+    `total_duration` is computed deterministically by the orchestrator
+    after all writers finish (sum of step durations). Left None if any
+    step is missing a duration; partial sums would mislead researchers
+    planning their day."""
     name: str
     intent: str
     steps: list[ProtocolStep]
@@ -159,6 +191,7 @@ class Procedure(BaseModel):
     deviations_from_source: list[Deviation] = Field(default_factory=list)
     source_protocol_ids: list[str] = Field(default_factory=list)
     success_criteria: list[ProcedureSuccessCriterion] = Field(default_factory=list)
+    total_duration: Optional[str] = None  # ISO 8601, deterministic sum
 
 
 class CitedProtocol(BaseModel):
@@ -191,6 +224,7 @@ class ProtocolGenerationOutput(BaseModel):
     total_steps: int
     source_protocol_ids: list[str] = Field(default_factory=list)
     generated_at: str = Field(default_factory=now)
+    total_duration: Optional[str] = None  # ISO 8601 sum across all procedures
 
 
 class Material(BaseModel):

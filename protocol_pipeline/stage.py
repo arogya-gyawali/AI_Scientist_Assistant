@@ -24,11 +24,15 @@ lands is the source loader (currently `sources.load_all_samples()`).
 
 from __future__ import annotations
 
+import re
+from typing import Optional
+
 from src.types import (
     CitedProtocol,
     ExperimentPlan,
     Hypothesis,
     MaterialsOutput,
+    Procedure,
     ProtocolGenerationOutput,
     ProtocolStep,
     StageStatusComplete,
@@ -42,6 +46,95 @@ from .materials import roll_up_materials
 from .relevance import filter_relevant
 from .sources import NormalizedProtocol, load_all_samples
 from .writer import write_procedures_parallel
+
+
+# --------------------------------------------------------------------------
+# ISO 8601 duration sum — for procedure / protocol total_duration
+# --------------------------------------------------------------------------
+# We compute totals deterministically rather than asking the writer to
+# emit them. Researchers plan their day around these numbers; even an
+# off-by-an-hour LLM estimate is worse than no estimate at all.
+
+_ISO_DURATION_RE = re.compile(
+    r"^P"
+    r"(?:(\d+)Y)?"        # years
+    r"(?:(\d+)M)?"        # months (M *before* T)
+    r"(?:(\d+)W)?"        # weeks
+    r"(?:(\d+)D)?"        # days
+    r"(?:T"
+    r"(?:(\d+)H)?"        # hours
+    r"(?:(\d+)M)?"        # minutes (M *after* T)
+    r"(?:(\d+(?:\.\d+)?)S)?"   # seconds (allow fractional)
+    r")?$"
+)
+
+
+def _iso_duration_to_seconds(iso: str) -> Optional[float]:
+    """Parse an ISO 8601 duration string to total seconds. Returns None for
+    malformed / empty input. Years -> 365 days, months -> 30 days (rough,
+    but Y/M-without-T are vanishingly rare in lab protocols)."""
+    s = (iso or "").strip()
+    if not s or s == "P":
+        return None
+    m = _ISO_DURATION_RE.match(s)
+    if not m:
+        return None
+    years, months, weeks, days, hours, minutes, seconds = m.groups()
+    if not any((years, months, weeks, days, hours, minutes, seconds)):
+        return None  # "P" or "PT" alone is malformed
+    total = 0.0
+    if years: total += int(years) * 365 * 86400
+    if months: total += int(months) * 30 * 86400
+    if weeks: total += int(weeks) * 7 * 86400
+    if days: total += int(days) * 86400
+    if hours: total += int(hours) * 3600
+    if minutes: total += int(minutes) * 60
+    if seconds: total += float(seconds)
+    return total
+
+
+def _seconds_to_iso_duration(total: float) -> str:
+    """Format total seconds back to a readable ISO 8601 duration. We use
+    days/hours/minutes — never weeks or months (FE-side `_humanize_duration`
+    can format days into 'X d' / hours into 'X h' as needed)."""
+    if total <= 0:
+        return "PT0S"
+    secs_int = int(total)
+    days, rem = divmod(secs_int, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes, secs = divmod(rem, 60)
+
+    date_part = f"{days}D" if days else ""
+    time_parts = ""
+    if hours: time_parts += f"{hours}H"
+    if minutes: time_parts += f"{minutes}M"
+    if secs and not (days or hours or minutes):
+        time_parts += f"{secs}S"
+
+    if not date_part and not time_parts:
+        return "PT0S"
+    out = "P" + date_part
+    if time_parts:
+        out += "T" + time_parts
+    return out
+
+
+def _sum_iso8601_durations(durations: list[Optional[str]]) -> Optional[str]:
+    """Sum a list of ISO 8601 duration strings. Returns None if ANY input
+    is missing or malformed — a partial sum would mislead a researcher
+    budgeting their day. Conservative-by-design: better no estimate than
+    a wrong one."""
+    if not durations:
+        return None
+    total = 0.0
+    for d in durations:
+        if not d:
+            return None
+        s = _iso_duration_to_seconds(d)
+        if s is None:
+            return None
+        total += s
+    return _seconds_to_iso_duration(total)
 
 
 # --------------------------------------------------------------------------
@@ -93,7 +186,13 @@ def run_protocol_only(
         max_workers=max_writer_workers,
     )
 
-    # 4. Build flat steps view (re-numbered across procedures for FE checklist)
+    # 4. Compute total_duration per procedure (deterministic sum of step
+    # durations). Mutates Procedures in place. None when ANY step is
+    # missing a duration — a partial sum would be misleading.
+    for proc in procedures:
+        proc.total_duration = _sum_iso8601_durations([s.duration for s in proc.steps])
+
+    # 5. Build flat steps view (re-numbered across procedures for FE checklist)
     flat_steps: list[ProtocolStep] = []
     counter = 1
     for proc in procedures:
@@ -117,6 +216,11 @@ def run_protocol_only(
             contribution_weight=round(sp.score.score, 2),
         ))
 
+    # Experiment-wide total: sum the per-procedure totals (which we just
+    # computed above). Same conservative behavior — None if any procedure
+    # came back None.
+    total_duration = _sum_iso8601_durations([p.total_duration for p in procedures])
+
     protocol = ProtocolGenerationOutput(
         experiment_type=outline.experiment_type,
         domain=outline.domain or hypothesis.domain,
@@ -127,6 +231,7 @@ def run_protocol_only(
         assumptions=outline.overall_assumptions,
         total_steps=len(flat_steps),
         source_protocol_ids=sorted(referenced_ids),
+        total_duration=total_duration,
     )
     return protocol, outline
 
