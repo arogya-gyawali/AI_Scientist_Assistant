@@ -1611,14 +1611,25 @@ const ExperimentPlan = () => {
                         setPdfDownloading(false);
                       }
                     }}
-                    className="group inline-flex items-center gap-1.5 border-b border-transparent pb-0.5 font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-ink-soft transition-colors hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                    className={
+                      "group inline-flex items-center gap-2 rounded-md border-2 px-4 py-2.5 font-mono-notebook text-[12px] uppercase tracking-[0.22em] shadow-sm transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 " +
+                      ((!apiPlanId && !incomingPlanId) || pdfDownloading
+                        ? "border-rule bg-paper text-ink-soft "
+                        : "border-primary bg-primary text-primary-foreground hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_hsl(var(--primary)/0.6)] hover:border-primary/80 active:translate-y-0")
+                    }
                   >
-                    <Download className="h-3 w-3" strokeWidth={1.75} />
+                    <Download
+                      className={
+                        "h-4 w-4 transition-transform duration-200 " +
+                        (pdfDownloading ? "animate-pulse" : "group-hover:translate-y-0.5")
+                      }
+                      strokeWidth={2}
+                    />
                     {pdfDownloading
                       ? "Generating PDF…"
                       : (!apiPlanId && !incomingPlanId)
                       ? "Preparing PDF…"
-                      : "Download protocol (PDF)"}
+                      : "Download PDF"}
                   </button>
                 )}
 

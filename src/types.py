@@ -16,6 +16,29 @@ def now() -> str:
 
 # ---- Shared ---------------------------------------------------------------
 
+class KeyDifference(BaseModel):
+    """One concrete way a cited paper differs from the user's hypothesis.
+
+    Defensibility: the LLM is required to populate `their_approach` from the
+    paper's abstract; the parser drops entries with sub-token strings or an
+    unknown dimension, so every difference reaching the FE is structurally
+    sound. `dimension` is a fixed taxonomy so the FE can group or filter;
+    `gap_significance` makes explicit why the difference matters for whether
+    this paper is a near-precedent or genuinely adjacent work.
+    """
+    dimension: Literal[
+        "subject",        # organism / cell line / patient population
+        "intervention",   # what's manipulated (independent variable)
+        "measurement",    # what's measured (dependent variable)
+        "conditions",     # culture / environmental / dose conditions
+        "scope",          # in vitro vs in vivo, sample size, duration
+        "method",         # assay / technique
+    ]
+    their_approach: str   # what the cited paper does (drawn from abstract)
+    our_approach: str     # what the user's hypothesis specifies
+    gap_significance: str # why the difference matters / gap it leaves
+
+
 class Citation(BaseModel):
     source: str
     confidence: Literal["high", "medium", "low"]
@@ -30,6 +53,7 @@ class Citation(BaseModel):
     description: Optional[str] = None           # Neutral paper description (LLM-generated; lit-review refs)
     matched_on: Optional[list[str]] = None      # Concept chips ("E. coli", "Glucose", ...)
     importance: Optional[str] = None            # "Why this matched" — relevance to hypothesis (LLM-generated)
+    key_differences: Optional[list[KeyDifference]] = None  # Phase E: per-reference structured deltas
 
 
 class StructuredHypothesis(BaseModel):

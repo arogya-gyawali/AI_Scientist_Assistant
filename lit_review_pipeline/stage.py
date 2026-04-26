@@ -34,6 +34,7 @@ from src.types import (
     Citation,
     ExperimentPlan,
     Hypothesis,
+    KeyDifference,
     LitReviewOutput,
     LitReviewSession,
     NoveltySignal,
@@ -74,6 +75,15 @@ Editorial output per chosen reference:
 - matched_on    (array of 3-5 short concept tags that bridge this paper to the hypothesis, e.g. ["E. coli", "Glucose", "Catabolite repression"])
 - description   (1-2 sentences, NEUTRAL: synthesize what this paper actually covers, drawing from title + abstract. May note limitations factually but DO NOT compare to the user's study here.)
 - importance    (1-2 sentences, RELATIONAL: why does this paper match the user's hypothesis? Where does it overlap, where does it differ, what gap does the user's study fill? This is "why this matched.")
+- key_differences (array of 2-4 STRUCTURED deltas between this paper and the user's hypothesis. Each must be grounded in the paper's abstract. The user reads these to understand WHY the paper is "adjacent" rather than "exact match" and what gap their experiment fills.
+
+  Each key_difference object:
+  - dimension       (one of: "subject", "intervention", "measurement", "conditions", "scope", "method")
+  - their_approach  (what THIS paper does, drawn from the abstract — concrete, e.g. "uses chemostat continuous culture" not "different culture mode")
+  - our_approach    (what the user's hypothesis specifies — concrete, drawn from the structured fields)
+  - gap_significance (why this difference matters for novelty: what gap it leaves, what conclusion it cannot support, why the user's study is needed)
+
+  Quality bar: only emit a difference if it is BOTH true (paper genuinely does not do this) AND material (it changes whether the paper answers the user's research question). Two genuine differences beat four padding ones. If the paper is an exact match across every dimension, return an empty array.)
 
 Top-level output:
 - signal       ("novel" — no close prior work | "similar_work_exists" — related but not identical | "exact_match_found" — this exact experiment has been published)
@@ -95,7 +105,15 @@ Return ONLY a single valid JSON object:
       "relevance_score": 0.0,
       "matched_on": ["string"],
       "description": "string",
-      "importance": "string"
+      "importance": "string",
+      "key_differences": [
+        {
+          "dimension": "subject" | "intervention" | "measurement" | "conditions" | "scope" | "method",
+          "their_approach": "string",
+          "our_approach": "string",
+          "gap_significance": "string"
+        }
+      ]
     }
   ],
   "summary": "string (3-4 sentences, hard limit)"
@@ -272,6 +290,47 @@ def _format_papers(papers: list[dict]) -> str:
     return "\n\n".join(lines)
 
 
+_VALID_DIFF_DIMENSIONS = {
+    "subject", "intervention", "measurement",
+    "conditions", "scope", "method",
+}
+
+
+def _parse_key_differences(raw: object) -> list[KeyDifference]:
+    """Parse + validate the LLM's key_differences array. Drops entries that
+    fail validation (missing fields, unknown dimension, sub-token strings).
+
+    We don't try to verify the `their_approach` claim is *literally* in the
+    abstract — abstracts are paraphrased prose and a substring check would
+    over-reject. Instead the prompt instructs the LLM to ground each entry
+    in the abstract; here we just enforce structure (all 4 fields populated,
+    valid dimension, non-trivial length) so malformed entries don't reach
+    the FE."""
+    if not isinstance(raw, list):
+        return []
+    out: list[KeyDifference] = []
+    for entry in raw[:6]:  # Hard cap to keep the FE list scannable
+        if not isinstance(entry, dict):
+            continue
+        dim = str(entry.get("dimension") or "").strip().lower()
+        if dim not in _VALID_DIFF_DIMENSIONS:
+            continue
+        their = str(entry.get("their_approach") or "").strip()
+        ours = str(entry.get("our_approach") or "").strip()
+        sig = str(entry.get("gap_significance") or "").strip()
+        # Reject ultra-short fields that almost always indicate the LLM
+        # padded a difference rather than identifying a real one.
+        if len(their) < 8 or len(ours) < 8 or len(sig) < 12:
+            continue
+        out.append(KeyDifference(
+            dimension=dim,  # type: ignore[arg-type]
+            their_approach=their,
+            our_approach=ours,
+            gap_significance=sig,
+        ))
+    return out
+
+
 def _compose_citation(paper: dict, editorial: dict) -> Citation:
     """Build a Citation from a Europe PMC paper + the LLM's editorial layer.
 
@@ -281,6 +340,8 @@ def _compose_citation(paper: dict, editorial: dict) -> Citation:
     """
     page_url = _paper_url(paper)
     abstract = paper.get("abstractText")
+
+    differences = _parse_key_differences(editorial.get("key_differences"))
 
     return Citation(
         source="europe_pmc",
@@ -296,6 +357,7 @@ def _compose_citation(paper: dict, editorial: dict) -> Citation:
         matched_on=editorial.get("matched_on") or [],
         description=editorial.get("description"),
         importance=editorial.get("importance"),
+        key_differences=differences or None,
     )
 
 

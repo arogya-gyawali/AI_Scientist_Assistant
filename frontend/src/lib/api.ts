@@ -26,6 +26,17 @@ export type StructuredHypothesis = {
   expected: string;
 };
 
+// Phase E: per-reference structured deltas. Each describes one concrete
+// way the cited paper differs from the user's hypothesis. Server-side
+// parser drops malformed entries (unknown dimension, sub-token strings)
+// so anything reaching the FE is structurally valid.
+export type KeyDifference = {
+  dimension: "subject" | "intervention" | "measurement" | "conditions" | "scope" | "method";
+  their_approach: string;
+  our_approach: string;
+  gap_significance: string;
+};
+
 export type Citation = {
   source: string;
   confidence: "high" | "medium" | "low";
@@ -40,6 +51,7 @@ export type Citation = {
   matched_on?: string[];
   description?: string;
   importance?: string;
+  key_differences?: KeyDifference[];
 };
 
 export type LitReviewResponse = {
