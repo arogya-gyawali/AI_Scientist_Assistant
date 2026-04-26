@@ -3,13 +3,16 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   postMaterials,
   postProtocol,
+  postTimeline,
   type FEMaterialGroup,
   type FEMaterialsView,
   type FEProcedureGroup,
   type FEProtocolStep,
   type FEProtocolView,
   type StructuredHypothesis,
+  type TimelineOutput,
 } from "@/lib/api";
+import { composeHypothesisQuestion } from "@/lib/hypothesis";
 import {
   AlertTriangle,
   ArrowRight,
@@ -913,6 +916,7 @@ const ExperimentPlan = () => {
   // + total_duration + assumptions without round-tripping the parent state.
   const [apiProtocolView, setApiProtocolView] = useState<FEProtocolView | null>(null);
   const [apiMaterialsView, setApiMaterialsView] = useState<FEMaterialsView | null>(null);
+  const [apiTimeline, setApiTimeline] = useState<TimelineOutput | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
 
   const useMockData = !incomingPlanId && !incomingStructured;
@@ -950,9 +954,20 @@ const ExperimentPlan = () => {
         setApiMaterialsView(mats.frontend_view);
         setStageIdx(2);
         setReveal(2);
-        // The remaining reveal stages (3, 4) gate budget/timeline/validation,
-        // which are still hardcoded in this mockup. Reveal them on a short
-        // delay so they stagger into view as the user scrolls.
+
+        // Stage 5: timeline. Cheap deterministic compute (no LLM call)
+        // — fast enough to fold into the same chain. If it fails, the
+        // FE falls back to the hardcoded TIMELINE constant.
+        try {
+          const tl = await postTimeline({ plan_id: proto.plan_id }, ac.signal);
+          setApiTimeline(tl.timeline);
+        } catch {
+          // non-fatal — keep going with the hardcoded timeline fallback
+        }
+
+        // The remaining reveal stages (3, 4) gate budget/timeline/validation.
+        // Reveal them on a short delay so they stagger into view as the
+        // user scrolls.
         const t3 = window.setTimeout(() => setReveal(3), 600);
         const t4 = window.setTimeout(() => setReveal(4), 1200);
         // Stash the timeouts on the abort controller's signal handler.
@@ -991,6 +1006,52 @@ const ExperimentPlan = () => {
   const hasRichProtocol = procedures.length > 0;
   const protocolTotalDuration = apiProtocolView?.total_duration ?? null;
   const protocolAssumptions = apiProtocolView?.assumptions ?? [];
+
+  // Sentence-cased experiment_type plus first procedure's intent.
+  // Falls back to the design-mock subtitle in mock-only mode.
+  const protocolSubtitle = useMemo(() => {
+    const expType = apiProtocolView?.experiment_type?.trim();
+    if (!expType) {
+      return "Glucose-gradient kinetic assay in M9 minimal media, plate-reader readout.";
+    }
+    const capitalized = expType.charAt(0).toUpperCase() + expType.slice(1);
+    const firstIntent = procedures[0]?.intent?.trim();
+    return firstIntent ? `${capitalized} — ${firstIntent}` : capitalized;
+  }, [apiProtocolView, procedures]);
+
+  // Validation aggregate — flatten success_criteria across procedures and
+  // dedup how_measured strings (case-insensitive). `useReal` flips on as
+  // soon as any procedure carries criteria; mock-only mode renders the
+  // hardcoded VALIDATION constant via the `useReal === false` branch in
+  // the JSX below.
+  const validation = useMemo(() => {
+    const aggCriteria = procedures.flatMap((p) =>
+      p.success_criteria.map((c) => ({
+        what: c.what,
+        threshold: c.threshold ?? null,
+        fromProcedure: p.name,
+        procedureIndex: p.procedure_index,
+        howMeasured: c.how_measured,
+      })),
+    );
+    const seenLowered = new Set<string>();
+    const measuredMethods = aggCriteria
+      .map((c) => c.howMeasured.trim())
+      .filter((m) => {
+        if (!m) return false;
+        const k = m.toLowerCase();
+        if (seenLowered.has(k)) return false;
+        seenLowered.add(k);
+        return true;
+      });
+    const useReal = aggCriteria.length > 0;
+    return {
+      aggCriteria,
+      useReal,
+      measured: useReal ? measuredMethods : VALIDATION.measured,
+    };
+  }, [procedures]);
+
   const materialGroups = useMemo<FEMaterialGroup[]>(
     () => apiMaterialsView?.groups ?? MATERIALS,
     [apiMaterialsView],
@@ -1270,14 +1331,11 @@ const ExperimentPlan = () => {
                   HYPOTHESIS_SUMMARY mock keeps direct-page-navigation
                   demos from breaking. The research_question field is
                   the most prose-friendly; falls back to a composed
-                  sentence if it's blank. */}
+                  sentence (shared util — same logic LiteratureCheck
+                  uses for its tokenized breakdown) if it's blank. */}
               {incomingStructured?.research_question?.trim()
                 || (incomingStructured
-                    ? `Does ${incomingStructured.independent || "the intervention"} affect `
-                      + `${incomingStructured.dependent || "the outcome"} in `
-                      + `${incomingStructured.subject || "the system"}`
-                      + (incomingStructured.conditions ? ` under ${incomingStructured.conditions}` : "")
-                      + "?"
+                    ? composeHypothesisQuestion(incomingStructured)
                     : HYPOTHESIS_SUMMARY)}
             </p>
           </div>
@@ -1451,18 +1509,7 @@ const ExperimentPlan = () => {
                       {/* Subtitle composed from real BE data: experiment_type
                           + the first procedure's intent. Both are deterministic
                           (no new LLM call); same plan -> same subtitle. */}
-                      {(() => {
-                        const expType = apiProtocolView?.experiment_type?.trim();
-                        const firstIntent = procedures[0]?.intent?.trim();
-                        if (expType && firstIntent) {
-                          // Lower-case experiment_type after the first word for
-                          // sentence-case feel, e.g. "Cryopreservation comparison"
-                          // stays as-is, "ELISA assay validation" stays as-is.
-                          return `${expType.charAt(0).toUpperCase() + expType.slice(1)} — ${firstIntent}`;
-                        }
-                        if (expType) return expType.charAt(0).toUpperCase() + expType.slice(1);
-                        return "Glucose-gradient kinetic assay in M9 minimal media, plate-reader readout.";
-                      })()}
+                      {protocolSubtitle}
                     </p>
                     {/* Phase 5a: total time chip — populated when ALL step
                         durations are present (BE returns null otherwise to
@@ -2020,41 +2067,126 @@ const ExperimentPlan = () => {
               </div>
 
               {/* Timeline */}
-              <div className="rounded-md border border-rule bg-paper-raised">
-                <div className="flex items-baseline justify-between border-b border-rule px-7 py-4">
-                  <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                    Timeline
-                  </p>
-                  <p className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-ink-soft">
-                    ~4 weeks
-                  </p>
+              {/* Timeline section — when /timeline returned real
+                  phase data, render the deterministically-computed
+                  phases with their methodology + coverage chips
+                  (defensibility surface). Falls back to hardcoded
+                  TIMELINE for mock-only / fetch-failed paths. */}
+              {apiTimeline && apiTimeline.phases.length > 0 ? (
+                <div className="rounded-md border border-rule bg-paper-raised">
+                  <div className="flex items-baseline justify-between border-b border-rule px-7 py-4">
+                    <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                      Timeline
+                    </p>
+                    <p className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-ink-soft">
+                      {apiTimeline.total_duration
+                        ? humanizeDuration(apiTimeline.total_duration)
+                        : "Estimate incomplete"}
+                    </p>
+                  </div>
+                  <ol className="divide-y divide-rule">
+                    {apiTimeline.phases.map((p, i) => (
+                      <li key={p.id} className="grid grid-cols-[auto_1fr] gap-4 px-7 py-4">
+                        <div className="flex flex-col items-center">
+                          <span className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-ink">
+                            #{p.procedure_index}
+                          </span>
+                          {i < apiTimeline.phases.length - 1 && (
+                            <span aria-hidden className="mt-2 h-full w-px flex-1 bg-rule" />
+                          )}
+                        </div>
+                        <div>
+                          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                            <p
+                              className="text-[19px] italic leading-tight text-ink"
+                              style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                            >
+                              {p.name}
+                            </p>
+                            {p.duration && (
+                              <span className="inline-flex items-center gap-1.5 rounded-sm border border-rule bg-paper px-2 py-0.5 font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+                                <Timer aria-hidden className="h-3 w-3" strokeWidth={1.75} />
+                                {humanizeDuration(p.duration)}
+                              </span>
+                            )}
+                            {/* Coverage chip — defensibility: shows
+                                what fraction of steps had duration data
+                                feeding this phase's number. */}
+                            {p.coverage < 1 && (
+                              <span
+                                className="inline-flex items-center gap-1.5 rounded-sm border border-[hsl(38_70%_55%)]/40 bg-[hsl(38_70%_92%)]/40 px-2 py-0.5 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-[hsl(28_55%_30%)]"
+                                title={p.methodology}
+                              >
+                                {Math.round(p.coverage * 100)}% covered
+                              </span>
+                            )}
+                            {/* Back-link to the source procedure */}
+                            <a
+                              href={`#proc-${p.procedure_index}`}
+                              className="inline-flex items-center gap-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-ink"
+                              title="Jump to source procedure"
+                            >
+                              ↑ procedure
+                            </a>
+                          </div>
+                          <p className="mt-1 text-[13px] leading-[1.6] text-ink-soft">
+                            {p.methodology}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                  {apiTimeline.assumptions.length > 0 && (
+                    <details className="border-t border-rule">
+                      <summary className="flex cursor-pointer items-center justify-between gap-3 px-7 py-3 font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-ink-soft hover:text-ink">
+                        Assumptions ({apiTimeline.assumptions.length})
+                        <ChevronDown aria-hidden className="h-3.5 w-3.5" strokeWidth={1.75} />
+                      </summary>
+                      <ul className="border-t border-rule px-7 py-3 space-y-1.5 list-disc pl-10 text-[13px] leading-[1.55] text-ink-soft">
+                        {apiTimeline.assumptions.map((a, i) => (
+                          <li key={i}>{a}</li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
                 </div>
-                <ol className="divide-y divide-rule">
-                  {TIMELINE.map((t, i) => (
-                    <li key={t.week} className="grid grid-cols-[auto_1fr] gap-4 px-7 py-4">
-                      <div className="flex flex-col items-center">
-                        <span className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-ink">
-                          {t.week}
-                        </span>
-                        {i < TIMELINE.length - 1 && (
-                          <span aria-hidden className="mt-2 h-full w-px flex-1 bg-rule" />
-                        )}
-                      </div>
-                      <div>
-                        <p
-                          className="text-[19px] italic leading-tight text-ink"
-                          style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
-                        >
-                          {t.phase}
-                        </p>
-                        <p className="mt-1 text-[14px] leading-[1.6] text-ink-soft">
-                          {t.note}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
+              ) : (
+                <div className="rounded-md border border-rule bg-paper-raised">
+                  <div className="flex items-baseline justify-between border-b border-rule px-7 py-4">
+                    <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                      Timeline
+                    </p>
+                    <p className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-ink-soft">
+                      ~4 weeks
+                    </p>
+                  </div>
+                  <ol className="divide-y divide-rule">
+                    {TIMELINE.map((t, i) => (
+                      <li key={t.week} className="grid grid-cols-[auto_1fr] gap-4 px-7 py-4">
+                        <div className="flex flex-col items-center">
+                          <span className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-ink">
+                            {t.week}
+                          </span>
+                          {i < TIMELINE.length - 1 && (
+                            <span aria-hidden className="mt-2 h-full w-px flex-1 bg-rule" />
+                          )}
+                        </div>
+                        <div>
+                          <p
+                            className="text-[19px] italic leading-tight text-ink"
+                            style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                          >
+                            {t.phase}
+                          </p>
+                          <p className="mt-1 text-[14px] leading-[1.6] text-ink-soft">
+                            {t.note}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
             </div>
             </div>
           </details>
@@ -2085,105 +2217,65 @@ const ExperimentPlan = () => {
             </summary>
             <div className="border-t border-rule px-6 py-6 sm:px-7">
 
-            {(() => {
-              // Aggregate validation data from real procedures so the
-              // section actually reflects the generated plan instead of
-              // a hardcoded glucose-experiment template. Each success
-              // criterion is annotated with the procedure it came from
-              // (defensibility — researchers can audit by jumping to
-              // the procedure). Falls back to mock VALIDATION constant
-              // when in mock-only mode.
-              type AggCriterion = {
-                what: string;
-                threshold: string | null;
-                fromProcedure: string;
-                procedureIndex: number;
-                howMeasured: string;
-              };
-              const aggCriteria: AggCriterion[] = procedures.flatMap((p) =>
-                p.success_criteria.map((c) => ({
-                  what: c.what,
-                  threshold: c.threshold ?? null,
-                  fromProcedure: p.name,
-                  procedureIndex: p.procedure_index,
-                  howMeasured: c.how_measured,
-                }))
-              );
-              // Unique measurement methods (what we measure) — dedup
-              // case-insensitively to avoid showing "trypan blue" and
-              // "Trypan Blue" as separate items.
-              const seenLowered = new Set<string>();
-              const measuredMethods = aggCriteria
-                .map((c) => c.howMeasured.trim())
-                .filter((m) => {
-                  if (!m) return false;
-                  const k = m.toLowerCase();
-                  if (seenLowered.has(k)) return false;
-                  seenLowered.add(k);
-                  return true;
-                });
-
-              const useReal = aggCriteria.length > 0;
-              const measured = useReal ? measuredMethods : VALIDATION.measured;
-
-              return (
-                <div className="grid grid-cols-1 overflow-hidden rounded-md border border-rule bg-paper-raised sm:grid-cols-2">
-                  <div className="border-rule px-7 py-6 sm:border-r">
-                    <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                      What we measure
-                    </p>
-                    <ul className="mt-4 space-y-3">
-                      {measured.map((m, i) => (
-                        <li key={i} className="flex gap-3 text-[15px] leading-[1.65] text-ink">
-                          <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink" />
-                          <span>{m}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="px-7 py-6">
-                    <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-sage">
-                      Success criteria
-                    </p>
-                    <ul className="mt-4 space-y-3">
-                      {useReal ? (
-                        aggCriteria.map((c, i) => (
-                          <li key={i} className="text-[15px] leading-[1.65] text-ink">
-                            <div className="flex gap-3">
-                              <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-sage" />
-                              <div>
-                                <span>{c.what}</span>
-                                {c.threshold && (
-                                  <span className="ml-2 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-primary">
-                                    [{c.threshold}]
-                                  </span>
-                                )}
-                                {/* Citation chip — researcher can jump back to
-                                    the procedure that produced this criterion. */}
-                                <a
-                                  href={`#proc-${c.procedureIndex}`}
-                                  className="ml-2 inline-flex items-center gap-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-ink"
-                                  title="Jump to source procedure"
-                                >
-                                  ↑ {c.fromProcedure}
-                                </a>
-                              </div>
-                            </div>
-                          </li>
-                        ))
-                      ) : (
-                        VALIDATION.success.map((m, i) => (
-                          <li key={i} className="flex gap-3 text-[15px] leading-[1.65] text-ink">
-                            <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-sage" />
-                            <span>{m}</span>
-                          </li>
-                        ))
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              );
-            })()}
+            {/* Validation aggregate is computed in the `validation` useMemo
+                up top; here we just render. Each success criterion carries
+                a "↑ {procedure name}" back-link so researchers can audit
+                by jumping to the source procedure. */}
+            <div className="grid grid-cols-1 overflow-hidden rounded-md border border-rule bg-paper-raised sm:grid-cols-2">
+              <div className="border-rule px-7 py-6 sm:border-r">
+                <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                  What we measure
+                </p>
+                <ul className="mt-4 space-y-3">
+                  {validation.measured.map((m, i) => (
+                    <li key={i} className="flex gap-3 text-[15px] leading-[1.65] text-ink">
+                      <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink" />
+                      <span>{m}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="px-7 py-6">
+                <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-sage">
+                  Success criteria
+                </p>
+                <ul className="mt-4 space-y-3">
+                  {validation.useReal ? (
+                    validation.aggCriteria.map((c, i) => (
+                      <li key={i} className="text-[15px] leading-[1.65] text-ink">
+                        <div className="flex gap-3">
+                          <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-sage" />
+                          <div>
+                            <span>{c.what}</span>
+                            {c.threshold && (
+                              <span className="ml-2 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-primary">
+                                [{c.threshold}]
+                              </span>
+                            )}
+                            {/* Citation chip — researcher can jump back to
+                                the procedure that produced this criterion. */}
+                            <a
+                              href={`#proc-${c.procedureIndex}`}
+                              className="ml-2 inline-flex items-center gap-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-ink"
+                              title="Jump to source procedure"
+                            >
+                              ↑ {c.fromProcedure}
+                            </a>
+                          </div>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    VALIDATION.success.map((m, i) => (
+                      <li key={i} className="flex gap-3 text-[15px] leading-[1.65] text-ink">
+                        <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-sage" />
+                        <span>{m}</span>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+            </div>
             </div>
           </details>
         )}

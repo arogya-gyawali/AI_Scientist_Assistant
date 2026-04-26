@@ -244,6 +244,16 @@ def run_materials_only(protocol: ProtocolGenerationOutput) -> MaterialsOutput:
     return roll_up_materials(protocol.procedures)
 
 
+def run_timeline_only(protocol: ProtocolGenerationOutput):
+    """Run Stage 5 only: deterministic timeline computation. Designed
+    for a /timeline endpoint that chains off a previously-saved
+    protocol. No LLM call — pure summation of step durations."""
+    # Lazy import to avoid a circular dep with timeline.py (which
+    # imports `_sum_iso8601_durations` from this module).
+    from .timeline import compute_timeline
+    return compute_timeline(protocol)
+
+
 def run(
     hypothesis: Hypothesis,
     *,

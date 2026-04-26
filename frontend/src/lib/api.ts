@@ -170,6 +170,47 @@ export type MaterialsResponse = {
   raw: unknown;
 };
 
+// ----- /timeline response (Stage 5) ---------------------------------------
+// Deterministic compute — no LLM call. Each phase carries `methodology`
+// (plain-English description of how its duration was computed) and
+// `coverage` (fraction of steps with duration data) so the FE can show
+// audit-friendly chips. `total_duration` is null when ANY phase had
+// incomplete data — conservative-by-design.
+
+export type TimelineTask = {
+  step_n: number;
+  name: string;
+  duration?: string;          // ISO 8601, null when step has no duration
+  hands_on_time?: string;
+  can_parallel: boolean;
+};
+
+export type TimelinePhase = {
+  id: string;                 // "phase-{procedure_index}"
+  name: string;
+  duration?: string;          // null when ANY task duration is missing
+  tasks: TimelineTask[];
+  depends_on: string[];
+  parallel_with: string[];
+  procedure_index: number;
+  coverage: number;           // 0..1
+  methodology: string;
+};
+
+export type TimelineOutput = {
+  phases: TimelinePhase[];
+  total_duration?: string;    // null when ANY phase is missing
+  critical_path: string[];    // phase IDs in dependency order
+  assumptions: string[];
+  earliest_completion_date?: string;
+  generated_at: string;
+};
+
+export type TimelineResponse = {
+  plan_id: string;
+  timeline: TimelineOutput;
+};
+
 // ----- Error shape -------------------------------------------------------
 
 export type ApiError = {
@@ -243,7 +284,7 @@ export function postLitReview(
   return postJson("/lit-review", body, signal);
 }
 
-// /protocol and /materials accept the same {plan_id} OR {structured} forms.
+// /protocol /materials /timeline accept the same {plan_id} OR {structured} forms.
 export type StageRequest =
   | { plan_id: string }
   | { structured: StructuredHypothesis; domain?: string };
@@ -254,4 +295,8 @@ export function postProtocol(body: StageRequest, signal?: AbortSignal): Promise<
 
 export function postMaterials(body: StageRequest, signal?: AbortSignal): Promise<MaterialsResponse> {
   return postJson("/materials", body, signal);
+}
+
+export function postTimeline(body: StageRequest, signal?: AbortSignal): Promise<TimelineResponse> {
+  return postJson("/timeline", body, signal);
 }

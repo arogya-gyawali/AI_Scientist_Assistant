@@ -298,6 +298,53 @@ StageStatus = (
 )
 
 
+# ---- Stage 5: Timeline ----------------------------------------------------
+# Computed deterministically from the protocol's per-step durations — no LLM
+# call. Each phase shows its `methodology` (how the duration was computed)
+# and `coverage` (fraction of steps with duration data) so a researcher can
+# audit every claim. Conservative-by-design: phases with incomplete duration
+# data return total_duration=None rather than a misleading partial sum.
+
+class TimelineTask(BaseModel):
+    """One step rendered as a timeline task. step_n is the global flat
+    step number (matches ProtocolGenerationOutput.steps); useful for
+    cross-linking from a Gantt chart back to the underlying step."""
+    step_n: int
+    name: str                       # step.title
+    duration: Optional[str] = None  # ISO 8601, None when step has no duration
+    hands_on_time: Optional[str] = None  # not auto-computed yet
+    can_parallel: bool = False      # not auto-detected yet
+
+
+class TimelinePhase(BaseModel):
+    """A logical group of timeline tasks — currently 1:1 with procedures.
+    `coverage` is the fraction of tasks with duration data; `methodology`
+    is a one-line plain-English description of how `duration` was
+    computed (so the user can audit / reproduce)."""
+    id: str                         # "phase-{procedure_index}"
+    name: str                       # procedure.name
+    duration: Optional[str] = None  # sum of task durations; None if any missing
+    tasks: list[TimelineTask]
+    depends_on: list[str] = Field(default_factory=list)
+    parallel_with: list[str] = Field(default_factory=list)
+    # Defensibility / citations:
+    procedure_index: int            # back-link to source procedure
+    coverage: float = 1.0           # 0..1 fraction of tasks with duration data
+    methodology: str                # "Sum of N step durations from procedure 'X'"
+
+
+class TimelineOutput(BaseModel):
+    """Stage 5 output. Deterministic; same protocol -> same timeline.
+    `assumptions` documents what the compute does NOT cover (hands-on
+    time, parallelization opportunities, calendar constraints)."""
+    phases: list[TimelinePhase]
+    total_duration: Optional[str] = None  # ISO 8601 sum across phases
+    critical_path: list[str]              # phase IDs in dependency order
+    assumptions: list[str] = Field(default_factory=list)
+    earliest_completion_date: Optional[str] = None
+    generated_at: str = Field(default_factory=now)
+
+
 # ---- ExperimentPlan (blackboard) -----------------------------------------
 
 class ExperimentPlanMeta(BaseModel):
@@ -323,7 +370,7 @@ class ExperimentPlan(BaseModel):
     protocol: Optional[ProtocolGenerationOutput] = None
     materials: Optional[MaterialsOutput] = None
     budget: Optional[dict[str, Any]] = None          # -> BudgetOutput
-    timeline: Optional[dict[str, Any]] = None        # -> TimelineOutput
+    timeline: Optional[TimelineOutput] = None
     validation: Optional[dict[str, Any]] = None      # -> ValidationOutput
     critique: Optional[dict[str, Any]] = None        # -> DesignCritique
     summary: Optional[dict[str, Any]] = None         # -> SummaryOutput
