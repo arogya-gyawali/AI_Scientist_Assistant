@@ -340,6 +340,130 @@ function humanizeDuration(iso: string | null | undefined): string | null {
 }
 
 // =============================================================================
+// Plan confidence — derived from the BE outputs, not hardcoded
+// =============================================================================
+// Three boolean factors map to a five-bucket label and dot meter:
+//
+//   protocol_similarity:  any cited source has contribution_weight >= 0.5
+//                         (the relevance filter found a meaningfully similar
+//                         protocol, not just thematic adjacency)
+//   established_assays:   at least one Measurement-phase procedure has
+//                         populated success_criteria (we know how to
+//                         validate the readout, not just take it)
+//   standard_equipment:   >= 70% of equipment items have a populated `purpose`
+//                         (procurement-ready spec; no mystery hardware)
+//
+// Total active count → confidence label + dots filled. The description
+// adapts to which factors are active so the line under the banner
+// actually says something useful.
+//
+// Falls back to the original hardcoded banner when neither protocol nor
+// materials API data is present (mock-only / design-demo mode).
+
+type ConfidenceFactor = {
+  label: string;
+  active: boolean;
+};
+
+type PlanConfidence = {
+  label: string;
+  dotsFilled: number;          // 1-5
+  description: string;
+  factors: ConfidenceFactor[];
+};
+
+function computePlanConfidence(
+  protocolView: FEProtocolView | null,
+  materialsView: FEMaterialsView | null,
+): PlanConfidence | null {
+  if (!protocolView && !materialsView) return null;
+
+  // 1. Protocol similarity — strongest signal we have. Built directly
+  // from the relevance filter's output via cited_protocols.contribution_weight.
+  const cited = protocolView?.cited_protocols ?? [];
+  const maxWeight = cited.length
+    ? Math.max(...cited.map((c) => c.contribution_weight ?? 0))
+    : 0;
+  const protocolSimilarity = maxWeight >= 0.5;
+
+  // 2. Established assays — sage when at least one Measurement procedure
+  // has success_criteria populated. The "if Measurement and has criteria"
+  // pairing matters: a Preparation procedure with criteria is not enough
+  // to say the assay is established, because the readout itself is what
+  // we're trying to validate.
+  const procs = protocolView?.procedures ?? [];
+  const hasMeasurementWithCriteria = procs.some(
+    (p) =>
+      p.success_criteria.length > 0 &&
+      p.steps.some((s) => s.phase === "Measurement"),
+  );
+  // If the architect didn't classify any procedure as Measurement (rare
+  // but possible — see lactobacillus run earlier), fall back to "any
+  // procedure has success criteria". A weaker signal but better than
+  // false-grey when the writer did the right thing.
+  const hasAnyCriteria = procs.some((p) => p.success_criteria.length > 0);
+  const establishedAssays = hasMeasurementWithCriteria || (hasAnyCriteria && procs.length > 1);
+
+  // 3. Standard equipment — sage when most equipment items have a
+  // populated purpose (which the materials roll-up populates with the
+  // spec when no purpose is given). 70% threshold so a single mystery
+  // item doesn't tank the confidence.
+  const equipment = (materialsView?.groups ?? [])
+    .filter((g) => g.group.toLowerCase().includes("equipment"))
+    .flatMap((g) => g.items);
+  const totalEq = equipment.length;
+  const speccedEq = equipment.filter(
+    (e) => e.purpose && e.purpose.trim().length > 5,
+  ).length;
+  // If materials haven't loaded yet, treat this factor as not-yet-known
+  // (default to inactive for the dial; the chip will simply be grey).
+  const standardEquipment = totalEq > 0 && speccedEq / totalEq >= 0.7;
+
+  const factors: ConfidenceFactor[] = [
+    { label: "Protocol similarity", active: protocolSimilarity },
+    { label: "Established assays", active: establishedAssays },
+    { label: "Standard equipment", active: standardEquipment },
+  ];
+
+  const activeCount = factors.filter((f) => f.active).length;
+
+  // Map active count to bucket. We never go to 5/5 with only 3 factors
+  // because the dial deliberately implies more dimensions than we
+  // actually compute — bumping all-active to "High" + 5 dots feels right
+  // visually and matches the original mock's intent.
+  let label: string;
+  let dotsFilled: number;
+  switch (activeCount) {
+    case 3: label = "High"; dotsFilled = 5; break;
+    case 2: label = "Moderate–High"; dotsFilled = 4; break;
+    case 1: label = "Moderate"; dotsFilled = 3; break;
+    default: label = "Low"; dotsFilled = 2;
+  }
+
+  // Description tracks WHICH factors are weak so the user gets a useful
+  // sentence instead of a generic blurb. Pure-active and pure-inactive
+  // get distinct copy; mixed states call out the specific weakness(es).
+  const inactive = factors.filter((f) => !f.active).map((f) => f.label.toLowerCase());
+  let description: string;
+  if (activeCount === 3) {
+    description =
+      "Strong protocol grounding, an established readout, and standard equipment available throughout.";
+  } else if (activeCount === 0) {
+    description =
+      "Limited protocol grounding and uncertain readout; treat this as an exploratory draft.";
+  } else if (inactive.length === 1) {
+    description = `Adequate grounding overall; ${inactive[0]} is the weak signal — review before committing.`;
+  } else {
+    // 1 active, 2 inactive
+    const active = factors.find((f) => f.active)?.label.toLowerCase() ?? "one factor";
+    description = `Confidence rests mostly on ${active}; other factors need researcher review.`;
+  }
+
+  return { label, dotsFilled, description, factors };
+}
+
+
+// =============================================================================
 // Rich procedure-grouped rendering (Phase 3 — surface what the backend ships)
 // =============================================================================
 // One block per procedure. Each block stacks: header (numbered name, intent,
@@ -777,6 +901,14 @@ const ExperimentPlan = () => {
     [apiMaterialsView],
   );
 
+  // Compute plan confidence from real BE data when available; falls back
+  // to null in mock-only mode (the JSX then renders the original hardcoded
+  // banner so the design demo still looks complete).
+  const planConfidence = useMemo<PlanConfidence | null>(
+    () => computePlanConfidence(apiProtocolView, apiMaterialsView),
+    [apiProtocolView, apiMaterialsView],
+  );
+
   const generating = reveal < 4;
 
   return (
@@ -870,64 +1002,92 @@ const ExperimentPlan = () => {
             <span className="italic text-primary">run this</span>?
           </h1>
 
-          {/* Confidence banner — ties the whole plan together */}
-          <div
-            role="note"
-            aria-label="Plan confidence"
-            className="mt-7 flex flex-col gap-4 rounded-md border border-rule bg-paper-raised px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7"
-          >
-            <div className="flex items-center gap-5">
-              <div className="flex flex-col items-start gap-1.5">
-                <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                  Plan confidence
-                </p>
-                <div className="flex items-baseline gap-3">
-                  <span
-                    className="text-[26px] italic leading-none text-ink"
-                    style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
-                  >
-                    Moderate–High
-                  </span>
-                  {/* dot meter: 4 of 5 filled */}
-                  <span aria-hidden className="flex items-center gap-1">
-                    <span className="h-2 w-2 rounded-full bg-ink" />
-                    <span className="h-2 w-2 rounded-full bg-ink" />
-                    <span className="h-2 w-2 rounded-full bg-ink" />
-                    <span className="h-2 w-2 rounded-full bg-ink" />
-                    <span className="h-2 w-2 rounded-full bg-rule" />
-                  </span>
+          {/* Confidence banner — derived from real BE data when present;
+              falls back to the original mock state when there's no API
+              data (mock-only design demo). The fallback keeps the
+              page readable when navigated to directly. */}
+          {(() => {
+            // Mock-fallback values mirror the original hardcoded banner.
+            const banner = planConfidence ?? {
+              label: "Moderate–High",
+              dotsFilled: 4,
+              description:
+                "Based on protocol similarity to published assays and availability of established readouts.",
+              factors: [
+                { label: "Protocol similarity", active: true },
+                { label: "Established assays", active: true },
+                { label: "Standard equipment", active: false },
+              ],
+            };
+            return (
+              <>
+                <div
+                  role="note"
+                  aria-label="Plan confidence"
+                  className="mt-7 flex flex-col gap-4 rounded-md border border-rule bg-paper-raised px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7"
+                >
+                  <div className="flex items-center gap-5">
+                    <div className="flex flex-col items-start gap-1.5">
+                      <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                        Plan confidence
+                      </p>
+                      <div className="flex items-baseline gap-3">
+                        <span
+                          className="text-[26px] italic leading-none text-ink"
+                          style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                        >
+                          {banner.label}
+                        </span>
+                        {/* Dot meter — 5 dots, first N filled. */}
+                        <span aria-hidden className="flex items-center gap-1">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <span
+                              key={i}
+                              className={
+                                "h-2 w-2 rounded-full " +
+                                (i < banner.dotsFilled ? "bg-ink" : "bg-rule")
+                              }
+                            />
+                          ))}
+                        </span>
+                      </div>
+                    </div>
+                    <span aria-hidden className="hidden h-10 w-px bg-rule sm:block" />
+                    <p
+                      className="hidden max-w-md text-[15px] italic leading-snug text-ink-soft sm:block"
+                      style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                    >
+                      {banner.description}
+                    </p>
+                  </div>
+                  <ul className="flex flex-wrap items-center gap-2">
+                    {banner.factors.map((f) => (
+                      <li
+                        key={f.label}
+                        className="inline-flex items-center gap-1.5 rounded-sm border border-rule bg-paper px-2.5 py-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-ink-soft"
+                      >
+                        <span
+                          aria-hidden
+                          className={
+                            "h-1.5 w-1.5 rounded-full " +
+                            (f.active ? "bg-sage" : "bg-rule")
+                          }
+                        />
+                        {f.label}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-              <span aria-hidden className="hidden h-10 w-px bg-rule sm:block" />
-              <p
-                className="hidden max-w-md text-[15px] italic leading-snug text-ink-soft sm:block"
-                style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
-              >
-                Based on protocol similarity to published assays and availability of established readouts.
-              </p>
-            </div>
-            <ul className="flex flex-wrap items-center gap-2">
-              <li className="inline-flex items-center gap-1.5 rounded-sm border border-rule bg-paper px-2.5 py-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-ink-soft">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-sage" />
-                Protocol similarity
-              </li>
-              <li className="inline-flex items-center gap-1.5 rounded-sm border border-rule bg-paper px-2.5 py-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-ink-soft">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-sage" />
-                Established assays
-              </li>
-              <li className="inline-flex items-center gap-1.5 rounded-sm border border-rule bg-paper px-2.5 py-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-ink-soft">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-rule" />
-                Standard equipment
-              </li>
-            </ul>
-          </div>
-          {/* Mobile-only sub-line for the banner explanation */}
-          <p
-            className="mt-3 text-[14px] italic leading-snug text-ink-soft sm:hidden"
-            style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
-          >
-            Based on protocol similarity to published assays and availability of established readouts.
-          </p>
+                {/* Mobile-only sub-line for the banner explanation */}
+                <p
+                  className="mt-3 text-[14px] italic leading-snug text-ink-soft sm:hidden"
+                  style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+                >
+                  {banner.description}
+                </p>
+              </>
+            );
+          })()}
 
           <div className="mt-8 rounded-md border border-rule bg-paper-raised">
             <div className="flex items-start justify-between gap-4 border-b border-rule px-6 py-4">
