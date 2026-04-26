@@ -23,6 +23,7 @@ without a backend change.
 from __future__ import annotations
 
 import io
+import logging
 import os
 import sys
 import traceback
@@ -59,10 +60,18 @@ from protocol_pipeline.frontend_view import (  # noqa: E402
     adapt_materials,
     adapt_protocol,
 )
+import chat_pipeline  # noqa: E402
 
 
 app = Flask(__name__)
 CORS(app)  # allow cross-origin from the FE dev server / Vercel
+
+# Module-level logger so non-fatal background work (e.g. materials
+# enrichment best-effort) routes through the standard logging stack
+# rather than `traceback.print_exc()` to bare stderr. Production
+# deployments that configure logging via env / config get the
+# enrichment errors in their structured logs.
+_LOG = logging.getLogger(__name__)
 
 
 @app.get("/health")
@@ -535,8 +544,11 @@ def materials():
         except Exception:
             # Best-effort. Enrichment failures fall back to the
             # un-enriched view (FE renders "TBD" / null) rather than
-            # blocking the whole /materials response.
-            traceback.print_exc()
+            # blocking the whole /materials response. Logger.exception()
+            # captures the traceback through the configured logging
+            # pipeline so production deployments see it in their
+            # structured logs (vs. raw stderr from traceback.print_exc).
+            _LOG.exception("Materials enrichment failed; falling back to un-enriched view")
 
     return jsonify({
         "plan_id": plan.id,

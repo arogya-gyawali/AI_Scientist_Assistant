@@ -36,7 +36,6 @@ Out of scope (for now):
 
 from __future__ import annotations
 
-import json
 import logging
 import re
 from concurrent.futures import ThreadPoolExecutor
@@ -184,18 +183,6 @@ def _extract_one(
         "price": _clean(parsed.get("price")),
         "source_url": src.strip(),
     }
-
-
-# --------------------------------------------------------------------------
-# Per-item enrichment
-# --------------------------------------------------------------------------
-
-def _query_for(item: FEReagent) -> str:
-    """Build the Tavily query for a single item. Just the name on the
-    supplier-domain-filtered search is usually enough; the existing
-    `search_for_supplier` helper already appends 'catalog number' and
-    scopes to the SUPPLIER_DOMAINS allowlist."""
-    return (item.name or "").strip()
 
 
 # --------------------------------------------------------------------------
@@ -426,27 +413,26 @@ def enrich_materials_view(
     raises — best-effort across the whole list. Cached upstream
     (30-day TTL on supplier searches) so reruns of the same plan
     are essentially free."""
-    # Flatten with backreferences so we can reassemble in original order.
-    flat: list[tuple[int, int, FEReagent]] = []
-    for gi, group in enumerate(view.groups):
-        for ii, item in enumerate(group.items):
-            flat.append((gi, ii, item))
-
+    # Flatten in iteration order. We pool.map over `flat`, so the
+    # output list is index-aligned with `flat` — reassembly is a
+    # single linear pass via an iterator (O(N), not O(G×N)).
+    flat: list[FEReagent] = [
+        item for group in view.groups for item in group.items
+    ]
     if not flat:
         return view
 
     n_workers = min(len(flat), max_workers)
     with ThreadPoolExecutor(max_workers=n_workers) as pool:
-        enriched = list(pool.map(lambda t: enrich_one_item(t[2]), flat))
+        enriched = list(pool.map(enrich_one_item, flat))
 
-    # Reassemble into a new view; copy groups + items so we never
-    # mutate the input.
-    new_groups = []
-    for gi, group in enumerate(view.groups):
-        new_items = list(group.items)
-        for (gi2, ii, _orig), new_item in zip(flat, enriched):
-            if gi2 == gi:
-                new_items[ii] = new_item
-        new_groups.append(group.model_copy(update={"items": new_items}))
-
+    # Reassemble: walk groups in the same order and pull len(group.items)
+    # results off the front of the iterator each time.
+    enriched_iter = iter(enriched)
+    new_groups = [
+        group.model_copy(update={
+            "items": [next(enriched_iter) for _ in group.items],
+        })
+        for group in view.groups
+    ]
     return view.model_copy(update={"groups": new_groups})
