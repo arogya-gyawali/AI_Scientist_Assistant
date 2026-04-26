@@ -440,24 +440,12 @@ function computePlanConfidence(
     default: label = "Low"; dotsFilled = 2;
   }
 
-  // Description tracks WHICH factors are weak so the user gets a useful
-  // sentence instead of a generic blurb. Pure-active and pure-inactive
-  // get distinct copy; mixed states call out the specific weakness(es).
-  const inactive = factors.filter((f) => !f.active).map((f) => f.label.toLowerCase());
-  let description: string;
-  if (activeCount === 3) {
-    description =
-      "Strong protocol grounding, an established readout, and standard equipment available throughout.";
-  } else if (activeCount === 0) {
-    description =
-      "Limited protocol grounding and uncertain readout; treat this as an exploratory draft.";
-  } else if (inactive.length === 1) {
-    description = `Adequate grounding overall; ${inactive[0]} is the weak signal — review before committing.`;
-  } else {
-    // 1 active, 2 inactive
-    const active = factors.find((f) => f.active)?.label.toLowerCase() ?? "one factor";
-    description = `Confidence rests mostly on ${active}; other factors need researcher review.`;
-  }
+  // Evergreen description — explains what the dial is *based on* rather
+  // than diagnosing the specific weak factor. The chips already show
+  // which factor is weak (grey vs. sage), so the prose can stay generic
+  // and read as standing copy rather than feeling auto-generated.
+  const description =
+    "Based on protocol similarity to published assays and availability of established readouts.";
 
   return { label, dotsFilled, description, factors };
 }
