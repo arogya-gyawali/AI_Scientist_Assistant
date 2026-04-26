@@ -1,6 +1,6 @@
 # Pipeline output samples
 
-Real `LitReviewOutput` JSON from `python run.py <sample>` runs. **For frontend integration — build your card UI against these as fixtures.**
+Real `LitReviewOutput` JSON from `python run_lr.py <sample>` runs. **For frontend integration — build your card UI against these as fixtures.**
 
 | File | Sample hypothesis | Signal |
 |---|---|---|
@@ -58,13 +58,13 @@ console.log(validate(crpFixture), validate.errors);
 ## Refreshing samples
 
 ```bash
-python run.py --all                # regenerate all three
+python run_lr.py --all                # regenerate all three
 # JSONs are auto-copied from the latest plan into pipeline_output_samples/
 ```
 
 If you want to rerun and update by hand:
 
 ```bash
-python run.py crp                  # one sample
+python run_lr.py crp                  # one sample
 cp plans/plan_<id>.json pipeline_output_samples/crp.json
 ```

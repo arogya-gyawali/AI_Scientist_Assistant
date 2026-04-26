@@ -2,11 +2,11 @@
 """Single-command Stage 1 (Lit Review) test runner.
 
 Usage:
-  python run.py                      # default sample (trehalose), full pipeline
-  python run.py crp                  # different sample
-  python run.py --tavily-only        # Tavily smoke test only, skip the LLM
-  python run.py --all                # run all bioscience samples through full pipeline
-  python run.py --raw                # also dump full Tavily JSON
+  python run_lr.py                      # default sample (trehalose), full pipeline
+  python run_lr.py crp                  # different sample
+  python run_lr.py --tavily-only        # Tavily smoke test only, skip the LLM
+  python run_lr.py --all                # run all bioscience samples through full pipeline
+  python run_lr.py --raw                # also dump full Tavily JSON
 
 Loads .env, verifies keys are present, runs the pre-baked Tavily smoke test,
 then runs Stage 1 end-to-end (LLM query rewrite -> Tavily -> LLM classify),

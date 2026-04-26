@@ -204,7 +204,7 @@ Where each type is produced and consumed across the pipeline.
 
 | Stage | Reads (plan fields) | Writes (plan field : type) | External source |
 |---|---|---|---|
-| 1. Lit Review | `hypothesis` | `lit_review` : `LitReviewSession` (conversational) | Tavily |
+| 1. Lit Review | `hypothesis` | `lit_review` : `LitReviewSession` (conversational) | Europe PMC *(was Tavily in original spec)* |
 | 2. Protocol | `hypothesis` | `protocol` : `ProtocolGenerationOutput` | protocols.io steps |
 | 3. Materials | `protocol` | `materials` : `MaterialsOutput` | protocols.io materials + Tavily for catalog # gaps |
 | 4. Budget | `materials` | `budget` : `BudgetOutput` | Tavily supplier-page scrape (Thermo / Sigma / Promega / Qiagen / IDT / ATCC / Addgene); LLM estimate as fallback |

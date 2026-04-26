@@ -14,7 +14,7 @@ Eight stages share a single `ExperimentPlan` document (blackboard pattern). Each
 
 | Stage | Source | Writes |
 |---|---|---|
-| 1. Lit Review | Tavily | `lit_review` |
+| 1. Lit Review | Europe PMC | `lit_review` |
 | 2. Protocol | protocols.io | `protocol` |
 | 3. Materials | protocols.io + Tavily | `materials` |
 | 4. Budget | Tavily supplier scrape | `budget` |
