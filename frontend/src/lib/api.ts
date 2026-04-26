@@ -56,15 +56,64 @@ export type LitReviewResponse = {
 
 export type Phase = "Preparation" | "Experiment" | "Measurement" | "Analysis";
 
+export type FEReagentRecipe = {
+  name: string;
+  components: string[];
+  notes?: string;
+};
+
 export type FEProtocolStep = {
   title: string;
   detail: string;
   citation?: string;
   phase: Phase;
-  meta?: string;
+  meta?: string;                     // first-priority param chip
+  // Phase 3+ rich-rendering fields. Optional with defaults so the FE
+  // can render either the new procedure-grouped view OR the older flat
+  // view depending on whether the BE shipped them.
+  params_summary?: string[];         // ALL params, ordered: temp/vol/dur/conc/speed
+  equipment?: string[];              // step.equipment_needed
+  reagents?: string[];               // step.reagents_referenced
+  todos?: string[];                  // step.todo_for_researcher
+  is_critical?: boolean;
+  is_pause_point?: boolean;
+  anticipated_outcome?: string;
+  troubleshooting?: string[];
+  reagent_recipes?: FEReagentRecipe[];
+  duration?: string;                 // raw ISO 8601, FE formats for display
+  procedure_name?: string;
+  step_number_in_procedure?: number; // 1-based; powers "2.1.3" numbering
+  step_id?: string;                  // "p{proc_idx}-s{step_idx}", for cross-links
+};
+
+export type FEDeviation = {
+  from_source: string;
+  to_adapted: string;
+  reason: string;
+  source_protocol_id: string;
+  confidence: "low" | "medium" | "high";
+};
+
+export type FESuccessCriterion = {
+  what: string;
+  how_measured: string;
+  threshold?: string;
+  pass_fail: boolean;
+};
+
+export type FEProcedureGroup = {
+  name: string;
+  intent: string;
+  steps: FEProtocolStep[];
+  deviations_from_source: FEDeviation[];
+  success_criteria: FESuccessCriterion[];
+  total_duration?: string;
+  procedure_index: number;           // 1-based
+  source_protocol_ids: string[];
 };
 
 export type FEProtocolView = {
+  // Backwards-compatible flat list — present even when procedures[] is.
   steps: FEProtocolStep[];
   experiment_type: string;
   total_steps: number;
@@ -74,12 +123,17 @@ export type FEProtocolView = {
     protocols_io_id?: string;
     contribution_weight: number;
   }>;
+  // New rich-shape fields. Optional so the FE can detect "is this an
+  // upgraded backend?" by checking whether `procedures.length > 0`.
+  procedures?: FEProcedureGroup[];
+  total_duration?: string;           // protocol-wide ISO 8601 sum
+  assumptions?: string[];
 };
 
 export type ProtocolResponse = {
   plan_id: string;
   frontend_view: FEProtocolView;
-  raw: unknown;  // full ProtocolGenerationOutput; FE doesn't consume yet
+  raw: unknown;
 };
 
 // ----- /materials response -----------------------------------------------
@@ -92,6 +146,10 @@ export type FEReagent = {
   qty: string;
   qtyContext?: string;
   note?: { kind: "cold" | "lead"; text: string };
+  // Cross-links: which step IDs reference this material. Step IDs are
+  // "p{proc_idx}-s{step_idx}" (matches FEProtocolStep.step_id).
+  used_in_steps?: string[];
+  material_id?: string;
 };
 
 export type FEMaterialGroup = {

@@ -4,7 +4,10 @@ import {
   postMaterials,
   postProtocol,
   type FEMaterialGroup,
+  type FEMaterialsView,
+  type FEProcedureGroup,
   type FEProtocolStep,
+  type FEProtocolView,
   type StructuredHypothesis,
 } from "@/lib/api";
 import {
@@ -19,6 +22,7 @@ import {
   FlaskConical,
   GitBranch,
   LayoutList,
+  PauseCircle,
   Pencil,
   Snowflake,
   Target,
@@ -301,6 +305,366 @@ const STAGES = [
   "Estimating cost and timeline…",
 ] as const;
 
+// Humanize an ISO 8601 duration ("PT5M", "P1DT2H") for display chips.
+// BE-side `_humanize_duration` does the same on per-step `meta`; this is
+// for total_duration values that come back as raw ISO. Falls back to the
+// raw string on shapes we don't handle (P2W, P1Y, etc.).
+function humanizeDuration(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const s = iso.trim();
+  // Combined P{D}T{H}{M} — e.g. P1DT2H30M
+  const combined = /^P(\d+)D(?:T(?:(\d+)H)?(?:(\d+)M)?)?$/.exec(s);
+  if (combined) {
+    const [, d, h, m] = combined;
+    const parts = [`${d} d`];
+    if (h) parts.push(`${h} h`);
+    if (m) parts.push(`${m} min`);
+    return parts.join(" ");
+  }
+  // Time only — e.g. PT1H30M, PT5M, PT45S
+  const time = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?$/.exec(s);
+  if (time) {
+    const [, h, m, sec] = time;
+    const parts: string[] = [];
+    if (h) parts.push(`${h} h`);
+    if (m) parts.push(`${m} min`);
+    if (sec && !h && !m) parts.push(`${sec} s`);
+    return parts.length ? parts.join(" ") : null;
+  }
+  // Days only — P3D, P1W
+  const dOnly = /^P(\d+)D$/.exec(s);
+  if (dOnly) return `${dOnly[1]} d`;
+  const wOnly = /^P(\d+)W$/.exec(s);
+  if (wOnly) return `${wOnly[1]} wk`;
+  return s;
+}
+
+// =============================================================================
+// Rich procedure-grouped rendering (Phase 3 — surface what the backend ships)
+// =============================================================================
+// One block per procedure. Each block stacks: header (numbered name, intent,
+// total-duration chip, source citations), per-step rows with structured
+// metadata (params, equipment, reagents, anticipated outcome, todos,
+// troubleshooting, recipes, critical/pause markers), and trailing
+// collapsibles for deviations + success criteria.
+
+function ProcedureBlock({ proc }: { proc: FEProcedureGroup }) {
+  const dur = humanizeDuration(proc.total_duration);
+  return (
+    <section
+      id={`proc-${proc.procedure_index}`}
+      aria-labelledby={`proc-${proc.procedure_index}-title`}
+      className="px-7 py-7 sm:px-9 sm:py-9"
+    >
+      {/* Procedure header */}
+      <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-rule pb-4">
+        <span className="font-mono-notebook text-[14px] font-medium uppercase tracking-[0.18em] text-primary">
+          {proc.procedure_index}.
+        </span>
+        <h3
+          id={`proc-${proc.procedure_index}-title`}
+          className="font-serif-display text-[26px] leading-[1.15] text-ink"
+        >
+          {proc.name}
+        </h3>
+        {dur && (
+          <span className="ml-auto inline-flex items-center gap-1.5 rounded-sm border border-rule bg-paper-raised px-2.5 py-1 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink-soft">
+            <Timer aria-hidden className="h-3 w-3" strokeWidth={1.75} />
+            {dur}
+          </span>
+        )}
+      </header>
+
+      {proc.intent && (
+        <p className="mt-3 max-w-3xl text-[14px] leading-[1.65] text-ink-soft">
+          {proc.intent}
+        </p>
+      )}
+
+      {/* Steps */}
+      <ol className="mt-5 space-y-5">
+        {proc.steps.map((step, idx) => (
+          <ProcedureStepRow
+            key={step.step_id || idx}
+            step={step}
+            procedureIndex={proc.procedure_index}
+            stepIndex={step.step_number_in_procedure || idx + 1}
+          />
+        ))}
+      </ol>
+
+      {/* Deviations from source — the audit trail. Collapsed by default
+          because the FE prioritizes scanning steps; researchers expand it
+          when they want to see what was adapted. */}
+      {proc.deviations_from_source.length > 0 && (
+        <details className="group/dev mt-6 rounded-md border border-rule bg-paper-raised">
+          <summary className="flex cursor-pointer items-center justify-between gap-3 px-5 py-3 font-mono-notebook text-[12px] uppercase tracking-[0.2em] text-ink-soft hover:text-ink">
+            <span className="inline-flex items-center gap-2">
+              <GitBranch aria-hidden className="h-3.5 w-3.5" strokeWidth={1.75} />
+              Deviations from source ({proc.deviations_from_source.length})
+            </span>
+            <ChevronDown aria-hidden className="h-4 w-4 transition-transform group-open/dev:rotate-180" strokeWidth={1.75} />
+          </summary>
+          <ul className="space-y-4 border-t border-rule px-5 py-4">
+            {proc.deviations_from_source.map((dev, i) => (
+              <li key={i} className="text-[14px] leading-[1.65]">
+                <p className="text-ink-soft">
+                  <span className="font-medium text-ink">From:</span> {dev.from_source}
+                </p>
+                <p className="mt-0.5 text-ink-soft">
+                  <span className="font-medium text-ink">To:</span> {dev.to_adapted}
+                </p>
+                <p className="mt-1 text-ink-soft">
+                  <span className="font-medium text-ink">Why:</span> {dev.reason}
+                </p>
+                <p className="mt-1.5 inline-flex items-center gap-2 font-mono-notebook text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Source: {dev.source_protocol_id} · Confidence: {dev.confidence}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+
+      {/* Success criteria — the "did this procedure work" checklist. */}
+      {proc.success_criteria.length > 0 && (
+        <details className="group/sc mt-3 rounded-md border border-rule bg-paper-raised">
+          <summary className="flex cursor-pointer items-center justify-between gap-3 px-5 py-3 font-mono-notebook text-[12px] uppercase tracking-[0.2em] text-ink-soft hover:text-ink">
+            <span className="inline-flex items-center gap-2">
+              <Target aria-hidden className="h-3.5 w-3.5" strokeWidth={1.75} />
+              Success criteria ({proc.success_criteria.length})
+            </span>
+            <ChevronDown aria-hidden className="h-4 w-4 transition-transform group-open/sc:rotate-180" strokeWidth={1.75} />
+          </summary>
+          <ul className="space-y-3 border-t border-rule px-5 py-4">
+            {proc.success_criteria.map((sc, i) => (
+              <li key={i} className="grid grid-cols-[auto_1fr] gap-3 text-[14px] leading-[1.6]">
+                <Check aria-hidden className="mt-0.5 h-4 w-4 flex-shrink-0 text-sage" strokeWidth={2} />
+                <div>
+                  <p className="text-ink">
+                    {sc.what}
+                    {sc.threshold && (
+                      <span className="ml-2 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-primary">
+                        [{sc.threshold}]
+                      </span>
+                    )}
+                  </p>
+                  <p className="mt-0.5 text-ink-soft">
+                    <span className="font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Measured by:
+                    </span>{" "}
+                    {sc.how_measured}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </section>
+  );
+}
+
+function ProcedureStepRow({
+  step,
+  procedureIndex,
+  stepIndex,
+}: {
+  step: FEProtocolStep;
+  procedureIndex: number;
+  stepIndex: number;
+}) {
+  const dur = humanizeDuration(step.duration);
+  return (
+    <li
+      id={step.step_id}
+      className="grid grid-cols-[auto_1fr] gap-5 step-block"
+    >
+      {/* Numbering: "2.1" — uses procedure_index + step_number_in_procedure */}
+      <div className="flex flex-col items-center">
+        <span className="font-mono-notebook text-[12px] uppercase tracking-[0.22em] text-muted-foreground">
+          {procedureIndex}.{stepIndex}
+        </span>
+      </div>
+
+      <div className="space-y-3">
+        {/* Title row + critical / pause markers + duration chip */}
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+          <h4 className="font-serif-card text-[19px] leading-[1.3] text-ink">
+            {step.title}
+          </h4>
+          {step.is_critical && (
+            <span
+              className="inline-flex items-center gap-1.5 rounded-sm border border-destructive/30 bg-destructive/[0.06] px-2 py-0.5 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-destructive"
+              title="Critical step — high failure rate"
+            >
+              <AlertTriangle aria-hidden className="h-3 w-3" strokeWidth={2} />
+              Critical
+            </span>
+          )}
+          {step.is_pause_point && (
+            <span
+              className="inline-flex items-center gap-1.5 rounded-sm border border-sage/40 bg-sage-wash px-2 py-0.5 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-[hsl(142_45%_24%)]"
+              title="Safe stopping point"
+            >
+              <PauseCircle aria-hidden className="h-3 w-3" strokeWidth={2} />
+              Pause OK
+            </span>
+          )}
+          {dur && (
+            <span className="inline-flex items-center gap-1.5 rounded-sm border border-rule bg-paper px-2 py-0.5 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-ink-soft">
+              <Timer aria-hidden className="h-3 w-3" strokeWidth={1.75} />
+              {dur}
+            </span>
+          )}
+          {step.meta && !dur && (
+            <span className="inline-flex items-center gap-1.5 rounded-sm border border-rule bg-paper px-2 py-0.5 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-ink-soft">
+              {step.meta}
+            </span>
+          )}
+        </div>
+
+        {/* Body */}
+        <p className="max-w-2xl text-[15px] leading-[1.7] text-ink-soft">
+          {step.detail}
+        </p>
+
+        {/* Anticipated outcome — green callout, the "what to expect" hint */}
+        {step.anticipated_outcome && (
+          <div className="rounded-sm border-l-[3px] border-sage bg-sage-wash/40 px-3 py-2 text-[14px] leading-[1.55] text-[hsl(142_45%_22%)]">
+            <span className="font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-sage">
+              Expected:
+            </span>{" "}
+            {step.anticipated_outcome}
+          </div>
+        )}
+
+        {/* TODO callouts — yellow, demand researcher attention */}
+        {(step.todos?.length ?? 0) > 0 && (
+          <ul className="space-y-1 rounded-sm border-l-[3px] border-[hsl(38_70%_55%)] bg-[hsl(38_70%_92%)]/40 px-3 py-2">
+            {(step.todos ?? []).map((t, i) => (
+              <li
+                key={i}
+                className="text-[14px] leading-[1.55] text-[hsl(28_55%_28%)]"
+              >
+                <span className="font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-[hsl(28_55%_30%)]">
+                  ⚠ TODO:
+                </span>{" "}
+                {t}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* Params summary — all params (vol/temp/dur/conc/speed) as chips */}
+        {(step.params_summary?.length ?? 0) > 1 && (
+          <div className="flex flex-wrap gap-1.5">
+            {(step.params_summary ?? []).map((p, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center rounded-sm border border-rule bg-paper px-2 py-0.5 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink-soft"
+              >
+                {p}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Equipment + reagents — separate label rows. Reagent names link
+            to the materials section by the lower-cased name as anchor. */}
+        {(step.equipment?.length ?? 0) > 0 && (
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[13px] leading-[1.5]">
+            <span className="font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              Equipment:
+            </span>
+            {(step.equipment ?? []).map((e, i) => (
+              <a
+                key={i}
+                href={`#mat-${e.toLowerCase().replace(/\s+/g, "-")}`}
+                className="inline-flex items-center rounded-sm border border-rule bg-paper px-1.5 py-0.5 text-[12px] text-ink-soft transition-colors hover:border-primary/40 hover:text-primary"
+              >
+                {e}
+              </a>
+            ))}
+          </div>
+        )}
+        {(step.reagents?.length ?? 0) > 0 && (
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[13px] leading-[1.5]">
+            <span className="font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              Reagents:
+            </span>
+            {(step.reagents ?? []).map((r, i) => (
+              <a
+                key={i}
+                href={`#mat-${r.toLowerCase().replace(/\s+/g, "-")}`}
+                className="inline-flex items-center rounded-sm border border-rule bg-paper px-1.5 py-0.5 text-[12px] text-ink-soft transition-colors hover:border-primary/40 hover:text-primary"
+              >
+                {r}
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* Reagent recipes — inline expandable per recipe.
+            Triggered by a step that introduces a custom buffer. */}
+        {(step.reagent_recipes?.length ?? 0) > 0 && (
+          <div className="space-y-2">
+            {(step.reagent_recipes ?? []).map((rec, i) => (
+              <details
+                key={i}
+                className="group/rec rounded-md border border-rule bg-paper"
+              >
+                <summary className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink-soft hover:text-ink">
+                  <span className="inline-flex items-center gap-2">
+                    <Beaker aria-hidden className="h-3.5 w-3.5" strokeWidth={1.75} />
+                    Recipe: {rec.name}
+                  </span>
+                  <ChevronDown aria-hidden className="h-3.5 w-3.5 transition-transform group-open/rec:rotate-180" strokeWidth={1.75} />
+                </summary>
+                <div className="border-t border-rule px-4 py-3 text-[13px] leading-[1.6] text-ink-soft">
+                  <ul className="list-disc pl-4 space-y-0.5">
+                    {rec.components.map((c, j) => (
+                      <li key={j}>{c}</li>
+                    ))}
+                  </ul>
+                  {rec.notes && (
+                    <p className="mt-2 italic text-muted-foreground">
+                      {rec.notes}
+                    </p>
+                  )}
+                </div>
+              </details>
+            ))}
+          </div>
+        )}
+
+        {/* Troubleshooting — collapsible only when present */}
+        {(step.troubleshooting?.length ?? 0) > 0 && (
+          <details className="group/ts rounded-md border border-dashed border-rule bg-paper">
+            <summary className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink-soft hover:text-ink">
+              <span>Troubleshooting ({step.troubleshooting?.length ?? 0})</span>
+              <ChevronDown aria-hidden className="h-3.5 w-3.5 transition-transform group-open/ts:rotate-180" strokeWidth={1.75} />
+            </summary>
+            <ul className="list-disc space-y-1 border-t border-rule px-7 py-3 text-[13px] leading-[1.55] text-ink-soft">
+              {(step.troubleshooting ?? []).map((t, i) => (
+                <li key={i}>{t}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+
+        {/* Citation chip — same styling as the legacy text view */}
+        {step.citation && (
+          <span className="inline-flex items-center gap-1.5 rounded-sm border border-rule bg-paper px-2 py-0.5 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-ink-soft">
+            <span aria-hidden className="h-1 w-1 rounded-full bg-sage" />
+            {step.citation}
+          </span>
+        )}
+      </div>
+    </li>
+  );
+}
+
 const ExperimentPlan = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -324,9 +688,12 @@ const ExperimentPlan = () => {
   const [protocolView, setProtocolView] = useState<"text" | "flow">("text");
 
   // Real protocol + materials data from the backend. null = still loading
-  // (or mock-only mode, in which case `useMockData` below is true).
-  const [apiProtocolSteps, setApiProtocolSteps] = useState<FEProtocolStep[] | null>(null);
-  const [apiMaterialGroups, setApiMaterialGroups] = useState<FEMaterialGroup[] | null>(null);
+  // (or mock-only mode, in which case `useMockData` below is true). We
+  // store the FULL view objects (not just steps[]/groups[]) so the rich
+  // procedure-grouped rendering can read procedures + deviations + gaps
+  // + total_duration + assumptions without round-tripping the parent state.
+  const [apiProtocolView, setApiProtocolView] = useState<FEProtocolView | null>(null);
+  const [apiMaterialsView, setApiMaterialsView] = useState<FEMaterialsView | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
 
   const useMockData = !incomingPlanId && !incomingStructured;
@@ -356,12 +723,12 @@ const ExperimentPlan = () => {
     (async () => {
       try {
         const proto = await postProtocol(protoBody, ac.signal);
-        setApiProtocolSteps(proto.frontend_view.steps);
+        setApiProtocolView(proto.frontend_view);
         setStageIdx(1);
         setReveal(1);
 
         const mats = await postMaterials(matsBody(proto.plan_id), ac.signal);
-        setApiMaterialGroups(mats.frontend_view.groups);
+        setApiMaterialsView(mats.frontend_view);
         setStageIdx(2);
         setReveal(2);
         // The remaining reveal stages (3, 4) gate budget/timeline/validation,
@@ -387,15 +754,29 @@ const ExperimentPlan = () => {
   }, [incomingPlanId, incomingStructured, useMockData]);
 
   // Display data: prefer backend-driven; fall back to mock constants for
-  // mock-only mode or if a section's API call hasn't resolved yet.
+  // mock-only mode or if a section's API call hasn't resolved yet. The
+  // flat `protocolSteps` list still feeds the existing UI; `procedures`
+  // is the new rich-shape view that drives the procedure-grouped
+  // rendering when the backend ships it (Phase 2 adapter).
   const protocolSteps = useMemo<FEProtocolStep[]>(
-    () => apiProtocolSteps ?? PROTOCOL_STEPS,
-    [apiProtocolSteps],
+    () => apiProtocolView?.steps ?? PROTOCOL_STEPS,
+    [apiProtocolView],
   );
+  const procedures = useMemo<FEProcedureGroup[]>(
+    () => apiProtocolView?.procedures ?? [],
+    [apiProtocolView],
+  );
+  // The FE detects the new shape by checking whether procedures[] is
+  // populated. Mock-only mode and pre-Phase-2 backends both yield 0
+  // procedures, so the existing flat-list view continues to render.
+  const hasRichProtocol = procedures.length > 0;
+  const protocolTotalDuration = apiProtocolView?.total_duration ?? null;
+  const protocolAssumptions = apiProtocolView?.assumptions ?? [];
   const materialGroups = useMemo<FEMaterialGroup[]>(
-    () => apiMaterialGroups ?? MATERIALS,
-    [apiMaterialGroups],
+    () => apiMaterialsView?.groups ?? MATERIALS,
+    [apiMaterialsView],
   );
+  const materialsGaps = apiMaterialsView?.gaps ?? [];
 
   const generating = reveal < 4;
 
@@ -573,6 +954,54 @@ const ExperimentPlan = () => {
           {/* Plan at a glance — jump nav so users don't have to scroll the whole page */}
         </section>
 
+        {/* Phase 5b: at-a-glance summary card. Lives between hypothesis
+            and the jump nav so a researcher can scan totals before
+            committing to read the whole plan. Only shown when the live
+            backend has materials data — mock-only mode hides it because
+            MATERIALS counts wouldn't reflect a real plan. */}
+        {reveal >= 2 && apiMaterialsView && (
+          <section
+            aria-label="Plan summary"
+            className="mb-10 grid grid-cols-2 gap-3 sm:grid-cols-4 animate-in fade-in slide-in-from-bottom-1 duration-500"
+          >
+            {(() => {
+              const counts = { reagent: 0, equipment: 0, consumable: 0, organism_or_cell: 0 };
+              for (const g of materialGroups) {
+                const lower = g.group.toLowerCase();
+                if (lower.includes("equipment")) counts.equipment += g.items.length;
+                else if (lower.includes("consumable")) counts.consumable += g.items.length;
+                else if (lower.includes("reagent")) counts.reagent += g.items.length;
+                else counts.organism_or_cell += g.items.length;  // cells/organisms
+              }
+              const stats = [
+                { value: counts.reagent, label: "Reagents", icon: <Beaker className="h-3.5 w-3.5" strokeWidth={1.5} /> },
+                { value: counts.equipment, label: "Equipment", icon: <FlaskConical className="h-3.5 w-3.5" strokeWidth={1.5} /> },
+                { value: counts.consumable, label: "Consumables", icon: <ClipboardList className="h-3.5 w-3.5" strokeWidth={1.5} /> },
+                { value: counts.organism_or_cell, label: "Cells/Organisms", icon: <Target className="h-3.5 w-3.5" strokeWidth={1.5} /> },
+              ];
+              return stats.map((s, i) => (
+                <a
+                  key={i}
+                  href="#materials-title"
+                  className="group flex items-center gap-3 rounded-md border border-rule bg-paper-raised px-4 py-3 transition-colors hover:border-ink/30"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-sm border border-rule bg-paper text-ink-soft">
+                    {s.icon}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-serif-display text-[22px] leading-none text-ink">
+                      {s.value}
+                    </p>
+                    <p className="mt-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                      {s.label}
+                    </p>
+                  </div>
+                </a>
+              ));
+            })()}
+          </section>
+        )}
+
         {/* Plan at a glance — sticky jump nav so users don't have to scroll the whole page */}
         {reveal >= 4 && (
           <nav
@@ -674,6 +1103,9 @@ const ExperimentPlan = () => {
                   <div>
                     <p className="font-mono-notebook text-[12px] uppercase tracking-[0.22em] text-muted-foreground">
                       Primary · {protocolSteps.length} steps
+                      {hasRichProtocol && (
+                        <span> · {procedures.length} procedures</span>
+                      )}
                     </p>
                     <h2
                       id="protocol-title"
@@ -687,6 +1119,15 @@ const ExperimentPlan = () => {
                     >
                       Glucose-gradient kinetic assay in M9 minimal media, plate-reader readout.
                     </p>
+                    {/* Phase 5a: total time chip — populated when ALL step
+                        durations are present (BE returns null otherwise to
+                        avoid misleading partial sums). */}
+                    {humanizeDuration(protocolTotalDuration) && (
+                      <p className="mt-3 inline-flex items-center gap-2 rounded-sm border border-rule bg-paper px-2.5 py-1 font-mono-notebook text-[11px] uppercase tracking-[0.18em] text-ink-soft">
+                        <Timer aria-hidden className="h-3 w-3" strokeWidth={1.75} />
+                        Total: {humanizeDuration(protocolTotalDuration)}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -726,8 +1167,18 @@ const ExperimentPlan = () => {
                 </div>
               </header>
 
-              {/* TEXT VIEW (default, unchanged) */}
-              {protocolView === "text" && (
+              {/* TEXT VIEW — rich procedure-grouped when the backend ships
+                  procedures[]; falls back to the original flat list for
+                  mock-only mode and pre-Phase-2 backends. */}
+              {protocolView === "text" && hasRichProtocol && (
+                <div className="divide-y divide-rule">
+                  {procedures.map((proc) => (
+                    <ProcedureBlock key={proc.procedure_index} proc={proc} />
+                  ))}
+                </div>
+              )}
+
+              {protocolView === "text" && !hasRichProtocol && (
                 <ol className="divide-y divide-rule">
                   {protocolSteps.map((s, i) => (
                     <li
@@ -1005,6 +1456,31 @@ const ExperimentPlan = () => {
               </span>
             </div>
 
+            {/* Materials gaps — items the LLM couldn't ground (no supplier
+                spec, missing concentration, ambiguous brand). The PI must
+                resolve these before ordering, so we surface them as a
+                yellow callout above the list rather than burying in JSON. */}
+            {materialsGaps.length > 0 && (
+              <div className="mb-4 overflow-hidden rounded-md border border-[hsl(38_70%_55%)]/40 bg-[hsl(38_70%_92%)]/40">
+                <div className="flex items-start gap-3 px-5 py-3 border-b border-[hsl(38_70%_55%)]/30">
+                  <AlertTriangle aria-hidden className="mt-0.5 h-4 w-4 flex-shrink-0 text-[hsl(28_55%_30%)]" strokeWidth={2} />
+                  <div>
+                    <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-[hsl(28_55%_30%)]">
+                      {materialsGaps.length} item{materialsGaps.length === 1 ? "" : "s"} need a researcher decision
+                    </p>
+                    <p className="mt-0.5 text-[12px] leading-[1.5] text-[hsl(28_55%_25%)]">
+                      Resolve these before ordering — supplier, grade, or specification was not determined.
+                    </p>
+                  </div>
+                </div>
+                <ul className="px-5 py-3 space-y-1 list-disc pl-10 text-[13px] leading-[1.55] text-[hsl(28_55%_25%)]">
+                  {materialsGaps.map((gap, i) => (
+                    <li key={i}>{gap}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div className="overflow-hidden rounded-md border border-rule bg-paper-raised">
               {materialGroups.map((group, gi) => (
                 <div
@@ -1031,7 +1507,11 @@ const ExperimentPlan = () => {
                     {group.items.map((it, i) => (
                       <li
                         key={i}
-                        className="grid grid-cols-1 gap-4 px-7 py-5 transition-colors hover:bg-rule-soft/30 sm:grid-cols-[1fr_auto] sm:gap-8"
+                        // Anchor format mirrors what step rendering uses
+                        // (`#mat-{name.toLowerCase().replace(/\s+/g, "-")}`).
+                        // Click a reagent chip in a step → smooth-scroll here.
+                        id={`mat-${it.name.toLowerCase().replace(/\s+/g, "-")}`}
+                        className="grid grid-cols-1 gap-4 px-7 py-5 transition-colors hover:bg-rule-soft/30 sm:grid-cols-[1fr_auto] sm:gap-8 scroll-mt-24"
                       >
                         {/* LEFT: name + purpose + qty context + note */}
                         <div className="min-w-0">
@@ -1076,6 +1556,32 @@ const ExperimentPlan = () => {
                               )}
                               {it.note.text}
                             </span>
+                          )}
+
+                          {/* Used-in cross-links: which steps reference this
+                              material. Adapter populates from a case-insensitive
+                              name match on step.reagents_referenced /
+                              equipment_needed. */}
+                          {(it.used_in_steps?.length ?? 0) > 0 && (
+                            <p className="mt-2.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                              <span>Used in:</span>
+                              {(it.used_in_steps ?? []).map((sid, si) => {
+                                // Step IDs come back as "p{N}-s{M}"; render as
+                                // "N.M" for the link label so it matches the
+                                // numbering shown next to each step row.
+                                const m = /^p(\d+)-s(\d+)$/.exec(sid);
+                                const label = m ? `${m[1]}.${m[2]}` : sid;
+                                return (
+                                  <a
+                                    key={si}
+                                    href={`#${sid}`}
+                                    className="rounded-sm border border-rule bg-paper px-1.5 py-0.5 text-ink-soft transition-colors hover:border-primary/40 hover:text-primary"
+                                  >
+                                    {label}
+                                  </a>
+                                );
+                              })}
+                            </p>
                           )}
                         </div>
 

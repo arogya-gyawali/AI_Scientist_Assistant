@@ -201,3 +201,61 @@
   details.plan-section > summary::-webkit-details-marker { display: none; }
   details.plan-section[open] > summary .plan-chevron { transform: rotate(180deg); }
 }
+
+/* ==========================================================================
+   Print stylesheet (Phase 5c)
+   ==========================================================================
+   Researchers print protocols and use them at the bench. Goals:
+   - Hide site chrome (top nav, sticky jump-nav, summary card, buttons)
+   - Force-expand every <details> so deviations / success criteria /
+     recipes / troubleshooting all appear on paper without clicking
+   - Avoid splitting a single step across pages
+   - Adopt sober black-on-white that reads on cheap office printers
+*/
+@media print {
+  /* Generous margin so the binder hole-punch doesn't bisect content. */
+  @page { margin: 1.5cm 1.2cm; }
+
+  /* Strip background color so a B&W printer doesn't dump 250 KB of ink
+     rendering tinted callouts. Callout borders still convey the info. */
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Hide chrome: site nav, sticky jump-nav, summary card, all buttons. */
+  header > div > nav,
+  nav[aria-label="Jump to plan section"],
+  [aria-label="Plan summary"],
+  button,
+  .print-hide {
+    display: none !important;
+  }
+
+  /* Force every collapsible open. CSS can't toggle `[open]` directly,
+     but we can override children's display rules. */
+  details > *:not(summary) {
+    display: block !important;
+  }
+  details > summary {
+    list-style: none;
+    cursor: default;
+  }
+  details > summary svg {
+    display: none !important;
+  }
+
+  /* Avoid breaking individual steps / procedures / material rows across
+     pages. The step-block class is applied in ProcedureStepRow. */
+  .step-block,
+  section[id^="proc-"],
+  section[aria-labelledby="materials-title"] li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3, h4 { page-break-after: avoid; }
+
+  /* Don't waste ink on background tints; let borders carry the structure. */
+  .bg-paper-raised, .bg-paper, .bg-paper-cream { background: #fff !important; }
+}
