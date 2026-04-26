@@ -14,12 +14,12 @@ flowchart LR
     end
 
     subgraph Server["Flask — app.py"]
-        Endpoints["POST /lit-review<br/>POST /protocol<br/>POST /materials<br/>POST /timeline · /validation<br/>POST /critique · /pdf<br/>GET  /health"]
+        Endpoints["POST /lit-review<br/>POST /protocol-candidates<br/>POST /protocol · /protocol/pdf<br/>POST /materials<br/>POST /timeline · /validation<br/>POST /critique<br/>GET  /health"]
     end
 
     subgraph Pipelines["Stage pipelines (Python)"]
         S1["lit_review_pipeline/<br/>Stage 1 — novelty"]
-        S2["protocol_pipeline/<br/>Stages 2-3, 5-7<br/>(architect → writers → roll-up)"]
+        S2["protocol_pipeline/<br/>Stages 2, 3, 5, 6, 7<br/>(architect → writers → roll-up,<br/>+ timeline · validation · critique · pdf)"]
     end
 
     subgraph Clients["src/clients/"]
@@ -34,7 +34,7 @@ flowchart LR
     end
 
     External1[("Europe PMC")]
-    External2[("protocols.io samples")]
+    External2[("protocols.io REST API<br/>(live · cached samples<br/>as offline fallback)")]
     External3[("Tavily")]
     External4[("Anthropic /<br/>OpenRouter")]
 
@@ -83,6 +83,7 @@ AI_Scientist_Assistant/
 ├── feedback_store.py                 Persists user feedback for few-shot
 ├── run_lr.py                         CLI: run Stage 1 against a YAML input
 ├── run_protocol.py                   CLI: run Stages 2-3 against a YAML input
+├── protocols_client.py               Live protocols.io REST client (Stage 2 source)
 ├── requirements.txt                  Python deps
 ├── output.json                       Last CLI run dump (gitignored in real use)
 │
@@ -97,13 +98,13 @@ AI_Scientist_Assistant/
 │   ├── europe_pmc_smoke.py           Smoke test for the Europe PMC client
 │   └── tavily_smoke.py               Smoke test for the Tavily client
 │
-├── protocol_pipeline/                Stages 2-3, 5-7 (multi-agent)
+├── protocol_pipeline/                Stages 2, 3, 5, 6, 7 (multi-agent)
 │   ├── stage.py                      Orchestrator
-│   ├── sources.py                    Loads protocols.io sample JSONs
+│   ├── sources.py                    protocols.io loader (live via protocols_client + sample fallback)
 │   ├── relevance.py                  Drops obviously off-target sources
 │   ├── architect.py                  Emits the procedure outline (1 LLM call)
 │   ├── writer.py                     One LLM call per procedure (parallel)
-│   ├── materials.py                  Roll-up: dedup equipment + reagents
+│   ├── materials.py                  Stage 3 — roll-up: dedup equipment + reagents
 │   ├── timeline.py                   Stage 5 — deterministic phase compute
 │   ├── validation.py                 Stage 6 — criteria + failure modes
 │   ├── critique.py                   Stage 7 — reviewer-perspective audit
@@ -184,3 +185,17 @@ AI_Scientist_Assistant/
 - `anthropic` — `claude-sonnet-4-6` direct, with prompt caching, for demo / production
 
 Stages call `llm.complete({ system, user, ... })` and the client picks the wire format. Prompt content is identical between modes.
+
+## Stage status (snapshot)
+
+| Stage | Endpoint | Pipeline file | Status |
+|---|---|---|---|
+| 1. Lit Review | `POST /lit-review` | `lit_review_pipeline/stage.py` | ✅ shipped |
+| 2. Protocol | `POST /protocol`, `POST /protocol-candidates` | `protocol_pipeline/stage.py` (+ `architect.py`, `writer.py`) | ✅ shipped |
+| 3. Materials | `POST /materials` | `protocol_pipeline/materials.py` | ✅ shipped |
+| 4. Budget | — | — | ⏳ pending (types + Tavily helper ready) |
+| 5. Timeline | `POST /timeline` | `protocol_pipeline/timeline.py` | ✅ shipped (deterministic) |
+| 6. Validation | `POST /validation` | `protocol_pipeline/validation.py` | ✅ shipped |
+| 7. Critique | `POST /critique` | `protocol_pipeline/critique.py` | ✅ shipped |
+| 8. Summary | — | — | ⏳ pending |
+| Bonus | `POST /protocol/pdf` | `protocol_pipeline/pdf.py` | ✅ shipped |

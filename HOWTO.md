@@ -1,6 +1,6 @@
-# How to test Stage 1 (Lit Review)
+# Running the AI Scientist Assistant locally
 
-One command, one script.
+CLI runners for each backend stage, plus the Flask API the frontend talks to.
 
 > **Scope:** This product is limited to **bioscience** experiments — biomedical, life-sciences, microbiology, etc. Out-of-scope topics (climate, materials, pure chemistry) won't get useful output because the literature backend is biomedical-specific.
 
@@ -9,12 +9,15 @@ One command, one script.
 | Concern | Current implementation | Notes |
 |---|---|---|
 | **Stage 1 lit search** | **Europe PMC** | Free, no auth. ~40M biomedical papers. Returns structured authors, year, journal, plain-text abstract, DOI. No LLM extraction needed for fact fields. |
+| **Stage 2 protocol source** | **protocols.io REST API (live)** via [`protocols_client.py`](protocols_client.py) | Multi-query fan-out + relevance filter; falls back to the cached samples in `pipeline_output_samples/protocols_io/` when offline. |
+| **Stage 3 catalog gap-fill** | **Tavily** scoped to 7 supplier domains | `src/clients/tavily.py` :: `search_for_supplier`. 30-day cache. |
+| **Stage 4 supplier pricing** | Tavily (planned) | Pricing TTL constant + supplier search exist; no `protocol_pipeline/budget.py` yet. |
+| **Stages 5-7** | Pure-LLM (Gemini Flash) with deterministic compute where possible | `timeline.py` is fully deterministic; `validation.py` and `critique.py` use one LLM call each. |
 | LLM (prototyping) | OpenRouter → `google/gemini-2.5-flash` | Day-to-day dev. Set `LLM_PROVIDER=openrouter` (default). |
-| LLM (production-ish) | Anthropic direct → `claude-haiku-4-5` | Set `LLM_PROVIDER=anthropic`. |
-| Caching | File cache under `.cache/europe_pmc/lit_review/` | 7-day TTL. Re-runs are free. |
-| Stage 3/4 (future) | Tavily | Wired client + tests; Stage 3/4 runners not yet built. |
+| LLM (production) | Anthropic direct → `claude-sonnet-4-6` | Set `LLM_PROVIDER=anthropic`. Uses prompt caching for the protocols.io context re-used across stages. |
+| Caching | File cache under `.cache/` (per-source subdirs) | 7-day TTL for lit-review, 30-day for catalog gap-fill, 24h for pricing. Re-runs are free. |
 
-**Stage 1 has gone through three backends in this branch.** History (most recent first): Europe PMC (current) ← Semantic Scholar (rate-limited too aggressively without a key) ← Tavily (snippets didn't surface bibliographic metadata, forcing LLM extraction and hallucinated authors). The Europe PMC swap eliminated the entire fact-extraction layer.
+**Stage 1 has gone through three backends.** History (most recent first): Europe PMC (current) ← Semantic Scholar (rate-limited too aggressively without a key) ← Tavily (snippets didn't surface bibliographic metadata, forcing LLM extraction and hallucinated authors). The Europe PMC swap eliminated the entire fact-extraction layer.
 
 ## One-time setup
 
@@ -85,10 +88,12 @@ For frontend integration, the most recent successful runs are also mirrored into
 
 ## API server (for the frontend)
 
-A Flask app exposes Stage 1 over HTTP so the FE can hit it.
+A Flask app exposes every shipped stage over HTTP. The React frontend (under `frontend/`) calls these directly through a Vite dev proxy.
 
 ```bash
 # dev
+python -m flask --app app run --port 5000
+# or:
 python app.py
 # server on http://127.0.0.1:5000
 ```
@@ -98,7 +103,16 @@ Endpoints:
 | Method | Path | Body | Response |
 |---|---|---|---|
 | `GET` | `/health` | — | `{"ok": true, ...}` |
-| `POST` | `/lit-review` | `{"structured": {...}, "domain": "..."}` (see below) | `LitReviewOutput` JSON |
+| `POST` | `/lit-review` | `{"structured": {...}, "domain": "..."}` (see below) | `LitReviewOutput` + `plan_id` |
+| `POST` | `/protocol-candidates` | `{"plan_id": "..."}` or `{"structured": {...}}` | Ranked protocols.io candidates for researcher review |
+| `POST` | `/protocol` | `{"plan_id": "..."}` or `{"structured": {...}, "candidate_ids": [...]}` | `frontend_view` + raw `ProtocolGenerationOutput` |
+| `POST` | `/protocol/pdf` | `{"plan_id": "..."}` | PDF stream of the protocol |
+| `POST` | `/materials` | `{"plan_id": "..."}` | `frontend_view` + raw `MaterialsOutput` |
+| `POST` | `/timeline` | `{"plan_id": "..."}` | `TimelineOutput` (deterministic) |
+| `POST` | `/validation` | `{"plan_id": "..."}` | `ValidationOutput` |
+| `POST` | `/critique` | `{"plan_id": "..."}` | `DesignCritique` |
+
+Stage 4 (`/budget`) and Stage 8 (`/summary`) are not yet exposed.
 
 Sample request:
 
@@ -129,30 +143,46 @@ CORS is enabled for any origin so the FE dev server / Vercel preview can hit it 
 
 ```
 src/                              ← shared backbone (used by every stage)
-├── types.py
+├── types.py                      ← Pydantic models (ExperimentPlan, …)
 ├── cli.py                        ← legacy CLI wrapper (still works)
 ├── clients/
 │   ├── europe_pmc.py             ← Stage 1 lit search
-│   ├── tavily.py                 ← Stage 3/4 (planned)
+│   ├── tavily.py                 ← Stage 3 catalog gap-fill, Stage 4 pricing (planned)
 │   └── llm.py                    ← OpenRouter / Anthropic abstraction
 └── lib/
     ├── plan.py                   ← create / save / load ExperimentPlan
     └── cache.py                  ← shared file cache
 
+protocols_client.py               ← live protocols.io REST client (Stage 2 source)
+
 lit_review_pipeline/              ← Stage 1, self-contained
-├── stage.py                      ← the Stage 1 runner
-├── extractors.py                 ← belt-and-suspenders fallback for year/doi/venue
-├── europe_pmc_smoke.py           ← Europe PMC smoke (no LLM)
-├── tavily_smoke.py               ← legacy Tavily smoke (kept for Stage 3/4 future)
-└── README.md                     ← what's here + containerization note
+├── stage.py
+├── extractors.py
+├── europe_pmc_smoke.py
+└── tavily_smoke.py               ← legacy smoke kept for Stage 3/4 pre-flight
+
+protocol_pipeline/                ← Stages 2, 3, 5, 6, 7 (multi-agent)
+├── stage.py                      ← orchestrator
+├── sources.py                    ← protocols.io loader (live + sample fallback)
+├── relevance.py                  ← drops obviously off-target sources
+├── architect.py                  ← procedure outline (1 LLM call)
+├── writer.py                     ← per-procedure writer (parallel fan-out)
+├── materials.py                  ← Stage 3 — roll-up agent
+├── timeline.py                   ← Stage 5 — deterministic phase compute
+├── validation.py                 ← Stage 6 — criteria + failure modes
+├── critique.py                   ← Stage 7 — reviewer-perspective audit
+├── pdf.py                        ← protocol PDF renderer
+└── frontend_view.py              ← rich Pydantic → FE-shape adapter
 
 inputs/                           ← sample hypothesis YAMLs (shared test data)
 tests/                            ← pytest suite
-pipeline_output_samples/          ← canonical LitReviewOutput JSONs for FE fixtures
+pipeline_output_samples/          ← canonical pipeline outputs for FE fixtures
 plans/                            ← gitignored runtime ExperimentPlan dumps
 spec/                             ← TS types, JSON schema, architecture docs
-app.py                            ← Flask API server
-run_lr.py                         ← single-command Stage 1 CLI runner
+frontend/                         ← React SPA (Vite + TS + Tailwind)
+app.py                            ← Flask API server (all endpoints)
+run_lr.py                         ← Stage 1 CLI runner
+run_protocol.py                   ← Stages 2-3 CLI runner
 ```
 
 To **containerize** Stage 1 as a standalone service, copy `src/`, `lit_review_pipeline/`, `inputs/`, `requirements.txt`, and `app.py`. That's the minimum runnable surface.

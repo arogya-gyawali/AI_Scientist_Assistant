@@ -1,6 +1,6 @@
-> **Tentative — first-pass data architecture proposal.** Drafted so the team has something concrete to align on. Specifics will likely change as others weigh in.
-
 # Type Reference
+
+> **Implementation status:** Stages 1, 2, 3, 5, 6, 7 ship today; Stage 4 (Budget) and Stage 8 (Summary) are pending. The type contracts below cover all eight stages — the pending ones already have type definitions and JSON Schemas so a future PR can land them without re-litigating shapes.
 
 Data contracts for the AI Scientist Assistant pipeline. Source of truth for what each stage consumes and emits. Mirrors the TypeScript files in `spec/types/`.
 
