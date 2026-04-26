@@ -481,16 +481,17 @@ def enrich_one_item(item: FEReagent) -> FEReagent:
 # the FE renders these with a "BEST-GUESS" badge and no Source link
 # so users know they're seeing an estimate, not a verified citation.
 
-ESTIMATE_SYSTEM = """You are a lab procurement assistant. The user will give you the name of a laboratory material and (optionally) what it's used for. Make your single best guess at:
-  - supplier  (most common vendor, e.g. "Sigma-Aldrich", "ThermoFisher", "Promega")
-  - catalog   (a typical SKU/catalog number for that supplier — your best recollection from training data)
-  - price     (rough USD list price WITH pack size, e.g. "$48 / 500 g", "$220 / kit")
+ESTIMATE_SYSTEM = """You are a lab procurement assistant. The user will give you the name of a material a lab needs and (optionally) what it's used for. Make your single best guess at:
+  - supplier  (most likely vendor — Sigma-Aldrich, ThermoFisher, Promega, Qiagen for reagents; ADInstruments, BIOPAC, IKA, Eppendorf for equipment; McMaster-Carr, Grainger, Amazon, Best Buy for general / facility / consumer items)
+  - catalog   (a plausible SKU / catalog number — your best recollection or a representative product. If genuinely unsure, leave null but still fill supplier + price)
+  - price     (rough USD list price WITH pack size or unit, e.g. "$48 / 500 g", "$220 / kit", "$350 / unit", "$80 / pack of 100")
 
-Hard rules:
-- These are estimates, not citations. The user knows that.
-- Don't refuse — give your best guess. If you genuinely can't recall a typical SKU, you may leave catalog null but still guess supplier and price.
-- Keep price as USD with pack size when possible.
-- For non-laboratory items (pen, paper, questionnaire, generic stationery), return all-null.
+Be GENEROUS, not conservative. The user explicitly wants this filled in even when it's a guess. Two examples:
+  - "Comfortable reclined chair" → {"supplier": "McMaster-Carr or Amazon", "catalog": null, "price": "$200-500 / unit"}
+  - "Sound-dampened room" → {"supplier": "(facility — not procurable)", "catalog": null, "price": "(in-house facility cost)"}
+  - "External hard drive" → {"supplier": "Best Buy / Amazon", "catalog": "WDBA3A0040BBK or similar", "price": "$120 / 4 TB"}
+
+Only return all-null when the input is genuinely meaningless or empty. Items you can't easily price still get a supplier guess and a "(facility)" or "(varies)" price marker so the user sees SOMETHING.
 
 Return ONLY a single valid JSON object:
 {
