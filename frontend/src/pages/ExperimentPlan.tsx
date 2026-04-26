@@ -440,12 +440,34 @@ function computePlanConfidence(
     default: label = "Low"; dotsFilled = 2;
   }
 
-  // Evergreen description — explains what the dial is *based on* rather
-  // than diagnosing the specific weak factor. The chips already show
-  // which factor is weak (grey vs. sage), so the prose can stay generic
-  // and read as standing copy rather than feeling auto-generated.
-  const description =
-    "Based on protocol similarity to published assays and availability of established readouts.";
+  // Description is composed from the actual run data — experiment type,
+  // grounding signal strength, validated procedure count, equipment
+  // coverage. References *this* experiment specifically rather than
+  // serving as evergreen marketing copy.
+  const expType = (protocolView?.experiment_type ?? "").trim();
+  const procWithCriteriaCount = procs.filter((p) => p.success_criteria.length > 0).length;
+  const procCount = procs.length;
+
+  const groundingPart = cited.length > 0
+    ? `${cited.length} cited protocol${cited.length === 1 ? "" : "s"} (max ${Math.round(maxWeight * 100)}% relevance)`
+    : "no direct protocol grounding";
+
+  const procPart = procWithCriteriaCount > 0
+    ? `${procWithCriteriaCount} of ${procCount} procedure${procCount === 1 ? "" : "s"} with success criteria`
+    : procCount > 0
+      ? `${procCount} procedure${procCount === 1 ? "" : "s"} (none with formal success criteria yet)`
+      : null;
+
+  const equipPart = totalEq > 0
+    ? `${speccedEq} of ${totalEq} equipment items specced`
+    : null;
+
+  // Lead with the experiment type so the user immediately sees "this is
+  // about MY experiment". Then chain the three facts; drop the ones we
+  // don't have data for (e.g. equipment when materials hasn't loaded).
+  const leadIn = expType ? `${expType.charAt(0).toUpperCase() + expType.slice(1)} grounded in ` : "Plan grounded in ";
+  const middle = [groundingPart, procPart, equipPart].filter(Boolean).join("; ");
+  const description = `${leadIn}${middle}.`;
 
   return { label, dotsFilled, description, factors };
 }
