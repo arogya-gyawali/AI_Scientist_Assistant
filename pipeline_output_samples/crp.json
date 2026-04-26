@@ -1,71 +1,85 @@
 {
   "signal": "similar_work_exists",
-  "description": "While no exact match was found, several studies describe similar paper-based or screen-printed electrochemical biosensors for C-reactive protein (CRP) detection in whole blood without preprocessing. These studies report comparable detection limits and rapid analysis times, suggesting the proposed research question aligns with current advancements in the field.",
+  "description": "While several reviews discuss electrochemical biosensors for various biomarkers and their potential for point-of-care applications, no direct prior work matching all aspects of your hypothesis was found. Specifically, none of the retrieved papers describe the development or comparative testing of a paper-based electrochemical biosensor for CRP in whole blood, without any preprocessing, and within a 10-minute timeframe, against a laboratory ELISA.",
   "references": [
     {
-      "source": "paper",
-      "confidence": "medium",
-      "doi": null,
-      "url": "https://pubmed.ncbi.nlm.nih.gov/40542313/",
-      "title": "A label-free electrochemical immunosensor on gold-printed electrode for the electrochemical detection of C-reactive protein from blood samples - PubMed",
-      "authors": [],
-      "year": null,
-      "venue": "PubMed",
-      "snippet": "of CRP in 1 × PBS, and achieving a detection limit (LOD) of 0.745 µg/mL within 30 min. Notably, the immunosensor successfully detected CRP in human ethylenediaminetetraacetic acid (EDTA)-anticoagulated whole blood with a detection limit of 0.177 µg/mL, which is within the clinical range for sepsis (5 µg/mL).",
-      "relevance_score": 0.95,
-      "description": "This paper describes a label-free electrochemical immunosensor on a gold-printed electrode modified with multi-walled carbon nanotubes for CRP detection. It achieved a detection limit of 0.177 µg/mL in human whole blood (EDTA-anticoagulated) within 30 minutes, without additional preprocessing.",
-      "matched_on": [
-        "electrochemical biosensor",
-        "anti-CRP antibodies",
-        "whole blood",
-        "detection limit",
-        "without preprocessing"
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.3390/bios15070402",
+      "url": "https://doi.org/10.3390/bios15070402",
+      "title": "Electrochemical Aptamer-Based Biosensors for Sepsis Diagnosis: Recent Advances, Challenges, and Future Perspectives (2020-2025).",
+      "authors": [
+        "Tan LL",
+        "Mohamad NS"
       ],
-      "importance": "This reference is highly relevant as it demonstrates an electrochemical immunosensor detecting CRP in whole blood without preprocessing, similar to the hypothesis. The reported detection limit of 0.177 µg/mL (0.177 mg/L) is within the hypothesized range of <0.5 mg/L, although the time-to-result is 30 minutes, which is longer than the proposed 10 minutes."
+      "year": 2025,
+      "venue": "Biosensors",
+      "snippet": "Sepsis remains a global health emergency, demanding timely and accurate diagnostics to reduce morbidity and mortality. This review critically assesses the recent progress (2020-2025) in the development of electrochemical aptamer-based biosensors for sepsis detection. These biosensors combine aptamers' high specificity and modifiability with the sensitivity and miniaturization potential of electrochemical platforms. The analysis highlights notable advances in detecting key sepsis biomarkers, such as C-reactive protein (CRP), procalcitonin (PCT), interleukins (e.g., interleukin-6 (IL-6), tumor necrosis factor-alpha (TNF-α)), lipopolysaccharides (LPSs), and microRNAs using diverse sensor configurations, including a field-effect transistor (FET), impedance spectroscopy, voltammetry, and hybrid nanomaterial-based systems. A comparative evaluation reveals promising analytical performance in terms of the limit of detection (LOD), rapid response time, and point-of-care (POC) potential. However, critical limitations remain, including variability in validation protocols, limited testing in real clinical matrices, and challenges in achieving multiplexed detection. This review underscores translational barriers and recommends future directions focused on clinical validation, integration with portable diagnostics, and interdisciplinary collaboration. By consolidating current developments and gaps, this work provides a foundation for guiding next-generation biosensor innovations aimed at effective sepsis diagnosis and monitoring.",
+      "relevance_score": 0.8,
+      "description": "This review summarizes recent advancements (2020-2025) in electrochemical aptamer-based biosensors for sepsis detection, focusing on key biomarkers like CRP. It covers various sensor configurations, evaluates analytical performance including limit of detection and rapid response time, and discusses point-of-care potential as well as limitations in real clinical matrices and validation protocols.",
+      "matched_on": [
+        "electrochemical biosensors",
+        "Point-of-Care",
+        "CRP detection",
+        "time-response",
+        "sepsis diagnosis"
+      ],
+      "importance": "This paper is highly relevant as it specifically mentions electrochemical biosensors for CRP and discusses their analytical performance, including LOD and rapid response time, for sepsis diagnosis. Although it focuses on aptamer-based sensors and is a review, it highlights the potential for point-of-care, which aligns with your hypothesis's goal of rapid, onsite detection without preprocessing. It provides a good overview of the state-of-the-art for similar targets."
     },
     {
-      "source": "paper",
-      "confidence": "medium",
-      "doi": "10.1007/s00604-025-07252-4",
-      "url": "https://link.springer.com/article/10.1007/s00604-025-07252-4",
-      "title": "A label-free electrochemical immunosensor on gold-printed ...",
-      "authors": [],
-      "year": null,
-      "venue": "Springer",
-      "snippet": "with only 2 µL of unprocessed whole blood, eliminating the need for labels or amplification due to the compact design of the working electrode (1 mm). This characteristic is particularly advantageous for clinical diagnostics in sepsis cases, where obtaining large blood volumes can be challenging.",
-      "relevance_score": 0.93,
-      "description": "This study details a label-free electrochemical immunosensor on a PCB gold electrode modified with MWCNTs for sensitive CRP detection in unprocessed whole blood, highlighting its suitability for point-of-care applications due to low sample volume and no preprocessing.",
-      "matched_on": [
-        "electrochemical biosensor",
-        "unprocessed whole blood",
-        "CRP detection",
-        "label-free"
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.3390/bios16010044",
+      "url": "https://doi.org/10.3390/bios16010044",
+      "title": "Electrochemical Detection of Cancer Biomarkers: From Molecular Sensing to Clinical Translation.",
+      "authors": [
+        "Nadeem-Tariq A",
+        "Rafanan JR",
+        "Kang N",
+        "Zhang S",
+        "Kanniyappan H",
+        "Merchant A"
       ],
-      "importance": "This paper reinforces the feasibility of CRP detection in unprocessed whole blood using electrochemical biosensors, directly aligning with the core elements of the hypothesis regarding sample type and preprocessing. It further supports the clinical relevance and point-of-care potential."
+      "year": 2026,
+      "venue": "Biosensors",
+      "snippet": "Early cancer detection is crucial for improving survival rates and treatment outcomes. Electrochemical biosensors have emerged as powerful tools for early cancer detection due to their high sensitivity, specificity, and rapid detection capabilities. This review explores recent advancements (2015-2025) in electrochemical biosensors for cancer biomarker detection, their working principles, novel nanomaterial-based enhancements, challenges, and prospects for clinical applications. Specifically, we highlight the electrochemical detection of protein biomarkers (e.g., CEA, PSA, CRP), nucleic acid markers (ctDNA, miRNA, methylation patterns), and metabolic indicators, emphasizing their clinical relevance in early diagnosis and monitoring. Unlike previous reviews which focus on either biomarker classes or sensor platforms, this review uniquely integrates both factors. This review provides a novel perspective on how next-generation electrochemical biosensors can bridge the gap between laboratory development and real-world cancer diagnostics.",
+      "relevance_score": 0.75,
+      "description": "This review explores recent advancements (2015-2025) in electrochemical biosensors for cancer biomarker detection, covering working principles, nanomaterial enhancements, and clinical applications. It specifically highlights the electrochemical detection of protein biomarkers, including CRP, and emphasizes their relevance in early diagnosis and monitoring, aiming to bridge the gap between laboratory and real-world diagnostics.",
+      "matched_on": [
+        "electrochemical biosensors",
+        "cancer biomarkers",
+        "CRP detection",
+        "clinical translation",
+        "rapid detection"
+      ],
+      "importance": "This review discusses electrochemical biosensors for protein biomarkers like CRP, emphasizing their sensitivity and rapid detection capabilities for clinical applications. While its primary focus is cancer, the mention of CRP detection and the discussion of clinical translation for electrochemical biosensors are pertinent to the broader context of your hypothesis. It reinforces the general feasibility and research interest in electrochemical CRP detection."
     },
     {
-      "source": "paper",
-      "confidence": "medium",
-      "doi": null,
-      "url": "https://www.sciencedirect.com/science/article/abs/pii/S0956566324006730",
-      "title": "Reagent-free anti-fouling electrochemical immunosensor based on ...",
-      "authors": [],
-      "year": null,
-      "venue": "ScienceDirect",
-      "snippet": "linear relationship to CRP response, featuring a detection limit of 0.09 μg/mL, consistent with clinical reference range. In addition, the CRP immunosensor demonstrated excellent specificity in other inflammation-related proteins and commendable anti-interference performance for CRP detection in plasma and whole blood tests.",
-      "relevance_score": 0.9,
-      "description": "This work introduces a reagent-free anti-fouling electrochemical immunosensor constructed with a 3D \"flower-leaf\" structure for CRP detection in plasma and whole blood. It achieved a detection limit of 0.09 μg/mL with good specificity and anti-interference performance.",
-      "matched_on": [
-        "electrochemical immunosensor",
-        "CRP detection",
-        "whole blood",
-        "detection limit",
-        "reagent-free"
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.1007/s00216-025-06127-0",
+      "url": "https://doi.org/10.1007/s00216-025-06127-0",
+      "title": "Smart microfluidic devices integrated in electrochemical point-of-care platforms for biomarker detection in biological fluids.",
+      "authors": [
+        "Mazzaracchio V",
+        "Arduini F"
       ],
-      "importance": "This reference is highly relevant as it presents an electrochemical immunosensor with a very low detection limit (0.09 µg/mL or 0.09 mg/L) for CRP in whole blood, directly addressing a key dependent variable in the hypothesis. The 'reagent-free' aspect also aligns with the simplified, rapid detection goal."
+      "year": 2026,
+      "venue": "Analytical and bioanalytical chemistry",
+      "snippet": "The increasing demand for decentralized, accessible, and rapid analytical tools is driving a transformation in healthcare toward point-of-care (POC) analytical technologies. The final aim is to reduce the cost of healthcare management originating from frequent patient hospitalizations and expensive and time-consuming laboratory-based analyses. This review explores the integration of microfluidic technologies with electrochemical sensing platforms, aiming to address the urgent need for POC analytical platforms. Owing to the miniaturization of fluid management systems and exploiting fluid automation, microfluidic devices enable low sample consumption, cost-effective analysis, and multiplexed detection, offering promising tools for real-time health monitoring. Among the other materials, the most commonly used substrates for microfluidics fabrication are paper, PDMS, and adhesive tape, which support custom-designed microchannel architectures, passive fluid motion, and wearable integration. Special attention is given to wearable sensors for sweat analysis, with various approaches employing capillary-driven flows and smart microfluidic designs to enable continuous and autonomous monitoring of biomarkers. Highlighting relevant works from the last 5 years, the review explores the role of integrated microfluidic electrochemical sensing devices in delivering advanced decentralized analytical platforms, with significant potential for clinical use in biomarker detection.",
+      "relevance_score": 0.65,
+      "description": "This review explores the integration of microfluidic technologies with electrochemical sensing platforms to address the need for point-of-care analytical tools. It highlights the use of materials like paper for microfluidic fabrication, enabling low sample consumption, cost-effective analysis, and multiplexed detection, with attention to real-time health monitoring and wearable sensors.",
+      "matched_on": [
+        "microfluidic devices",
+        "electrochemical platforms",
+        "point-of-care",
+        "paper substrate",
+        "biomarker detection"
+      ],
+      "importance": "This paper is relevant because it specifically discusses the integration of paper-based microfluidics with electrochemical sensing platforms for point-of-care biomarker detection. This directly relates to your chosen sensor format (paper-based electrochemical biosensor) and the point-of-care nature of your hypothesis, supporting the technical feasibility and relevance of such platforms for rapid, decentralized analysis."
     }
   ],
-  "searched_at": "2026-04-26T00:21:38.625436+00:00",
-  "tavily_query": "paper-based electrochemical biosensor anti-CRP antibodies detection limit whole blood without preprocessing",
-  "summary": "This research question is not entirely novel, as similar work exists regarding paper-based or electrochemical biosensors for C-reactive protein (CRP) detection in whole blood without preprocessing. The closest precedent describes a label-free electrochemical immunosensor achieving a 0.177 mg/L detection limit in whole blood, which is comparable to the hypothesized sensitivity, though its analysis time of 30 minutes is longer than the proposed 10 minutes. The user's hypothesis specifically addresses the combined challenge of achieving sub-0.5 mg/L detection within 10 minutes, thereby defining a stricter performance target in terms of speed, which is a key distinguishing factor for point-of-care applications."
+  "searched_at": "2026-04-26T00:46:15.048592+00:00",
+  "tavily_query": "Paper electrochemical biosensor anti-CRP antibody whole blood limit of detection time-to-result",
+  "summary": "Your hypothesis demonstrates novelty by proposing a paper-based electrochemical biosensor for CRP detection in whole blood without preprocessing, aiming to match laboratory ELISA sensitivity within 10 minutes. While electrochemical biosensors for CRP and point-of-care applications are active research areas, and reviews discuss paper-based platforms, no retrieved studies appear to have specifically tested the exact combination of sensor format, sample matrix, non-preprocessed condition, and ambitious performance targets outlined in your hypothesis. This suggests a unique contribution to the field, particularly concerning the practical clinical application of such a device for rapid, reagent-less CRP detection; the identified references provide crucial foundational context on electrochemical biosensor development and point-of-care aspirations."
 }

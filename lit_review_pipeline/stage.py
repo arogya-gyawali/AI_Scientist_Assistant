@@ -5,19 +5,20 @@ Writes: lit_review
 
 Flow:
   1. Rewrite the structured hypothesis into a precise scientific search query (LLM).
-  2. Semantic Scholar search → top-N papers with structured bibliographic
-     metadata (title, authors, year, venue, abstract, TLDR, DOI).
+  2. Europe PMC search → top-N papers with structured bibliographic metadata
+     (title, authors, year, venue, plain-text abstract, DOI, PMID/PMCID).
   3. LLM editorial pass: classifies novelty signal, picks 1-3 papers most
      relevant to the hypothesis, writes per-ref `description` (neutral) +
      `importance` (relational) + `matched_on` tags + `relevance_score`.
-     Does NOT extract bibliographic fields — backend uses SS data directly.
+     Does NOT extract bibliographic fields — backend uses Europe PMC data directly.
   4. Build a LitReviewSession and write to ExperimentPlan.lit_review.
 
-Why Semantic Scholar instead of Tavily here:
-  Tavily returns body text from web pages; bibliographic fields (authors,
-  year, venue, DOI) aren't reliably present in the returned snippets, which
-  forced LLM extraction of those fields and led to hallucinated authors.
-  Semantic Scholar returns structured metadata — no extraction needed.
+Why Europe PMC:
+  Tavily returns body text from web pages; bibliographic fields aren't
+  reliably present in the snippets, which forced LLM extraction and led
+  to hallucinated authors. Europe PMC is biomedical-specific, free, no auth,
+  and returns structured metadata with full plain-text abstracts. Authors
+  come back as structured AuthorList objects — no extraction, no hallucination.
 """
 
 from __future__ import annotations
@@ -26,7 +27,7 @@ import json
 import uuid
 from typing import Any
 
-from src.clients import llm, semantic_scholar
+from src.clients import europe_pmc, llm
 from src.types import (
     Citation,
     ExperimentPlan,
@@ -43,14 +44,16 @@ from lit_review_pipeline.extractors import (
 )
 
 
-QUERY_REWRITE_SYSTEM = """You translate structured scientific hypotheses into precise scientific search queries for a Semantic Scholar novelty check.
+QUERY_REWRITE_SYSTEM = """You translate structured scientific hypotheses into precise scientific search queries for a Europe PMC novelty check.
 
 Rules:
+- Output the query in ENGLISH ONLY. Do NOT translate technical terms into other languages.
 - 6-15 words.
-- Use precise scientific terminology.
+- Use precise scientific terminology (gene names, organism names, chemical names, established assay names).
 - Focus on the specific intervention + measured outcome + system/subject.
 - Do NOT include years, dates, or recency hints.
 - Do NOT include hedge words ("can", "might", "study", "experiment").
+- Do NOT use Europe PMC field qualifiers (no AUTH:, TITLE:, etc.) — plain query terms only.
 - Output only the query string. No quotes, no labels, no explanation."""
 
 QUERY_REWRITE_USER_TMPL = """Subject: {subject}
@@ -61,13 +64,13 @@ Expected outcome: {expected}
 Research question: {research_question}"""
 
 
-CLASSIFY_SYSTEM = """You evaluate scientific novelty. You receive a structured hypothesis and a list of pre-fetched papers from Semantic Scholar. Each paper already has bibliographic metadata (title, authors, year, venue) and an abstract or TLDR — DO NOT repeat those in your output. Your job is editorial.
+CLASSIFY_SYSTEM = """You evaluate scientific novelty. You receive a structured hypothesis and a list of pre-fetched papers from Europe PMC. Each paper already has bibliographic metadata (title, authors, year, journal) and a plain-text abstract — DO NOT repeat those in your output. Your job is editorial.
 
 Editorial output per chosen reference:
 - paper_index   (integer; index into the input papers array. Picking a paper that is not in the array is a failure.)
 - relevance_score (0.0-1.0; your judgment of relevance to the user's hypothesis, NOT generic citation count.)
 - matched_on    (array of 3-5 short concept tags that bridge this paper to the hypothesis, e.g. ["E. coli", "Glucose", "Catabolite repression"])
-- description   (1-2 sentences, NEUTRAL: synthesize what this paper actually covers, drawing from title + abstract + TLDR. May note limitations factually but DO NOT compare to the user's study here.)
+- description   (1-2 sentences, NEUTRAL: synthesize what this paper actually covers, drawing from title + abstract. May note limitations factually but DO NOT compare to the user's study here.)
 - importance    (1-2 sentences, RELATIONAL: why does this paper match the user's hypothesis? Where does it overlap, where does it differ, what gap does the user's study fill? This is "why this matched.")
 
 Top-level output:
@@ -104,7 +107,7 @@ CLASSIFY_USER_TMPL = """Hypothesis (structured):
 - Expected outcome: {expected}
 - Research question: {research_question}
 
-Semantic Scholar query used: {query}
+Europe PMC query used: {query}
 
 Papers ({n} returned):
 {papers}"""
@@ -123,54 +126,103 @@ def _rewrite_query(h: Hypothesis) -> str:
     return llm.complete(QUERY_REWRITE_SYSTEM, user).strip().strip('"').strip("'")
 
 
+# ----------------------------------------------------------------------------
+# Europe PMC paper helpers
+# ----------------------------------------------------------------------------
+
+def _paper_authors(p: dict) -> list[str]:
+    """Prefer the structured AuthorList. Fall back to the comma-joined string."""
+    al = (p.get("authorList") or {}).get("author") or []
+    if al:
+        names = []
+        for a in al:
+            n = a.get("fullName") or a.get("lastName")
+            if n:
+                names.append(n)
+        if names:
+            return names
+    s = p.get("authorString") or ""
+    if s:
+        return [n.strip() for n in s.split(",") if n.strip()]
+    return []
+
+
+def _paper_year(p: dict) -> int | None:
+    """Pull year from Europe PMC's pubYear or journalInfo, defensively."""
+    yr = p.get("pubYear")
+    if isinstance(yr, str) and yr.isdigit():
+        return int(yr)
+    if isinstance(yr, int):
+        return yr
+    yr2 = (p.get("journalInfo") or {}).get("yearOfPublication")
+    if isinstance(yr2, int):
+        return yr2
+    if isinstance(yr2, str) and yr2.isdigit():
+        return int(yr2)
+    return None
+
+
+def _paper_venue(p: dict) -> str | None:
+    journal = (p.get("journalInfo") or {}).get("journal") or {}
+    return journal.get("title") or journal.get("iso") or None
+
+
+def _paper_url(p: dict) -> str | None:
+    """Best URL for the paper, in priority: DOI > PubMed > PMC > Europe PMC."""
+    if doi := p.get("doi"):
+        return f"https://doi.org/{doi}"
+    if pmid := p.get("pmid"):
+        return f"https://europepmc.org/article/MED/{pmid}"
+    if pmcid := p.get("pmcid"):
+        return f"https://europepmc.org/article/PMC/{pmcid}"
+    epmc_id = p.get("id")
+    source = p.get("source")
+    if epmc_id and source:
+        return f"https://europepmc.org/article/{source}/{epmc_id}"
+    return None
+
+
 def _format_papers(papers: list[dict]) -> str:
-    """Render papers for the LLM prompt with structured metadata up front."""
     lines = []
     for i, p in enumerate(papers):
         title = p.get("title") or "(no title)"
-        authors_list = [a.get("name") for a in (p.get("authors") or []) if a.get("name")]
-        authors = ", ".join(authors_list[:6]) + (" et al." if len(authors_list) > 6 else "")
-        year = p.get("year") if p.get("year") is not None else "n/a"
-        venue = p.get("venue") or "n/a"
-        body = (p.get("tldr") or {}).get("text") or p.get("abstract") or ""
-        if len(body) > 1500:
-            body = body[:1500] + "…"
+        authors = p.get("authorString") or ""
+        if len(authors) > 240:
+            authors = authors[:240] + "…"
+        year = _paper_year(p) or "n/a"
+        venue = _paper_venue(p) or "n/a"
+        abstract = p.get("abstractText") or ""
+        if len(abstract) > 1500:
+            abstract = abstract[:1500] + "…"
         lines.append(
             f"[{i}] {title}\n"
             f"    Authors: {authors or '(none listed)'}\n"
             f"    {year}, {venue}\n"
-            f"    {body}"
+            f"    {abstract}"
         )
     return "\n\n".join(lines)
 
 
 def _compose_citation(paper: dict, editorial: dict) -> Citation:
-    """Build a Citation from Semantic Scholar paper data + LLM editorial fields.
+    """Build a Citation from a Europe PMC paper + the LLM's editorial layer.
 
-    Bibliographic fields come straight from Semantic Scholar — no LLM extraction,
-    no validation needed (SS metadata is authoritative). When SS leaves a field
-    null we fall back to the deterministic regex extractors as a safety net.
+    Bibliographic fields come straight from Europe PMC; deterministic extractors
+    are belt-and-suspenders fallback for the rare case Europe PMC is missing a
+    field that's recoverable from the URL or abstract.
     """
-    authors = [a.get("name") for a in (paper.get("authors") or []) if a.get("name")]
-    external = paper.get("externalIds") or {}
-    ss_doi = external.get("DOI")
-    pdf_url = (paper.get("openAccessPdf") or {}).get("url")
-    page_url = paper.get("url") or pdf_url
-
-    # Snippet preference: TLDR (1-sentence AI summary) > abstract > nothing.
-    tldr_text = (paper.get("tldr") or {}).get("text")
-    snippet = tldr_text or paper.get("abstract")
+    page_url = _paper_url(paper)
+    abstract = paper.get("abstractText")
 
     return Citation(
-        source="semantic_scholar",
-        confidence="high",  # SS metadata is authoritative
+        source="europe_pmc",
+        confidence="high",  # Europe PMC metadata is authoritative
         title=paper.get("title"),
-        authors=authors,
-        year=paper.get("year") or extract_year(page_url, paper.get("title"), paper.get("abstract")),
-        venue=paper.get("venue") or extract_venue(page_url),
-        doi=ss_doi or extract_doi(page_url, paper.get("abstract")),
+        authors=_paper_authors(paper),
+        year=_paper_year(paper) or extract_year(page_url, paper.get("title"), abstract),
+        venue=_paper_venue(paper) or extract_venue(page_url),
+        doi=paper.get("doi") or extract_doi(page_url, abstract),
         url=page_url,
-        snippet=snippet,
+        snippet=abstract,
         relevance_score=editorial.get("relevance_score"),
         matched_on=editorial.get("matched_on") or [],
         description=editorial.get("description"),
@@ -178,13 +230,17 @@ def _compose_citation(paper: dict, editorial: dict) -> Citation:
     )
 
 
+# ----------------------------------------------------------------------------
+# Classifier
+# ----------------------------------------------------------------------------
+
 def _classify(
     h: Hypothesis,
     query: str,
-    ss_response: dict,
+    epmc_response: dict,
 ) -> tuple[NoveltySignal, str, list[Citation], str]:
     s = h.structured
-    papers: list[dict] = ss_response.get("data") or []
+    papers: list[dict] = (epmc_response.get("resultList") or {}).get("result") or []
 
     user = CLASSIFY_USER_TMPL.format(
         subject=s.subject,
@@ -213,7 +269,6 @@ def _classify(
     for r in parsed.get("references", [])[:3]:
         idx = r.get("paper_index")
         if not isinstance(idx, int) or idx < 0 or idx >= len(papers):
-            # LLM picked a phantom paper — skip silently rather than fabricate.
             continue
         refs.append(_compose_citation(papers[idx], r))
 
@@ -225,15 +280,17 @@ def run(plan: ExperimentPlan) -> LitReviewSession:
     """Stage runner. Returns the LitReviewSession; caller writes it to plan.lit_review."""
     h = plan.hypothesis
     query = _rewrite_query(h)
-    ss_response = semantic_scholar.search_for_lit_review(query)
-    signal, description, refs, summary = _classify(h, query, ss_response)
+    # page_size=10 gives the LLM a wider candidate pool; the prompt still
+    # caps the chosen references at 3. Worth the marginal token cost.
+    epmc_response = europe_pmc.search_for_lit_review(query, page_size=10)
+    signal, description, refs, summary = _classify(h, query, epmc_response)
 
     initial = LitReviewOutput(
         signal=signal,
         description=description,
         references=refs,
         searched_at=now(),
-        tavily_query=query,  # field name is historical; it's the SS query now
+        tavily_query=query,  # field name is historical; carries the EPMC query
         summary=summary,
     )
 
@@ -242,6 +299,6 @@ def run(plan: ExperimentPlan) -> LitReviewSession:
         hypothesis_id=h.id,
         initial_result=initial,
         chat_history=[],
-        cached_tavily_context=json.dumps(ss_response),  # field name historical
+        cached_tavily_context=json.dumps(epmc_response),  # field name historical
         user_decision="pending",
     )

@@ -1,15 +1,15 @@
-"""Semantic Scholar smoke test — exercise the Stage 1 search path without LLM.
+"""Europe PMC smoke test — exercise the Stage 1 search path without LLM.
 
-Pre-baked queries for each bioscience sample (skipping the LLM query-rewrite
-step), hits Semantic Scholar directly, prints what came back. Lets you confirm:
-  - The Semantic Scholar API responds (no key required for low rate)
-  - Our test domains actually return useful structured papers
-  - The cache is writing under .cache/semantic_scholar/lit_review/
+Pre-baked queries for each bioscience sample, hits Europe PMC directly,
+prints what came back. Lets you confirm:
+  - Europe PMC API is reachable (no auth required)
+  - Our test domains return useful biomedical papers
+  - The cache writes under .cache/europe_pmc/lit_review/
 
 Usage:
-  python -m lit_review_pipeline.semantic_scholar_smoke              # all bioscience samples
-  python -m lit_review_pipeline.semantic_scholar_smoke trehalose    # run one
-  python -m lit_review_pipeline.semantic_scholar_smoke --raw        # full JSON
+  python -m lit_review_pipeline.europe_pmc_smoke              # all bioscience samples
+  python -m lit_review_pipeline.europe_pmc_smoke trehalose    # run one
+  python -m lit_review_pipeline.europe_pmc_smoke --raw        # full JSON
 """
 
 from __future__ import annotations
@@ -20,11 +20,9 @@ import sys
 
 from dotenv import load_dotenv
 
-from src.clients import semantic_scholar
+from src.clients import europe_pmc
 
 
-# Hand-tuned queries that approximate what the LLM query-rewrite step would
-# produce for each sample hypothesis.
 SAMPLE_QUERIES: dict[str, dict[str, str]] = {
     "trehalose": {
         "domain": "cell_biology",
@@ -51,35 +49,33 @@ def _print_sample(name: str, payload: dict, raw: bool) -> None:
         print(json.dumps(payload, indent=2))
         return
 
-    papers = payload.get("data") or []
-    print(f"\n-- {len(papers)} papers --")
+    papers = (payload.get("resultList") or {}).get("result") or []
+    hit_count = payload.get("hitCount")
+    print(f"\n-- {len(papers)} papers shown (hitCount={hit_count}) --")
     for i, p in enumerate(papers, 1):
         title = p.get("title") or "(no title)"
-        year = p.get("year") if p.get("year") is not None else "n/a"
-        venue = p.get("venue") or "(no venue)"
-        authors = ", ".join(a.get("name", "") for a in (p.get("authors") or [])[:5])
-        if len((p.get("authors") or [])) > 5:
-            authors += " et al."
-        external = p.get("externalIds") or {}
-        doi = external.get("DOI") or ""
-        tldr = (p.get("tldr") or {}).get("text") or ""
-        abstract = p.get("abstract") or ""
-        body = tldr or abstract
-        if len(body) > 280:
-            body = body[:280] + "…"
+        authors = p.get("authorString") or ""
+        if len(authors) > 200:
+            authors = authors[:200] + "…"
+        year = p.get("pubYear") or "n/a"
+        venue = ((p.get("journalInfo") or {}).get("journal") or {}).get("title") or "(no journal)"
+        doi = p.get("doi") or ""
+        abstract = p.get("abstractText") or ""
+        if len(abstract) > 280:
+            abstract = abstract[:280] + "…"
 
         print(f"\n  [{i}] {title}")
         print(f"      {authors}  ({year})  •  {venue}")
         if doi:
             print(f"      doi: {doi}")
-        if body:
-            print(f"      {body}")
+        if abstract:
+            print(f"      {abstract}")
 
 
 def main(argv: list[str] | None = None) -> int:
     load_dotenv()
 
-    parser = argparse.ArgumentParser(prog="ss-smoke")
+    parser = argparse.ArgumentParser(prog="epmc-smoke")
     parser.add_argument("name", nargs="?", choices=list(SAMPLE_QUERIES.keys()))
     parser.add_argument("--raw", action="store_true", help="Print full raw JSON.")
     args = parser.parse_args(argv)
@@ -87,7 +83,7 @@ def main(argv: list[str] | None = None) -> int:
     samples = [args.name] if args.name else list(SAMPLE_QUERIES.keys())
     for name in samples:
         try:
-            payload = semantic_scholar.search_for_lit_review(SAMPLE_QUERIES[name]["query"])
+            payload = europe_pmc.search_for_lit_review(SAMPLE_QUERIES[name]["query"])
             _print_sample(name, payload, args.raw)
         except Exception as exc:
             print(f"\n[FAIL] {name}: {exc}", file=sys.stderr)
@@ -95,7 +91,7 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"\n{'=' * 72}")
     print(f"  Done. {len(samples)} search(es) ran.")
-    print(f"  Cached responses live under .cache/semantic_scholar/lit_review/")
+    print(f"  Cached responses live under .cache/europe_pmc/lit_review/")
     print("=" * 72)
     return 0
 

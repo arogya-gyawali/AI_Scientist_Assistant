@@ -1,73 +1,89 @@
 {
   "signal": "similar_work_exists",
-  "description": "The research question is similar to several existing studies that compare different cryoprotectants, including trehalose, sucrose, and DMSO, for their impact on post-thaw cell viability. While HeLa cells specifically are mentioned in some contexts, a direct comparison of trehalose vs. sucrose vs. DMSO using the exact parameters (concentrations, slow freezing, trypan blue at 24h) is not explicitly found as an exact match.",
+  "description": "While the specific comparison of trehalose and sucrose against DMSO for HeLa cell cryopreservation is not directly found, multiple papers discuss trehalose as a cryoprotectant and address the limitations of DMSO. There is a clear interest in alternative cryoprotectants to improve cell viability and reduce toxicity.",
   "references": [
     {
-      "source": "paper",
-      "confidence": "medium",
-      "doi": null,
-      "url": "https://www.mdpi.com/2073-4409/10/7/1837",
-      "title": "Cryopreservation of Human Adipose Tissues and ...",
-      "authors": [],
-      "year": null,
-      "venue": "Cells",
-      "snippet": "Rao et al.  examined trehalose as a sole cryoprotectant. They achieved effective delivery into human ADSCs (hADSCs) and reported that preincubation with trehalose significantly increased post-cryopreservation cell viability to 88.1% ± 7.5%. The viability is further improved to 91.2% ± 3.4% by using a higher concentration of trehalose. This observed cell viability was similar to the DMSO group (88.2% ± 2.2%), indicating that trehalose was successfully delivered into the hADSCs during cryopreservation. Dovgan et al.  demonstrated that electroporation is an efficient method for delivering trehalose into hADSCs. They achieved a high survival rate approaching the values obtained with standard DMSO protocol (91.5% ± 1.6%). The authors observed no statistically significant difference between 250 [...] Eight studies were included and are described in Table 1. All studies report improved viability of adipocytes following a freeze/thaw cycle if a CPA (trehalose and DMSO combined) was used compared to controls where no CPA was used. A variety of concentrations of trehalose and DMSO were used, and no significant conclusions can be drawn about the optimum concentration/combinations for optimum adipocyte yield. The cells were washed to remove the CPA according to standard protocols. [...] Roato et al.  compared DMSO and trehalose, and both agents showed similar degrees of viability of samples after thawing. However, the hADSCs cryopreserved in DMSO had a more rapid growth and arrived at co…",
-      "relevance_score": 0.85,
-      "description": "This review summarizes studies on the cryopreservation of human adipose tissues and cells, including comparisons between trehalose and DMSO as cryoprotectants. It finds that trehalose can achieve similar viability rates to DMSO in hADSCs and highlights the variation in concentrations and methods used.",
-      "matched_on": [
-        "trehalose",
-        "DMSO",
-        "cryoprotectant",
-        "post-cryopreservation",
-        "cell viability"
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.1038/s41570-022-00407-4",
+      "url": "https://doi.org/10.1038/s41570-022-00407-4",
+      "title": "Chemical approaches to cryopreservation.",
+      "authors": [
+        "Murray KA",
+        "Gibson MI"
       ],
-      "importance": "This paper directly compares trehalose and DMSO as cryoprotectants and assesses post-thaw viability, which aligns with the independent and dependent variables of the hypothesis. It also mentions different concentrations, although not specifically for HeLa cells or including sucrose."
-    },
-    {
-      "source": "paper",
-      "confidence": "medium",
-      "doi": null,
-      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11411628/",
-      "title": "Trehalose in cryopreservation. Applications, mechanisms and ... - PMC",
-      "authors": [],
-      "year": null,
-      "venue": null,
-      "snippet": "Human peripheral blood stem cells: in Martinetti et al.35 the use of 1 M trehalose alone gave higher long- and short-term viability than DMSO alone, or DMSO combined with trehalose. The 1 M trehalose concentration used here is much higher than the typical optimal concentration of 100–400 mM in most cell types; it is possible that the slow addition of freezing media to the cells in this study allowed a higher concentration of trehalose to be reached without causing too much osmotic stress. For marrow and blood stem cells Scheinkönig et al.42 found that 500 mM trehalose provides a similar level of cryoprotection to DMSO. [...] Rat hepatocyte viability after cryopreservation was slightly higher (80% vs. 75%) with 200 mM trehalose in the absence of DMSO, than with 5% DMSO. The addition of trehalose or sucrose to 5% DMSO did not improve viability, and the addition of glucose decreased viability.33 In mouse spermatogonial stem cells, trehalose did not significantly increase recovery, but almost doubled post-thaw proliferation. Trehalose was more effective than sucrose and maltose in this respect. Lactose was as effective as trehalose. Fructose, galactose, xylose, and raffinose did not increase proliferation compared to the control. Glucose and mannose did increase proliferation, but not as much as the disaccharides.83 In Rodrigues et al.31 post-thaw recovery with 5% DMSO + 146 mM trehalose was 85%, compared to 79% [...] increases in survival rate, depending on the form of the trypa…",
-      "relevance_score": 0.82,
-      "description": "This review article discusses the role of trehalose in cryopreservation, including its applications and mechanisms. It cites various studies comparing trehalose with DMSO and other cryoprotectants like sucrose, reporting on their effects on post-thaw viability across different cell types and concentrations.",
+      "year": 2022,
+      "venue": "Nature reviews. Chemistry",
+      "snippet": "Cryopreservation of cells and biologics underpins all biomedical research from routine sample storage to emerging cell-based therapies, as well as ensuring cell banks provide authenticated, stable and consistent cell products. This field began with the discovery and wide adoption of glycerol and dimethyl sulfoxide as cryoprotectants over 60 years ago, but these tools do not work for all cells and are not ideal for all workflows. In this Review, we highlight and critically review the approaches to discover, and apply, new chemical tools for cryopreservation. We summarize the key (and complex) damage pathways during cellular cryopreservation and how each can be addressed. Bio-inspired approaches, such as those based on extremophiles, are also discussed. We describe both small-molecule-based and macromolecular-based strategies, including ice binders, ice nucleators, ice nucleation inhibitors and emerging materials whose exact mechanism has yet to be understood. Finally, looking towards the future of the field, the application of bottom-up molecular modelling, library-based discovery approaches and materials science tools, which are set to transform cryopreservation strategies, are also included.",
+      "relevance_score": 0.8,
+      "description": "This review summarizes chemical approaches to cryopreservation, highlighting key damage pathways during cellular cryopreservation and how current cryoprotectants like glycerol and DMSO have limitations. It discusses bio-inspired approaches, including the use of small molecules like sugars (such as trehalose).",
       "matched_on": [
-        "trehalose",
-        "DMSO",
-        "sucrose",
-        "cryoprotection",
-        "viability"
-      ],
-      "importance": "This reference is highly relevant as it explicitly compares trehalose, sucrose, and DMSO for their cryoprotective effects on viability. It covers the core cryoprotectant comparisons proposed in the hypothesis, although not specifically for HeLa cells, and discusses various concentrations and cell types."
-    },
-    {
-      "source": "paper",
-      "confidence": "medium",
-      "doi": null,
-      "url": "https://dergipark.org.tr/en/pub/vanvetj/issue/83931/1322291",
-      "title": "Comparative Efficacy of the Dimethyl Sulfoxide, Glycerol and ...",
-      "authors": [],
-      "year": null,
-      "venue": null,
-      "snippet": "(-80 °C). Cell viability and recovery rates were analyzed immediately post-thaw and after 48 h using the trypan blue dye exclusion assay. In 3 months (-20 °C), viability and recovery rates were higher in the methanol group. Glycerol showed better performance in 1 month (-80 °C). DMSO was the most efficient in 6 months (-80 °C). Methanol failed at -80 °C storage temperature. This study demonstrates the effect of these cryoprotectants in HeLa cells on cell viability and cell recovery rates immediately after thawing and after 48 hours of cultivation. [...] Hücre canlılığı ve geri kazanım oranları, çözülmeden hemen sonra ve çözülmeyi takiben 48 saat sonra, tripan mavisi kullanılarak analiz edildi. Canlılık ve geri kazanım oranları 3 ay -20 °C’de, metanol grubunda daha yüksekti. Gliserol grubunda ise canlılık ve geri kazanım oranları 1 ay -80 °C’de daha iyi performans gösterdi. DMSO grubunda ise bu oranlar, 6 ay -80 °C’de en yüksekti. Metanol grubu -80 °C’deki depolama koşullarında başarısız oldu. Bu çalışma, HeLa hücrelerindeki bu kriyoprotektanların, çözdürme işleminden hemen sonra ve 48 saatlik kültivasyondan sonra hücre canlılığı ve hücre geri kazanım oranları üzerindeki etkisini göstermektedir. [...] Cryoprotectants are used to protect cells during freezing. The concentration, type, and freeze-thaw conditions of these substances vary depending on the type of cell to be used. It is very important to determine the appropriate cryopreservation method for the particular cell. Thi…",
-      "relevance_score": 0.75,
-      "description": "This study investigates the comparative efficacy of DMSO, glycerol, and methanol as cryoprotectants for HeLa cells. It assesses cell viability and recovery rates using the trypan blue dye exclusion assay immediately post-thaw and after 48 hours under different storage conditions.",
-      "matched_on": [
-        "HeLa cells",
-        "DMSO",
         "cryoprotectants",
-        "cell viability",
-        "post-thaw",
-        "trypan blue"
+        "trehalose",
+        "DMSO",
+        "damage pathways",
+        "chemical approaches"
       ],
-      "importance": "This paper is specifically important because it uses HeLa cells, the subject of the hypothesis, and evaluates DMSO as a cryoprotectant. It also uses trypan blue for viability assessment and considers post-thaw intervals, aligning with key aspects of the proposed methodology."
+      "importance": "This paper is highly relevant as it provides a comprehensive overview of the field, reinforcing the known limitations of DMSO and categorizing trehalose as a significant alternative cryoprotective agent. It directly supports the rationale behind seeking alternatives to DMSO and emphasizes membrane stabilization as a key mechanism."
+    },
+    {
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.1186/s12951-025-03265-6",
+      "url": "https://doi.org/10.1186/s12951-025-03265-6",
+      "title": "Overcoming ice: cutting-edge materials and advanced strategies for effective cryopreservation of biosample.",
+      "authors": [
+        "Huang M",
+        "Hu M",
+        "Cai G",
+        "Wei H",
+        "Huang S",
+        "Zheng E",
+        "Wu Z"
+      ],
+      "year": 2025,
+      "venue": "Journal of nanobiotechnology",
+      "snippet": "Cryopreservation techniques have been widely used, especially in biomedical applications and preservation of germplasm resources. Ideally, biological materials would maintain functional integrity as well as a normal structure and can be recovered when needed. However, this tool does not work all the time. Ice formation and growth are the key challenges. The other major reason is that the cryoprotective agents (CPAs) currently used do not meet these needs and are always accompanied by their cytotoxicity. A comprehensive and synergistic approach that focuses on the overall frozen biological system is crucial for the evolution of cryopreservation methods. In this review, we first summarize the fundamental damage mechanisms during cryopreservation, as well as common cryoprotectants and their limitations. Next, we discuss materials that interact with ice to improve cryopreservation outcomes. We evaluated natural and synthetic materials, including sugars and polymers, AFPs and mimics, ice nucleators, and hydrogels. In addition, biochemical regulation, which enhances the tolerance of biosamples to cryopreservation-induced stresses, was also mentioned. Nanotechnology, cell encapsulation, cryomesh, and isochoric freezing, such scalable approaches, are further discussed for cryopreservation. Finally, future research directions in this field for efficient cryopreservation are proposed. We emphasized the need for multidisciplinary progress to address these challenges. The combination of cryobiology mechanisms with technologies, such as synthetic biology, nanotechnology, microfluidics, and 3D bioprinting, is highlighted.",
+      "relevance_score": 0.7,
+      "description": "This review discusses fundamental damage mechanisms during cryopreservation, the limitations of current cryoprotective agents (CPAs) due to cytotoxicity, and materials that interact with ice to improve outcomes, including natural and synthetic materials like sugars and polymers.",
+      "matched_on": [
+        "cryopreservation",
+        "cryoprotective agents",
+        "cytotoxicity",
+        "sugars",
+        "ice formation"
+      ],
+      "importance": "This review reiterates the problems associated with current CPAs like DMSO, specifically mentioning cytotoxicity, which is a key driver for your hypothesis. It also directly mentions sugars as materials to improve cryopreservation, providing context for the use of trehalose and sucrose."
+    },
+    {
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.1016/j.omtm.2025.101613",
+      "url": "https://doi.org/10.1016/j.omtm.2025.101613",
+      "title": "From cold chain to ambient: Benefits, risks, and evidence across cell therapy logistics.",
+      "authors": [
+        "Gostage J",
+        "Domingo-Lopez DA",
+        "Tarpey R",
+        "Duffy GP",
+        "Levey RE"
+      ],
+      "year": 2025,
+      "venue": "Molecular therapy. Methods & clinical development",
+      "snippet": "With the exponential growth in the number of cell-based therapies, there is a need to look more closely at a critical factor that unites all these therapies, i.e., cryopreservation, which is currently deemed the gold standard for the storage and shipment of cells. Although cryopreservation is an integral tool in research and clinical practice, it can cause logistical issues (associated with cold chain transport), financial strain, cell dysfunction, and reduced cell viability. Many cell types that are currently being used in cell therapy, or have high clinical potential, have shown to be affected by cryopreservation. Research groups regularly highlight the need for optimized cryopreservation techniques as well as novel alternatives to avoid cryoprotectants. Here, we highlight the potential of ambient cell transport and how, by optimizing three key elements, nutrient, oxygen, and structural support, it may be possible to avoid cryopreservation during cell transport. Ambient cell transport has various benefits including circumventing ultra-low temperatures during shipment, avoidance of cryopreservation-induced cell damage, and offering a more cost-effective and accessible cell transport option. As the cell therapy field evolves, we must actively evolve with it and explore new ways to ensure effective transport of potent, viable, and efficacious cell-based treatments.",
+      "relevance_score": 0.6,
+      "description": "This paper emphasizes the need for optimized cryopreservation techniques and novel alternatives to avoid cryoprotectants due to issues like logistics, financial strain, cell dysfunction, and reduced cell viability associated with current methods.",
+      "matched_on": [
+        "cryopreservation",
+        "cell viability",
+        "cryoprotectants",
+        "optimized techniques",
+        "cell damage"
+      ],
+      "importance": "Although this paper does not directly discuss trehalose or sucrose, it firmly establishes the general problem statement that drives your research: the need for improved cryopreservation methods due to the shortcomings of existing cryoprotectants and their impact on cell viability. It validates the pursuit of better CPAs for cell-based therapies."
     }
   ],
-  "searched_at": "2026-04-26T00:21:22.405378+00:00",
-  "tavily_query": "HeLa cell post-thaw viability trehalose versus DMSO sucrose cryoprotectant slow freezing trypan blue",
-  "summary": "This research question is similar to existing work, as studies have investigated the comparative efficacy of various cryoprotectants, including trehalose, sucrose, and DMSO, on post-thaw cell viability. The closest precedents directly compare trehalose and DMSO, sometimes including sucrose, across different cell types and evaluate viability, often using trypan blue. However, a study that precisely matches the proposed concentrations (0.5M sucrose/trehalose, 10% DMSO) and the specific HeLa cell model within the exact same slow-freezing protocol was not found. Therefore, while the core comparison is precedented, the precise experimental setup with HeLa cells and the specified cryoprotectant concentrations still warrants investigation."
+  "searched_at": "2026-04-26T00:46:07.386362+00:00",
+  "tavily_query": "HeLa cells trehalose cryoprotectant post-thaw viability compared to DMSO",
+  "summary": "The hypothesis addresses a relevant and recognized challenge in cryopreservation, as existing methods often lead to reduced cell viability and cryoprotectant toxicity. While no direct studies on replacing sucrose with trehalose in HeLa cells for an improved outcome over DMSO were found, the literature consistently highlights the demand for novel, less toxic cryoprotectants like sugars. Your study directly fills this gap by quantitatively comparing specific sugars against the DMSO standard in a controlled setting for HeLa cells, potentially offering a more effective and safer alternative."
 }

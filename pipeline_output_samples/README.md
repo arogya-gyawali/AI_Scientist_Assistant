@@ -9,27 +9,30 @@ Real `LitReviewOutput` JSON from `python run.py <sample>` runs. **For frontend i
 | [`lactobacillus.json`](lactobacillus.json) | LGG and intestinal permeability in mice (gut health) | `similar_work_exists` |
 
 Source input YAMLs in [`../inputs/`](../inputs/).
+Backend: **Europe PMC** for paper retrieval; LLM (Gemini 2.5 Flash via OpenRouter) for the editorial layer.
 
-## Sanity check (what's good, what's flaky)
+## Sanity check
 
 ### ✅ Working well
-- **`signal` enum**: all three return valid `similar_work_exists` for plausibly-precedented research questions.
-- **Top-level `description`**: 2–3 sentences, candid about precedent and gaps.
-- **Top-level `summary`**: 3–4 sentences, holistic, hits novelty + literature + actionable framing for the researcher (the strict prompt is holding).
-- **`matched_on` chips**: 3–6 short concept tags per reference, mapping cleanly to the UI mockup. Within target.
-- **Reference-level `description` (neutral) vs `importance` (relational)**: distinct in tone — descriptions stay factual about the paper, importance ties back to the hypothesis. The two-field separation works.
+
+- **`signal` enum**: valid `similar_work_exists` on all three plausibly-precedented research questions.
+- **Top-level `description`**: 2–3 sentences explaining the signal candidly.
+- **Top-level `summary`**: 3–4 sentences, holistic wrap-up; the strict prompt is holding.
+- **Bibliographic fields populated 9/9 across all three samples**:
+  - `authors` — structured arrays straight from Europe PMC's AuthorList.
+  - `year` — every ref has a `pubYear`.
+  - `venue` — real journal names (`"Clinical Nutrition"`, `"PLoS ONE"`, `"Biosensors"`, etc.).
+  - `doi` — every ref carries a DOI.
+  - `snippet` — full plain-text abstracts straight from Europe PMC.
+- **`matched_on` chips**: 3–6 short concept tags per reference, ready for chip-style UI rendering.
+- **`description` (neutral) vs `importance` (relational)**: distinct in tone — `description` stays factual about the paper; `importance` ties back to the user's hypothesis.
 - **`relevance_score`**: 0.80–0.95 range, declining order, sensible.
 
-### ⚠️ Inconsistent / partial
-- **`authors`**: works well for `lactobacillus.json` (full author lists), empty arrays in `trehalose.json` and `crp.json`. The LLM doesn't reliably extract authors from Tavily content when the snippet doesn't surface them. **UI should handle empty author arrays gracefully** — render as empty string or omit the row.
-- **`year`**: populated for some refs, `null` for others. Same root cause. UI should show "n/a" or hide if `null`.
-- **`venue`**: sometimes the journal name (`"Clinical Nutrition"`, `"PLoS ONE"`, `"Frontiers in Microbiology"`), sometimes a domain (`"academia.edu"`, `"Dergipark"`, `"PMC"`). The latter is wrong — `PMC` is a host, not a venue. Worth a future prompt tweak; for now UI should render whatever's there.
-- **`doi`**: `null` across all three. Tavily content rarely surfaces DOIs cleanly. Click-through should use `url` instead of building a DOI link.
+### ❌ Known caveats
 
-### ❌ Known gaps
-- **No `LitReviewSession` envelope** — these are bare `LitReviewOutput` objects. The full session shape (with `chat_history`, `cached_tavily_context`, `user_decision`) is in [`spec/types/lit-review.ts`](../spec/types/lit-review.ts) but not yet wrapped on the CLI side. FE can build against the inner shape and add the envelope when conversational follow-ups land.
-- **Snippets contain mid-sentence ellipses (`[...]`)** — they're truncated by Tavily. Render with care (don't double-truncate).
-- **Long Unicode** (μ, ±, − minus signs, °C) appears in snippets. UI must be UTF-8 throughout.
+- **Bare `LitReviewOutput`, no `LitReviewSession` envelope** — these JSONs are just the inner result. The full session shape (`chat_history`, `cached_tavily_context`, `user_decision`) lives in [`spec/types/lit-review.ts`](../spec/types/lit-review.ts) but isn't wrapped on the CLI side yet. FE can build against the inner shape and we'll add the envelope when conversational follow-ups land.
+- **`source` field** is `"europe_pmc"` (was `"paper"` in earlier Tavily-era runs). Don't assume the value when filtering or routing in UI.
+- **Long Unicode** (μ, ±, °C, em-dashes) appears in abstracts. UI must be UTF-8 throughout.
 
 ## Use as fixtures
 
@@ -56,7 +59,12 @@ console.log(validate(crpFixture), validate.errors);
 
 ```bash
 python run.py --all                # regenerate all three
-cp plans/plan_*.json pipeline_output_samples/<sample>.json
+# JSONs are auto-copied from the latest plan into pipeline_output_samples/
 ```
 
-(Or just rerun a single sample and copy.)
+If you want to rerun and update by hand:
+
+```bash
+python run.py crp                  # one sample
+cp plans/plan_<id>.json pipeline_output_samples/crp.json
+```

@@ -1,84 +1,97 @@
 {
   "signal": "similar_work_exists",
-  "description": "Studies have already explored the impact of Lactobacillus rhamnosus GG (LGG) on intestinal permeability and tight junction protein expression in mice. While specific conditions vary, the core mechanism and measurements are well-precedented, suggesting a 'similar work exists' signal.",
+  "description": "While no exact match for the proposed study was found, several papers discuss the impact of Lactobacillus rhamnosus GG or other probiotics on intestinal barrier function and tight junction proteins, often in the context of specific disease models. The hypothesis is focused on healthy C57BL/6 mice, which differentiates it from some of the reviewed literature.",
   "references": [
     {
-      "source": "paper",
-      "confidence": "medium",
-      "doi": "10.3389/fmicb.2025.1580171/full",
-      "url": "https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2025.1580171/full",
-      "title": "Protective effects of Lactobacillus rhamnosus GG supernatant on ...",
-      "authors": [],
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.1038/s42003-025-09280-5",
+      "url": "https://doi.org/10.1038/s42003-025-09280-5",
+      "title": "Nicotine exacerbates MASH via inducing intestinal dysbiosis and barrier dysfunction.",
+      "authors": [
+        "Yi F",
+        "Wang J",
+        "Chen Y",
+        "Xia Y",
+        "Zhou H",
+        "Huang Y",
+        "Shen Y",
+        "Fang S",
+        "Wang X",
+        "Zhang Y",
+        "Chen Y",
+        "Chen D"
+      ],
       "year": 2025,
-      "venue": "Frontiers in Microbiology",
-      "snippet": "Further investigation into endotoxemia revealed that serum levels of LPS (Figure 3F) and FITC-dextran (Figure 3G) were significantly reduced in HFD mice following LGG gavage. These findings indicate that LGG improved intestinal integrity in HFD mice. [...] Consequently, expression levels of the tight junction proteins ZO-1 and occludin were downregulated in the ileal tissues of HFD-fed mice, as observed in this study.",
-      "relevance_score": 0.95,
-      "description": "This study demonstrates that supplementation with Lactobacillus rhamnosus GG (LGG) supernatant alleviates high-fat diet (HFD)-induced metabolic dysfunction-associated fatty liver disease (MAFLD) in mice by improving intestinal integrity, reducing LPS and FITC-dextran levels, and affecting tight junction proteins like ZO-1 and occludin.",
+      "venue": "Communications biology",
+      "snippet": "Nicotine accumulation in the intestine is associated with an exacerbation of metabolic dysfunction-associated steatohepatitis (MASH), but the underlying mechanisms remain enigmatic. We investigated how nicotine impacted intestinal microbiota composition and barrier function in MASH. Our study revealed significant intestinal microbiota dysbiosis and upregulated hypoxia-inducible factor 1-alpha (HIF-1α) levels in nicotine-exposed MASH mice. HIF-1α knockdown worsened intestinal barrier dysfunction in nicotine-exposed MASH mice. This exacerbation resulted from the suppression of MEK/ERK signaling pathway phosphorylation in HIF-1α-deficient mice. Lactobacillus rhamnosus GG supernatant can alleviate hepatic injury in nicotine-exposed MASH mice; however, this protective effect was abolished in the absence of HIF-1α. Taken together, this study reveals a critical pathologic role of nicotine in exacerbating MASH through intestinal microbiota disruption and barrier dysfunction, which is associated with the downregulation of HIF-1α in the intestine. It also suggests exogenous probiotic supplementation as a potential therapeutic strategy for mitigating nicotine-induced MASH progression.",
+      "relevance_score": 0.85,
+      "description": "This study investigates nicotine's role in exacerbating MASH by inducing intestinal dysbiosis and barrier dysfunction in mice. It demonstrates that Lactobacillus rhamnosus GG supernatant can alleviate hepatic injury, although this effect was dependent on HIF-1α.",
       "matched_on": [
         "Lactobacillus rhamnosus GG",
-        "FITC-dextran",
-        "intestinal permeability",
-        "occludin",
-        "mice"
+        "intestinal barrier dysfunction",
+        "MASH model",
+        "C57BL/6 mice"
       ],
-      "importance": "This paper directly examines the effect of LGG on intestinal permeability using FITC-dextran and reports on occludin expression, highly aligning with the hypothesized dependent variables. It uses a high-fat diet model rather than healthy C57BL/6 mice, representing a related but different physiological context."
+      "importance": "This paper is highly relevant as it uses Lactobacillus rhamnosus GG, investigates intestinal barrier dysfunction, and utilizes C57BL/6 mice, directly aligning with key components of the hypothesis. However, it uses a MASH (Metabolic dysfunction-associated steatohepatitis) model and tests the supernatant, not the live bacteria, in healthy animals, which is a key difference to the proposed study."
     },
     {
-      "source": "paper",
-      "confidence": "medium",
-      "doi": "10.1371/journal.pone.0080169.g003",
-      "url": "https://www.scienceopen.com/document_file/37e79858-59e1-4070-8872-5b14ee89b0af/PubMedCentral/37e79858-59e1-4070-8872-5b14ee89b0af.pdf",
-      "title": "Lactobacillus rhamnosus GG Protects against Non-Alcoholic Fatty Liver Disease in Mice",
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.3389/fmicb.2025.1586678",
+      "url": "https://doi.org/10.3389/fmicb.2025.1586678",
+      "title": "&lt;i&gt;Lactobacillus rhamnosus&lt;/i&gt; GG attenuates MASLD/MASH progression by modulating gut microbiota and metabolic pathways.",
       "authors": [
-        "Yvonne Ritze",
-        "Gyo ¨ ngyi Ba ´rdos",
-        "Anke Claus",
-        "Veronika Ehrmann",
-        "Ina Bergheim",
-        "Andreas Schwiertz",
-        "Stephan C. Bischoff"
+        "Wang SL",
+        "Liang S",
+        "Li SY",
+        "Fu JW",
+        "Wang ZY",
+        "Zhu DQ",
+        "Chen N"
       ],
-      "year": 2014,
-      "venue": "PLoS One",
-      "snippet": "Occludin and claudin-1 protein expression was significantly reduced in mice fed high-fructose diet compared to control diet. This reduction was removed following oral treatment of the mice with LGG (Fig. 2C,D). In contrast, zonula occludens 1 and 2 protein expression was neither influenced by high-fructose diet nor LGG treatment (data not shown).",
-      "relevance_score": 0.93,
-      "description": "This study investigates the protective effect of Lactobacillus rhamnosus GG (LGG) against non-alcoholic fatty liver disease (NAFLD) in mice by observing its impact on tight junction proteins, specifically claudin-1 and occludin, which were reduced by a high-fructose diet.",
+      "year": 2025,
+      "venue": "Frontiers in microbiology",
+      "snippet": "<h4>Introduction</h4>Non-alcoholic fatty liver disease (MASLD) is a common liver condition with a global prevalence of approximately 25%, often associated with overweight, obesity, and abnormalities in glucose and lipid metabolism. Its histological hallmark is hepatic steatosis. Non-alcoholic steatohepatitis (MASH), an advanced form of MASLD, can lead to cirrhosis and liver cancer. Dysbiosis of the gut microbiota plays a significant role in chronic liver diseases, making probiotic treatment a focal point in MASLD research. Studies have shown that <i>Lactobacillus rhamnosus</i> GG (LGG) can improve gut microbiota, reduce hepatic fat accumulation, and lower blood lipid levels in MASLD model mice. However, the role of LGG in the progression from MASLD to MASH remains unclear.<h4>Methods</h4>In this study, we constructed MASLD and MASH models using a high-fructose, high-fat diet combined with carbon tetrachloride (CCl4) induction to explore the effects of LGG on disease progression. Our findings revealed that in the MASLD model, LGG improved lipid metabolism and inflammatory responses by modulating the gut microbiota (e.g., increasing the abundance of Bacteroidetes) and promoting the production of short-chain fatty acids (SCFAs). Additionally, LGG reduced the expression of genes related to lipogenesis, further alleviating MASLD.<h4>Results</h4>In the MASH model, LGG primarily exerted its effects by inhibiting the TGF-β/SMAD signaling pathway and reducing the expression of pro-inflammatory factors (e.g., IL-1β, IL-6, TNF-α), thereby mitigating liver fibrosis and inflammation. Furthermore, LGG restored intestinal barrier function, reduced intestinal permeability, and prevented harmful substances like endotoxins from entering the liver, further alleviating hepatic inflammation and fibrosis.<h4>Discussion</h4>Although LGG shows promise in the treatment of MASLD and MASH, its mechanisms of action and long-term effects require further investigation. Future research should focus on optimizing the types, dosages, and treatment regimens of probiotics, as well as monitoring their long-term impact on gut microbiota balance, to ensure their safety and efficacy in clinical applications.",
+      "relevance_score": 0.8,
+      "description": "This research explores how Lactobacillus rhamnosus GG (LGG) attenuates MASLD/MASH progression by modulating gut microbiota and metabolic pathways in model mice. It indicates that LGG can improve lipid metabolism and inflammatory responses.",
       "matched_on": [
         "Lactobacillus rhamnosus GG",
+        "gut microbiota",
+        "MASLD/MASH",
+        "intestinal barrier"
+      ],
+      "importance": "This paper explicitly mentions Lactobacillus rhamnosus GG in the title and abstract, and discusses its role in gut microbiota modulation and improving disease progression. While its primary focus is on MASLD/MASH, it suggests a broader impact of LGG relevant to the proposed study's probiotic choice and general health outcomes, potentially involving the intestinal barrier."
+    },
+    {
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.3390/nu17243838",
+      "url": "https://doi.org/10.3390/nu17243838",
+      "title": "Research Advances in the Impact of Probiotic Supplementation on Ulcerative Colitis Management.",
+      "authors": [
+        "Xu Y",
+        "Zhang J",
+        "Cai R",
+        "Wei C",
+        "Chen Y",
+        "Liu X"
+      ],
+      "year": 2025,
+      "venue": "Nutrients",
+      "snippet": "Ulcerative colitis (UC) is a chronic, non-specific inflammatory bowel disease with an unknown etiology. The primary symptoms include abdominal pain, diarrhea, and mucopurulent bloody stools, which manifest in recurrent episodes and often resist therapeutic interventions. Recent research has increasingly emphasized the potential role of probiotics in the management of UC, revealing a significant dysbiosis in the intestinal microbiota of affected individuals. Probiotic supplementation has demonstrated efficacy in alleviating UC symptoms through various mechanisms. Probiotics contribute to the restoration of the intestinal microecosystem balance by promoting beneficial bacteria and inhibiting pathogenic strains. They also play a role in modulating the immune response, thereby reducing inflammation by suppressing pro-inflammatory cytokines and enhancing anti-inflammatory cytokines, which collectively help mitigate intestinal inflammation. Furthermore, certain probiotics have been shown to improve intestinal barrier function, preventing the invasion of pathogenic microorganisms and enhancing intestinal permeability. Although numerous animal studies and clinical trials have validated the positive effects of probiotics on UC, the degree of efficacy varies among different strains. This article reviews the mechanisms and clinical applications of probiotics in the management of UC, offering new insights for its clinical treatment.",
+      "relevance_score": 0.7,
+      "description": "This review synthesizes research on probiotic supplementation for Ulcerative Colitis (UC) management, highlighting mechanisms such as restoring intestinal microecosystem balance, modulating immune response, and improving intestinal barrier function by enhancing tight junction proteins.",
+      "matched_on": [
+        "Probiotics",
+        "intestinal barrier function",
         "tight junction proteins",
-        "claudin-1",
-        "occludin",
-        "mice"
+        "Ulcerative colitis"
       ],
-      "importance": "This paper is highly relevant as it demonstrates LGG's ability to modulate claudin-1 and occludin expression in mice, which are key dependent variables in the hypothesis. The model uses a high-fructose diet, which is a different trigger for gut barrier dysfunction compared to the hypothesis's healthy mice model."
-    },
-    {
-      "source": "paper",
-      "confidence": "medium",
-      "doi": "10.1016/j.clnu.2016.09.025",
-      "url": "https://scholars.duke.edu/publication/1152201",
-      "title": "Lactobacillus rhamnosus GG treatment improves intestinal permeability and modulates inflammatory response and homeostasis of spleen and colon in experimental model of Pseudomonas aeruginosa pneumonia.",
-      "authors": [
-        "Khailova L",
-        "Baird CH",
-        "Rush AA",
-        "Barnes C",
-        "Wischmeyer PE"
-      ],
-      "year": 2017,
-      "venue": "Clinical Nutrition",
-      "snippet": "Lactobacillus rhamnosus GG treatment improves intestinal permeability and modulates inflammatory response and homeostasis of spleen and colon in experimental model of Pseudomonas aeruginosa pneumonia.",
-      "relevance_score": 0.9,
-      "description": "This study explores how Lactobacillus rhamnosus GG treatment improves intestinal permeability and influences inflammatory responses and homeostasis in the spleen and colon within a mouse model of Pseudomonas aeruginosa pneumonia.",
-      "matched_on": [
-        "Lactobacillus rhamnosus GG",
-        "intestinal permeability",
-        "mice"
-      ],
-      "importance": "This reference confirms that LGG treatment improves intestinal permeability in a mouse model, directly supporting a core aspect of the hypothesis. However, it uses a disease model (Pseudomonas aeruginosa pneumonia) rather than healthy C57BL/6 mice, and does not specifically detail tight junction protein expression."
+      "importance": "Although this is a review focusing on Ulcerative Colitis, it directly discusses probiotics, improvement of intestinal barrier function, and upregulation of tight junction proteins as key mechanisms, which are central to the hypothesis. It provides a good theoretical background for the expected outcomes of the proposed study, even if the specific strain and animal model (healthy C57BL/6) differ."
     }
   ],
-  "searched_at": "2026-04-26T00:21:46.512000+00:00",
-  "tavily_query": "Lactobacillus rhamnosus GG reduces intestinal permeability FITC-dextran claudin-1 occludin C57BL/6 mice",
-  "summary": "This research question is not novel, as multiple studies have already investigated the effect of Lactobacillus rhamnosus GG (LGG) on intestinal permeability and tight junction proteins in mice. The closest precedents demonstrate LGG's ability to reduce intestinal permeability (measured by FITC-dextran) and upregulate claudin-1 and occludin in various mouse models. The proposed study would contribute by specifically examining these effects in otherwise healthy C57BL/6 mice over a 4-week period without an induced disease state, offering a baseline understanding of LGG's impact under normal conditions."
+  "searched_at": "2026-04-26T00:46:21.630368+00:00",
+  "tavily_query": "Lactobacillus rhamnosus GG C57BL/6 mice intestinal permeability claudin-1 occludin",
+  "summary": "The proposed study on Lactobacillus rhamnosus GG reducing intestinal permeability and upregulating tight junction proteins in healthy C57BL/6 mice builds upon existing knowledge but appears novel in its specific experimental design. While several papers examine L. rhamnosus GG or other probiotics' effects on intestinal barrier function and tight junction proteins, these are primarily within disease models like MASH or Ulcerative Colitis. The hypothesis uniquely targets healthy C57BL/6 mice to assess the foundational impact of LGG on intestinal permeability. Researchers should review the cited papers to understand the mechanisms of action and methodologies used in relevant disease contexts to inform their interpretation of results in a healthy model."
 }
