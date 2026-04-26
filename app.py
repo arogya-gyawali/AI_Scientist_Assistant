@@ -9,7 +9,7 @@ Endpoints:
                     or {structured} (runs /protocol internally first)
 
 Dev:
-  python -m flask --app app run --debug --port 5000
+  python -m flask --app app run --debug --port 8000
 
 Or:
   python app.py
@@ -935,6 +935,8 @@ if __name__ == "__main__":
     #   gunicorn -b 0.0.0.0:5000 app:app
     # FLASK_DEBUG defaults to "0" so dropping this onto a server doesn't
     # accidentally enable the debugger and reloader.
-    port = int(os.environ.get("PORT", 5000))
+    # Default 8000 matches frontend/vite.config.ts VITE_DEV_BACKEND so
+    # `python app.py` and `npm run dev` work together without extra env.
+    port = int(os.environ.get("PORT", 8000))
     debug = os.environ.get("FLASK_DEBUG", "0") == "1"
     app.run(host="0.0.0.0", port=port, debug=debug)

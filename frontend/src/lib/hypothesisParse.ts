@@ -121,6 +121,7 @@ function grabAssayConditions(t: string): string {
  * Catabolite / growth-style: "Increasing X will reduce Y / increase Y …"
  */
 function tryCataboliteStyle(t: string): Partial<MockParsedFields> {
+  const lower = t.toLowerCase();
   const out: Partial<MockParsedFields> = {};
   const grab = (re: RegExp) => {
     const m = t.match(re);

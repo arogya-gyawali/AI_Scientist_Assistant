@@ -28,4 +28,11 @@ describe("mockParseHypothesis", () => {
     expect(p.subject).not.toBe("SD");
     expect(p.independent).toMatch(/SDH|rate|activity/i);
   });
+
+  it("catabolite path does not throw when independent is set but dependent must be inferred", () => {
+    // Covers tryCataboliteStyle fallback that uses `lower` on the prose string.
+    const p = mockParseHypothesis("Increasing temperature in the reactor vessel without a clear will/shall clause.");
+    expect(p.independent).toMatch(/temperature/i);
+    expect(p).toBeDefined();
+  });
 });
