@@ -1,0 +1,349 @@
+"""Stage 1: Lit Review.
+
+Reads:  hypothesis
+Writes: lit_review
+
+Flow:
+  1. Rewrite the structured hypothesis into a precise scientific search query (LLM).
+  2. Europe PMC search → top-N papers with structured bibliographic metadata
+     (title, authors, year, venue, plain-text abstract, DOI, PMID/PMCID).
+  3. LLM editorial pass: classifies novelty signal, picks 1-3 papers most
+     relevant to the hypothesis, writes per-ref `description` (neutral) +
+     `importance` (relational) + `matched_on` tags + `relevance_score`.
+     Does NOT extract bibliographic fields — backend uses Europe PMC data directly.
+  4. Build a LitReviewSession and write to ExperimentPlan.lit_review.
+
+Why Europe PMC:
+  Tavily returns body text from web pages; bibliographic fields aren't
+  reliably present in the snippets, which forced LLM extraction and led
+  to hallucinated authors. Europe PMC is biomedical-specific, free, no auth,
+  and returns structured metadata with full plain-text abstracts. Authors
+  come back as structured AuthorList objects — no extraction, no hallucination.
+"""
+
+from __future__ import annotations
+
+import html
+import json
+import re
+import uuid
+from typing import Any
+
+from src.clients import europe_pmc, llm
+from src.types import (
+    Citation,
+    ExperimentPlan,
+    Hypothesis,
+    LitReviewOutput,
+    LitReviewSession,
+    NoveltySignal,
+    now,
+)
+from lit_review_pipeline.extractors import (
+    extract_doi,
+    extract_venue,
+    extract_year,
+)
+
+
+QUERY_REWRITE_SYSTEM = """You translate structured scientific hypotheses into precise scientific search queries for a Europe PMC novelty check.
+
+Rules:
+- Output the query in ENGLISH ONLY. Do NOT translate technical terms into other languages.
+- 6-15 words.
+- Use precise scientific terminology (gene names, organism names, chemical names, established assay names).
+- Focus on the specific intervention + measured outcome + system/subject.
+- Do NOT include years, dates, or recency hints.
+- Do NOT include hedge words ("can", "might", "study", "experiment").
+- Do NOT use Europe PMC field qualifiers (no AUTH:, TITLE:, etc.) — plain query terms only.
+- Output only the query string. No quotes, no labels, no explanation."""
+
+QUERY_REWRITE_USER_TMPL = """Subject: {subject}
+Independent variable: {independent}
+Dependent variable: {dependent}
+Conditions: {conditions}
+Expected outcome: {expected}
+Research question: {research_question}"""
+
+
+CLASSIFY_SYSTEM = """You evaluate scientific novelty. You receive a structured hypothesis and a list of pre-fetched papers from Europe PMC. Each paper already has bibliographic metadata (title, authors, year, journal) and a plain-text abstract — DO NOT repeat those in your output. Your job is editorial.
+
+Editorial output per chosen reference:
+- paper_index   (integer; index into the input papers array. Picking a paper that is not in the array is a failure.)
+- relevance_score (0.0-1.0; your judgment of relevance to the user's hypothesis, NOT generic citation count.)
+- matched_on    (array of 3-5 short concept tags that bridge this paper to the hypothesis, e.g. ["E. coli", "Glucose", "Catabolite repression"])
+- description   (1-2 sentences, NEUTRAL: synthesize what this paper actually covers, drawing from title + abstract. May note limitations factually but DO NOT compare to the user's study here.)
+- importance    (1-2 sentences, RELATIONAL: why does this paper match the user's hypothesis? Where does it overlap, where does it differ, what gap does the user's study fill? This is "why this matched.")
+
+Top-level output:
+- signal       ("novel" — no close prior work | "similar_work_exists" — related but not identical | "exact_match_found" — this exact experiment has been published)
+- description  (2-3 sentences explaining the signal classification candidly)
+- summary      (HARD LIMIT: EXACTLY 3 OR 4 SENTENCES. Holistic wrap-up for the researcher: novelty assessment, key literature takeaway, what gap the hypothesis fills or what to read first. Plain prose, no markdown, no "in summary" phrasing.)
+
+Selection rules:
+- Choose at most 3 references (or fewer if the hypothesis is genuinely novel).
+- Sort by relevance to the hypothesis FIRST, recency SECOND.
+- Picking zero references is acceptable when nothing is relevant.
+
+Return ONLY a single valid JSON object:
+{
+  "signal": "novel" | "similar_work_exists" | "exact_match_found",
+  "description": "string",
+  "references": [
+    {
+      "paper_index": 0,
+      "relevance_score": 0.0,
+      "matched_on": ["string"],
+      "description": "string",
+      "importance": "string"
+    }
+  ],
+  "summary": "string (3-4 sentences, hard limit)"
+}"""
+
+CLASSIFY_USER_TMPL = """Hypothesis (structured):
+- Subject: {subject}
+- Independent variable: {independent}
+- Dependent variable: {dependent}
+- Conditions: {conditions}
+- Expected outcome: {expected}
+- Research question: {research_question}
+
+Europe PMC query used: {query}
+
+Papers ({n} returned):
+{papers}"""
+
+
+def _rewrite_query(h: Hypothesis) -> str:
+    s = h.structured
+    user = QUERY_REWRITE_USER_TMPL.format(
+        subject=s.subject,
+        independent=s.independent,
+        dependent=s.dependent,
+        conditions=s.conditions,
+        expected=s.expected,
+        research_question=s.research_question,
+    )
+    return llm.complete(QUERY_REWRITE_SYSTEM, user).strip().strip('"').strip("'")
+
+
+# ----------------------------------------------------------------------------
+# Post-processing helpers
+# ----------------------------------------------------------------------------
+
+_HTML_TAG_RE = re.compile(r"<[^>]+>")
+# Lookahead for an uppercase letter avoids false splits on common scientific
+# abbreviations like "et al.", "i.e.", "e.g.", "vs.", "Fig.".
+_SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z])")
+
+
+def _clean_text(s: str | None) -> str | None:
+    """Decode HTML entities and strip simple inline tags. Europe PMC sometimes
+    returns titles with <i>, <sub>, <sup>, <b> tags wrapped in entity-encoded
+    form (e.g. '&lt;i&gt;Lactobacillus rhamnosus&lt;/i&gt; GG ...'). For
+    hackathon UI we want clean text — losing italics is cheaper than
+    handling encoded markup in React."""
+    if not s:
+        return s
+    return _HTML_TAG_RE.sub("", html.unescape(s)).strip()
+
+
+def _truncate_to_n_sentences(s: str | None, n: int) -> str:
+    """Hard cap on sentence count. The summary prompt asks for 3-4 sentences
+    and Gemini Flash usually obeys, but it occasionally overruns. This is a
+    deterministic backstop so the FE doesn't see a 5-sentence wall of text."""
+    if not s:
+        return s or ""
+    parts = _SENTENCE_SPLIT_RE.split(s.strip())
+    return " ".join(parts[:n]).strip()
+
+
+# ----------------------------------------------------------------------------
+# Europe PMC paper helpers
+# ----------------------------------------------------------------------------
+
+def _paper_authors(p: dict) -> list[str]:
+    """Prefer the structured AuthorList. Fall back to the comma-joined string."""
+    al = (p.get("authorList") or {}).get("author") or []
+    if al:
+        names = []
+        for a in al:
+            n = a.get("fullName") or a.get("lastName")
+            if n:
+                names.append(n)
+        if names:
+            return names
+    s = p.get("authorString") or ""
+    if s:
+        return [n.strip() for n in s.split(",") if n.strip()]
+    return []
+
+
+def _paper_year(p: dict) -> int | None:
+    """Pull year from Europe PMC's pubYear or journalInfo, defensively."""
+    yr = p.get("pubYear")
+    if isinstance(yr, str) and yr.isdigit():
+        return int(yr)
+    if isinstance(yr, int):
+        return yr
+    yr2 = (p.get("journalInfo") or {}).get("yearOfPublication")
+    if isinstance(yr2, int):
+        return yr2
+    if isinstance(yr2, str) and yr2.isdigit():
+        return int(yr2)
+    return None
+
+
+def _paper_venue(p: dict) -> str | None:
+    journal = (p.get("journalInfo") or {}).get("journal") or {}
+    return journal.get("title") or journal.get("iso") or None
+
+
+def _paper_url(p: dict) -> str | None:
+    """Best URL for the paper, in priority: DOI > PubMed > PMC > Europe PMC."""
+    if doi := p.get("doi"):
+        return f"https://doi.org/{doi}"
+    if pmid := p.get("pmid"):
+        return f"https://europepmc.org/article/MED/{pmid}"
+    if pmcid := p.get("pmcid"):
+        return f"https://europepmc.org/article/PMC/{pmcid}"
+    epmc_id = p.get("id")
+    source = p.get("source")
+    if epmc_id and source:
+        return f"https://europepmc.org/article/{source}/{epmc_id}"
+    return None
+
+
+def _format_papers(papers: list[dict]) -> str:
+    lines = []
+    for i, p in enumerate(papers):
+        title = p.get("title") or "(no title)"
+        authors = p.get("authorString") or ""
+        if len(authors) > 240:
+            authors = authors[:240] + "…"
+        year = _paper_year(p) or "n/a"
+        venue = _paper_venue(p) or "n/a"
+        abstract = p.get("abstractText") or ""
+        if len(abstract) > 1500:
+            abstract = abstract[:1500] + "…"
+        lines.append(
+            f"[{i}] {title}\n"
+            f"    Authors: {authors or '(none listed)'}\n"
+            f"    {year}, {venue}\n"
+            f"    {abstract}"
+        )
+    return "\n\n".join(lines)
+
+
+def _compose_citation(paper: dict, editorial: dict) -> Citation:
+    """Build a Citation from a Europe PMC paper + the LLM's editorial layer.
+
+    Bibliographic fields come straight from Europe PMC; deterministic extractors
+    are belt-and-suspenders fallback for the rare case Europe PMC is missing a
+    field that's recoverable from the URL or abstract.
+    """
+    page_url = _paper_url(paper)
+    abstract = paper.get("abstractText")
+
+    return Citation(
+        source="europe_pmc",
+        confidence="high",  # Europe PMC metadata is authoritative
+        title=_clean_text(paper.get("title")),
+        authors=_paper_authors(paper),
+        year=_paper_year(paper) or extract_year(page_url, paper.get("title"), abstract),
+        venue=_paper_venue(paper) or extract_venue(page_url),
+        doi=paper.get("doi") or extract_doi(page_url, abstract),
+        url=page_url,
+        snippet=abstract,
+        relevance_score=editorial.get("relevance_score"),
+        matched_on=editorial.get("matched_on") or [],
+        description=editorial.get("description"),
+        importance=editorial.get("importance"),
+    )
+
+
+# ----------------------------------------------------------------------------
+# Classifier
+# ----------------------------------------------------------------------------
+
+def _classify(
+    h: Hypothesis,
+    query: str,
+    epmc_response: dict,
+) -> tuple[NoveltySignal, str, list[Citation], str]:
+    s = h.structured
+    papers: list[dict] = (epmc_response.get("resultList") or {}).get("result") or []
+
+    user = CLASSIFY_USER_TMPL.format(
+        subject=s.subject,
+        independent=s.independent,
+        dependent=s.dependent,
+        conditions=s.conditions,
+        expected=s.expected,
+        research_question=s.research_question,
+        query=query,
+        n=len(papers),
+        papers=_format_papers(papers) or "(no papers returned)",
+    )
+
+    def _call_and_parse() -> dict:
+        raw = llm.complete(CLASSIFY_SYSTEM, user, json_mode=True).strip()
+        if raw.startswith("```"):
+            raw = raw.strip("`").lstrip("json").strip()
+        return json.loads(raw)
+
+    # JSON-mode occasionally produces malformed output. We retry once on
+    # JSONDecodeError. The retry itself can also fail (JSON or network);
+    # we wrap it so the surfaced error is informative rather than a raw
+    # second-attempt traceback.
+    try:
+        parsed = _call_and_parse()
+    except json.JSONDecodeError as first_exc:
+        try:
+            parsed = _call_and_parse()
+        except json.JSONDecodeError as retry_exc:
+            raise RuntimeError(
+                f"LLM returned malformed JSON twice (first: {first_exc}; "
+                f"retry: {retry_exc}). Try LLM_PROVIDER=anthropic for stricter output."
+            ) from retry_exc
+
+    refs: list[Citation] = []
+    for r in parsed.get("references", [])[:3]:
+        idx = r.get("paper_index")
+        if not isinstance(idx, int) or idx < 0 or idx >= len(papers):
+            continue
+        refs.append(_compose_citation(papers[idx], r))
+
+    # Hard-cap summary to 4 sentences. Prompt asks for 3-4 but the LLM
+    # sometimes overshoots; truncating here is deterministic and silent.
+    summary = _truncate_to_n_sentences((parsed.get("summary") or "").strip(), n=4)
+    return parsed["signal"], parsed["description"], refs, summary
+
+
+def run(plan: ExperimentPlan) -> LitReviewSession:
+    """Stage runner. Returns the LitReviewSession; caller writes it to plan.lit_review."""
+    h = plan.hypothesis
+    query = _rewrite_query(h)
+    # page_size=10 gives the LLM a wider candidate pool; the prompt still
+    # caps the chosen references at 3. Worth the marginal token cost.
+    epmc_response = europe_pmc.search_for_lit_review(query, page_size=10)
+    signal, description, refs, summary = _classify(h, query, epmc_response)
+
+    initial = LitReviewOutput(
+        signal=signal,
+        description=description,
+        references=refs,
+        searched_at=now(),
+        tavily_query=query,  # field name is historical; carries the EPMC query
+        summary=summary,
+    )
+
+    return LitReviewSession(
+        id=f"lr_{uuid.uuid4().hex[:12]}",
+        hypothesis_id=h.id,
+        initial_result=initial,
+        chat_history=[],
+        cached_search_context=json.dumps(epmc_response),
+        user_decision="pending",
+    )

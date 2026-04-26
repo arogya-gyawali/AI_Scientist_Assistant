@@ -1,0 +1,83 @@
+{
+  "signal": "similar_work_exists",
+  "description": "While specific work on paper-based electrochemical biosensors for anti-CRP antibodies in unprocessed whole blood with a direct comparison to ELISA is not found, there is extensive prior work on electrochemical biosensors for CRP detection, aptamer-based biosensors for sepsis (including CRP), and general paper-based microfluidic platforms for point-of-care diagnostics. The novelty lies in the precise combination of these elements and the direct comparative evaluation with ELISA under the specified stringent conditions.",
+  "references": [
+    {
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.3390/bios15070402",
+      "url": "https://doi.org/10.3390/bios15070402",
+      "title": "Electrochemical Aptamer-Based Biosensors for Sepsis Diagnosis: Recent Advances, Challenges, and Future Perspectives (2020-2025).",
+      "authors": [
+        "Tan LL",
+        "Mohamad NS"
+      ],
+      "year": 2025,
+      "venue": "Biosensors",
+      "snippet": "Sepsis remains a global health emergency, demanding timely and accurate diagnostics to reduce morbidity and mortality. This review critically assesses the recent progress (2020-2025) in the development of electrochemical aptamer-based biosensors for sepsis detection. These biosensors combine aptamers' high specificity and modifiability with the sensitivity and miniaturization potential of electrochemical platforms. The analysis highlights notable advances in detecting key sepsis biomarkers, such as C-reactive protein (CRP), procalcitonin (PCT), interleukins (e.g., interleukin-6 (IL-6), tumor necrosis factor-alpha (TNF-α)), lipopolysaccharides (LPSs), and microRNAs using diverse sensor configurations, including a field-effect transistor (FET), impedance spectroscopy, voltammetry, and hybrid nanomaterial-based systems. A comparative evaluation reveals promising analytical performance in terms of the limit of detection (LOD), rapid response time, and point-of-care (POC) potential. However, critical limitations remain, including variability in validation protocols, limited testing in real clinical matrices, and challenges in achieving multiplexed detection. This review underscores translational barriers and recommends future directions focused on clinical validation, integration with portable diagnostics, and interdisciplinary collaboration. By consolidating current developments and gaps, this work provides a foundation for guiding next-generation biosensor innovations aimed at effective sepsis diagnosis and monitoring.",
+      "relevance_score": 0.85,
+      "description": "This review summarizes recent advancements (2020-2025) in electrochemical aptamer-based biosensors for sepsis diagnosis, highlighting their application in detecting biomarkers like C-reactive protein (CRP), procalcitonin, and interleukins. It evaluates their performance in terms of limit of detection (LOD) and rapid response time, noting limitations in validation protocols and real clinical matrix testing.",
+      "matched_on": [
+        "electrochemical biosensors",
+        "CRP detection",
+        "sepsis diagnosis",
+        "point-of-care"
+      ],
+      "importance": "This paper is highly relevant as it specifically discusses electrochemical biosensors for CRP detection and mentions rapid response times and LOD. Although it focuses on aptamer-based sensors rather than antibody-functionalized ones, the discussion on sepsis diagnosis implicates the need for rapid, sensitive detection in complex biological matrices, aligning with the hypothesis's clinical relevance and performance criteria. It also highlights the challenges of real clinical matrix validation, which the hypothesis directly addresses with whole blood samples."
+    },
+    {
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.3390/bios16010044",
+      "url": "https://doi.org/10.3390/bios16010044",
+      "title": "Electrochemical Detection of Cancer Biomarkers: From Molecular Sensing to Clinical Translation.",
+      "authors": [
+        "Nadeem-Tariq A",
+        "Rafanan JR",
+        "Kang N",
+        "Zhang S",
+        "Kanniyappan H",
+        "Merchant A"
+      ],
+      "year": 2026,
+      "venue": "Biosensors",
+      "snippet": "Early cancer detection is crucial for improving survival rates and treatment outcomes. Electrochemical biosensors have emerged as powerful tools for early cancer detection due to their high sensitivity, specificity, and rapid detection capabilities. This review explores recent advancements (2015-2025) in electrochemical biosensors for cancer biomarker detection, their working principles, novel nanomaterial-based enhancements, challenges, and prospects for clinical applications. Specifically, we highlight the electrochemical detection of protein biomarkers (e.g., CEA, PSA, CRP), nucleic acid markers (ctDNA, miRNA, methylation patterns), and metabolic indicators, emphasizing their clinical relevance in early diagnosis and monitoring. Unlike previous reviews which focus on either biomarker classes or sensor platforms, this review uniquely integrates both factors. This review provides a novel perspective on how next-generation electrochemical biosensors can bridge the gap between laboratory development and real-world cancer diagnostics.",
+      "relevance_score": 0.8,
+      "description": "This review covers recent advancements (2015-2025) in electrochemical biosensors for cancer biomarker detection, including C-reactive protein (CRP). It discusses their principles, nanomaterial enhancements, challenges, and potential for clinical applications, providing a perspective on bridging laboratory development to real-world diagnostics.",
+      "matched_on": [
+        "electrochemical biosensors",
+        "CRP",
+        "cancer biomarkers",
+        "clinical relevance"
+      ],
+      "importance": "This paper is important as it discusses electrochemical biosensors for CRP detection and their clinical translation for diagnostic purposes. While focused on cancer, the principles and discussion of high sensitivity, specificity, and rapid detection for CRP are directly applicable to the hypothesis. It establishes the broader utility and ongoing research into electrochemical CRP sensing for point-of-care applications."
+    },
+    {
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.1007/s00216-025-06127-0",
+      "url": "https://doi.org/10.1007/s00216-025-06127-0",
+      "title": "Smart microfluidic devices integrated in electrochemical point-of-care platforms for biomarker detection in biological fluids.",
+      "authors": [
+        "Mazzaracchio V",
+        "Arduini F"
+      ],
+      "year": 2026,
+      "venue": "Analytical and bioanalytical chemistry",
+      "snippet": "The increasing demand for decentralized, accessible, and rapid analytical tools is driving a transformation in healthcare toward point-of-care (POC) analytical technologies. The final aim is to reduce the cost of healthcare management originating from frequent patient hospitalizations and expensive and time-consuming laboratory-based analyses. This review explores the integration of microfluidic technologies with electrochemical sensing platforms, aiming to address the urgent need for POC analytical platforms. Owing to the miniaturization of fluid management systems and exploiting fluid automation, microfluidic devices enable low sample consumption, cost-effective analysis, and multiplexed detection, offering promising tools for real-time health monitoring. Among the other materials, the most commonly used substrates for microfluidics fabrication are paper, PDMS, and adhesive tape, which support custom-designed microchannel architectures, passive fluid motion, and wearable integration. Special attention is given to wearable sensors for sweat analysis, with various approaches employing capillary-driven flows and smart microfluidic designs to enable continuous and autonomous monitoring of biomarkers. Highlighting relevant works from the last 5 years, the review explores the role of integrated microfluidic electrochemical sensing devices in delivering advanced decentralized analytical platforms, with significant potential for clinical use in biomarker detection.",
+      "relevance_score": 0.75,
+      "description": "This review explores the integration of microfluidic technologies with electrochemical sensing platforms for point-of-care (POC) biomarker detection. It highlights the use of paper as a common substrate for microfluidic device fabrication, enabling low sample consumption, cost-effective analysis, and rapid, decentralized analytical platforms for clinical use.",
+      "matched_on": [
+        "microfluidic devices",
+        "electrochemical sensing",
+        "point-of-care",
+        "paper substrates",
+        "biomarker detection"
+      ],
+      "importance": "This paper is relevant for its discussion of paper-based microfluidic devices integrated with electrochemical sensing for POC applications, directly addressing the sensor format and application context of the hypothesis. While it doesn't specifically mention CRP, it provides foundational context for the development and advantages of paper-based platforms for biomarker detection without sample preprocessing, which is a key condition in the hypothesis."
+    }
+  ],
+  "searched_at": "2026-04-26T01:03:36.530468+00:00",
+  "tavily_query": "Paper-based electrochemical biosensor anti-CRP antibodies C-reactive protein whole blood detection limit",
+  "summary": "The hypothesis proposes a novel application and rigorous evaluation of a paper-based electrochemical biosensor for C-reactive protein (CRP) detection in unprocessed whole blood, directly compared to laboratory ELISA. While existing literature extensively covers electrochemical biosensors for CRP and the development of paper-based microfluidic platforms for point-of-care diagnostics, no direct match was found for the specific combination of anti-CRP antibody functionalization on a paper-based electrochemical biosensor, its performance validation in whole blood without preprocessing, and a direct comparative assessment against ELISA under the stated conditions. The proposed work represents a valuable contribution to bridging the gap between advanced biosensor technology and highly practical, rapid, and sensitive point-of-care diagnostics for CRP. The identified literature provides strong foundational context and highlights the technical challenges and desired performance characteristics to which the hypothesis directly responds."
+}

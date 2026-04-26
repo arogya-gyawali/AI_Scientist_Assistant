@@ -1,0 +1,30 @@
+# Sample input: trehalose vs DMSO cryopreservation of HeLa cells
+# (Cell Biology sample from the Hack-Nation challenge brief.)
+
+domain: cell_biology
+
+structured:
+  research_question: |
+    Does replacing sucrose with trehalose as a cryoprotectant in the freezing
+    medium increase post-thaw viability of HeLa cells compared to the standard
+    DMSO protocol?
+
+  subject: HeLa cells
+
+  independent: |
+    Cryoprotectant identity (trehalose substituted for sucrose in the freezing
+    medium, vs. standard DMSO-based protocol).
+
+  dependent: |
+    Post-thaw cell viability, measured as percentage of viable cells after
+    thawing.
+
+  conditions: |
+    Standard slow-rate freezing in cryovials, storage in liquid nitrogen,
+    rapid thaw at 37 C, viability measured by trypan blue exclusion 24h
+    post-thaw. Trehalose at 0.5M, sucrose at 0.5M, DMSO at 10% v/v.
+
+  expected: |
+    Trehalose substitution increases post-thaw viability by at least 15
+    percentage points compared to the DMSO standard, due to trehalose's
+    superior membrane stabilization at low temperatures.
