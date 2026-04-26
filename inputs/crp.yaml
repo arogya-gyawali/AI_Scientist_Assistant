@@ -1,0 +1,29 @@
+# Sample input: paper-based electrochemical biosensor for CRP detection
+# (Diagnostics sample from the Hack-Nation challenge brief.)
+
+domain: diagnostics
+
+structured:
+  research_question: |
+    Can a paper-based electrochemical biosensor functionalized with anti-CRP
+    antibodies detect C-reactive protein in whole blood at clinically relevant
+    concentrations within 10 minutes, without sample preprocessing?
+
+  subject: Whole blood samples (CRP analyte)
+
+  independent: |
+    Sensor format (paper-based electrochemical biosensor functionalized with
+    anti-CRP antibodies, vs. laboratory ELISA).
+
+  dependent: |
+    Detection sensitivity (limit of detection in mg/L) and time-to-result
+    (minutes).
+
+  conditions: |
+    Whole blood samples spiked with known CRP concentrations spanning 0.1-10
+    mg/L. No sample preprocessing (no centrifugation, no dilution). Room
+    temperature operation. Comparison against high-sensitivity ELISA.
+
+  expected: |
+    The paper biosensor detects CRP at concentrations below 0.5 mg/L within
+    10 minutes, matching laboratory ELISA sensitivity.

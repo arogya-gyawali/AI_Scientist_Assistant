@@ -1,0 +1,90 @@
+{
+  "signal": "similar_work_exists",
+  "description": "The hypothesis investigates substituting trehalose for sucrose in HeLa cell cryopreservation to improve viability compared to a standard DMSO protocol. While the specific cell line and direct comparison in the proposed setup might be novel, cryopreservation using trehalose and DMSO, as well as the study of new cryoprotectants, is a well-established area.",
+  "references": [
+    {
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.3390/ijms23052639",
+      "url": "https://doi.org/10.3390/ijms23052639",
+      "title": "Antifreeze Proteins: Novel Applications and Navigation towards Their Clinical Application in Cryobanking.",
+      "authors": [
+        "Ekpo MD",
+        "Xie J",
+        "Hu Y",
+        "Liu X",
+        "Liu F",
+        "Xiang J",
+        "Zhao R",
+        "Wang B",
+        "Tan S"
+      ],
+      "year": 2022,
+      "venue": "International journal of molecular sciences",
+      "snippet": "Antifreeze proteins (AFPs) or thermal hysteresis (TH) proteins are biomolecular gifts of nature to sustain life in extremely cold environments. This family of peptides, glycopeptides and proteins produced by diverse organisms including bacteria, yeast, insects and fish act by non-colligatively depressing the freezing temperature of the water below its melting point in a process termed thermal hysteresis which is then responsible for ice crystal equilibrium and inhibition of ice recrystallisation; the major cause of cell dehydration, membrane rupture and subsequent cryodamage. Scientists on the other hand have been exploring various substances as cryoprotectants. Some of the cryoprotectants in use include trehalose, dimethyl sulfoxide (DMSO), ethylene glycol (EG), sucrose, propylene glycol (PG) and glycerol but their extensive application is limited mostly by toxicity, thus fueling the quest for better cryoprotectants. Hence, extracting or synthesizing antifreeze protein and testing their cryoprotective activity has become a popular topic among researchers. Research concerning AFPs encompasses lots of effort ranging from understanding their sources and mechanism of action, extraction and purification/synthesis to structural elucidation with the aim of achieving better outcomes in cryopreservation. This review explores the potential clinical application of AFPs in the cryopreservation of different cells, tissues and organs. Here, we discuss novel approaches, identify research gaps and propose future research directions in the application of AFPs based on recent studies with the aim of achieving successful clinical and commercial use of AFPs in the future.",
+      "relevance_score": 0.8,
+      "description": "This review article explores antifreeze proteins (AFPs) as novel cryoprotectants and discusses their potential clinical application. It also covers commonly used cryoprotectants like trehalose, dimethyl sulfoxide (DMSO), ethylene glycol, sucrose, and propylene glycol, noting limitations due to toxicity and highlighting the quest for better alternatives.",
+      "matched_on": [
+        "cryoprotectants",
+        "trehalose",
+        "DMSO",
+        "cell dehydration",
+        "cryodamage"
+      ],
+      "importance": "This paper is relevant as it directly discusses trehalose and DMSO as cryoprotectants and highlights the known toxicity issues with existing methods, which is the underlying motivation for the hypothesis. It also mentions sucrose as a cryoprotectant, providing context for the proposed substitution."
+    },
+    {
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.1038/s41570-022-00407-4",
+      "url": "https://doi.org/10.1038/s41570-022-00407-4",
+      "title": "Chemical approaches to cryopreservation.",
+      "authors": [
+        "Murray KA",
+        "Gibson MI"
+      ],
+      "year": 2022,
+      "venue": "Nature reviews. Chemistry",
+      "snippet": "Cryopreservation of cells and biologics underpins all biomedical research from routine sample storage to emerging cell-based therapies, as well as ensuring cell banks provide authenticated, stable and consistent cell products. This field began with the discovery and wide adoption of glycerol and dimethyl sulfoxide as cryoprotectants over 60 years ago, but these tools do not work for all cells and are not ideal for all workflows. In this Review, we highlight and critically review the approaches to discover, and apply, new chemical tools for cryopreservation. We summarize the key (and complex) damage pathways during cellular cryopreservation and how each can be addressed. Bio-inspired approaches, such as those based on extremophiles, are also discussed. We describe both small-molecule-based and macromolecular-based strategies, including ice binders, ice nucleators, ice nucleation inhibitors and emerging materials whose exact mechanism has yet to be understood. Finally, looking towards the future of the field, the application of bottom-up molecular modelling, library-based discovery approaches and materials science tools, which are set to transform cryopreservation strategies, are also included.",
+      "relevance_score": 0.7,
+      "description": "This review critically evaluates chemical approaches to cryopreservation, detailing damage pathways during cellular cryopreservation and how they can be addressed. It covers both small-molecule and macromolecular strategies, including ice binders, ice nucleators, and ice nucleation inhibitors, and discusses bio-inspired approaches.",
+      "matched_on": [
+        "cryopreservation",
+        "chemical tools",
+        "cryoprotectants",
+        "damage pathways",
+        "small molecules"
+      ],
+      "importance": "The paper provides a broad overview of chemical cryopreservation strategies and damage pathways, which are foundational to understanding how trehalose and DMSO function. It contextualizes the search for new cryoprotectants to overcome the limitations of established compounds like DMSO."
+    },
+    {
+      "source": "europe_pmc",
+      "confidence": "high",
+      "doi": "10.3390/pharmaceutics13081317",
+      "url": "https://doi.org/10.3390/pharmaceutics13081317",
+      "title": "Formulation Considerations for Autologous T Cell Drug Products.",
+      "authors": [
+        "van der Walle CF",
+        "Godbert S",
+        "Saito G",
+        "Azhari Z"
+      ],
+      "year": 2021,
+      "venue": "Pharmaceutics",
+      "snippet": "Genetically modified autologous T cells have become an established immunotherapy in the fight against cancer. The manufacture of chimeric antigen receptor (CAR) and αβ-T cell receptor (TCR) transduced T cells poses unique challenges, including the formulation, cryopreservation and fill-finish steps, which are the focus of this review. With an increasing number of marketing approvals for CAR-T cell therapies, comparison of their formulation design and presentation for administration can be made. These differences will be discussed alongside the emergence of automated formulation and fill-finish processes, the formulation design space, Monte Carlo simulation applied to risk analysis, primary container selection, freezing profiles and thaw and the use of dimethyl sulfoxide and alternative solvents/excipients as cryopreservation agents. The review will conclude with a discussion of the pharmaceutical solutions required to meet the simplification of manufacture and flexibility in dosage form for clinical treatment.",
+      "relevance_score": 0.6,
+      "description": "This review focuses on formulation considerations for autologous T cell drug products, specifically addressing challenges in cryopreservation and fill-finish steps. It discusses the use of dimethyl sulfoxide and alternative solvents/excipients as cryopreservation agents for T cells.",
+      "matched_on": [
+        "autologous T cells",
+        "cryopreservation",
+        "dimethyl sulfoxide",
+        "alternative solvents/excipients",
+        "formulation"
+      ],
+      "importance": "While focused on T cells rather than HeLa cells, this paper discusses the practical application and challenges of cryopreservation with DMSO and the exploration of alternative cryoprotectants within a therapeutic context. It reinforces that the pursuit of alternatives to DMSO is a relevant area of research."
+    }
+  ],
+  "searched_at": "2026-04-26T01:03:29.156615+00:00",
+  "tavily_query": "HeLa cell cryopreservation trehalose versus DMSO post-thaw viability",
+  "summary": "The hypothesis proposes to test trehalose as a substitute for sucrose in HeLa cell cryopreservation to enhance post-thaw viability compared to a standard DMSO protocol. While the specific cell line and direct comparison in this exact experimental setup might be novel, the broader concept of using trehalose as a cryoprotectant and exploring alternatives to toxic DMSO is well-documented in the literature. Several reviews highlight the ongoing search for improved cryoprotectants, discussing the mechanisms of cryodamage and the properties of various compounds including trehalose, sucrose, and DMSO. Future work could benefit from understanding the mechanisms of action of these cryoprotectants in the context of the specific cell membrane and intracellular environment of HeLa cells."
+}
