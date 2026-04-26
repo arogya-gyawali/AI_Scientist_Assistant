@@ -25,6 +25,12 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+# Force UTF-8 stdout/stderr on Windows so box-drawing chars and science
+# Unicode (μ, −, °C) don't crash the cp1252 default console encoding.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 # Load .env BEFORE importing anything that reads env at module scope.
 load_dotenv()
 

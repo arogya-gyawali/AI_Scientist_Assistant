@@ -1,0 +1,73 @@
+{
+  "signal": "similar_work_exists",
+  "description": "The research question is similar to several existing studies that compare different cryoprotectants, including trehalose, sucrose, and DMSO, for their impact on post-thaw cell viability. While HeLa cells specifically are mentioned in some contexts, a direct comparison of trehalose vs. sucrose vs. DMSO using the exact parameters (concentrations, slow freezing, trypan blue at 24h) is not explicitly found as an exact match.",
+  "references": [
+    {
+      "source": "paper",
+      "confidence": "medium",
+      "doi": null,
+      "url": "https://www.mdpi.com/2073-4409/10/7/1837",
+      "title": "Cryopreservation of Human Adipose Tissues and ...",
+      "authors": [],
+      "year": null,
+      "venue": "Cells",
+      "snippet": "Rao et al.  examined trehalose as a sole cryoprotectant. They achieved effective delivery into human ADSCs (hADSCs) and reported that preincubation with trehalose significantly increased post-cryopreservation cell viability to 88.1% ± 7.5%. The viability is further improved to 91.2% ± 3.4% by using a higher concentration of trehalose. This observed cell viability was similar to the DMSO group (88.2% ± 2.2%), indicating that trehalose was successfully delivered into the hADSCs during cryopreservation. Dovgan et al.  demonstrated that electroporation is an efficient method for delivering trehalose into hADSCs. They achieved a high survival rate approaching the values obtained with standard DMSO protocol (91.5% ± 1.6%). The authors observed no statistically significant difference between 250 [...] Eight studies were included and are described in Table 1. All studies report improved viability of adipocytes following a freeze/thaw cycle if a CPA (trehalose and DMSO combined) was used compared to controls where no CPA was used. A variety of concentrations of trehalose and DMSO were used, and no significant conclusions can be drawn about the optimum concentration/combinations for optimum adipocyte yield. The cells were washed to remove the CPA according to standard protocols. [...] Roato et al.  compared DMSO and trehalose, and both agents showed similar degrees of viability of samples after thawing. However, the hADSCs cryopreserved in DMSO had a more rapid growth and arrived at co…",
+      "relevance_score": 0.85,
+      "description": "This review summarizes studies on the cryopreservation of human adipose tissues and cells, including comparisons between trehalose and DMSO as cryoprotectants. It finds that trehalose can achieve similar viability rates to DMSO in hADSCs and highlights the variation in concentrations and methods used.",
+      "matched_on": [
+        "trehalose",
+        "DMSO",
+        "cryoprotectant",
+        "post-cryopreservation",
+        "cell viability"
+      ],
+      "importance": "This paper directly compares trehalose and DMSO as cryoprotectants and assesses post-thaw viability, which aligns with the independent and dependent variables of the hypothesis. It also mentions different concentrations, although not specifically for HeLa cells or including sucrose."
+    },
+    {
+      "source": "paper",
+      "confidence": "medium",
+      "doi": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11411628/",
+      "title": "Trehalose in cryopreservation. Applications, mechanisms and ... - PMC",
+      "authors": [],
+      "year": null,
+      "venue": null,
+      "snippet": "Human peripheral blood stem cells: in Martinetti et al.35 the use of 1 M trehalose alone gave higher long- and short-term viability than DMSO alone, or DMSO combined with trehalose. The 1 M trehalose concentration used here is much higher than the typical optimal concentration of 100–400 mM in most cell types; it is possible that the slow addition of freezing media to the cells in this study allowed a higher concentration of trehalose to be reached without causing too much osmotic stress. For marrow and blood stem cells Scheinkönig et al.42 found that 500 mM trehalose provides a similar level of cryoprotection to DMSO. [...] Rat hepatocyte viability after cryopreservation was slightly higher (80% vs. 75%) with 200 mM trehalose in the absence of DMSO, than with 5% DMSO. The addition of trehalose or sucrose to 5% DMSO did not improve viability, and the addition of glucose decreased viability.33 In mouse spermatogonial stem cells, trehalose did not significantly increase recovery, but almost doubled post-thaw proliferation. Trehalose was more effective than sucrose and maltose in this respect. Lactose was as effective as trehalose. Fructose, galactose, xylose, and raffinose did not increase proliferation compared to the control. Glucose and mannose did increase proliferation, but not as much as the disaccharides.83 In Rodrigues et al.31 post-thaw recovery with 5% DMSO + 146 mM trehalose was 85%, compared to 79% [...] increases in survival rate, depending on the form of the trypa…",
+      "relevance_score": 0.82,
+      "description": "This review article discusses the role of trehalose in cryopreservation, including its applications and mechanisms. It cites various studies comparing trehalose with DMSO and other cryoprotectants like sucrose, reporting on their effects on post-thaw viability across different cell types and concentrations.",
+      "matched_on": [
+        "trehalose",
+        "DMSO",
+        "sucrose",
+        "cryoprotection",
+        "viability"
+      ],
+      "importance": "This reference is highly relevant as it explicitly compares trehalose, sucrose, and DMSO for their cryoprotective effects on viability. It covers the core cryoprotectant comparisons proposed in the hypothesis, although not specifically for HeLa cells, and discusses various concentrations and cell types."
+    },
+    {
+      "source": "paper",
+      "confidence": "medium",
+      "doi": null,
+      "url": "https://dergipark.org.tr/en/pub/vanvetj/issue/83931/1322291",
+      "title": "Comparative Efficacy of the Dimethyl Sulfoxide, Glycerol and ...",
+      "authors": [],
+      "year": null,
+      "venue": null,
+      "snippet": "(-80 °C). Cell viability and recovery rates were analyzed immediately post-thaw and after 48 h using the trypan blue dye exclusion assay. In 3 months (-20 °C), viability and recovery rates were higher in the methanol group. Glycerol showed better performance in 1 month (-80 °C). DMSO was the most efficient in 6 months (-80 °C). Methanol failed at -80 °C storage temperature. This study demonstrates the effect of these cryoprotectants in HeLa cells on cell viability and cell recovery rates immediately after thawing and after 48 hours of cultivation. [...] Hücre canlılığı ve geri kazanım oranları, çözülmeden hemen sonra ve çözülmeyi takiben 48 saat sonra, tripan mavisi kullanılarak analiz edildi. Canlılık ve geri kazanım oranları 3 ay -20 °C’de, metanol grubunda daha yüksekti. Gliserol grubunda ise canlılık ve geri kazanım oranları 1 ay -80 °C’de daha iyi performans gösterdi. DMSO grubunda ise bu oranlar, 6 ay -80 °C’de en yüksekti. Metanol grubu -80 °C’deki depolama koşullarında başarısız oldu. Bu çalışma, HeLa hücrelerindeki bu kriyoprotektanların, çözdürme işleminden hemen sonra ve 48 saatlik kültivasyondan sonra hücre canlılığı ve hücre geri kazanım oranları üzerindeki etkisini göstermektedir. [...] Cryoprotectants are used to protect cells during freezing. The concentration, type, and freeze-thaw conditions of these substances vary depending on the type of cell to be used. It is very important to determine the appropriate cryopreservation method for the particular cell. Thi…",
+      "relevance_score": 0.75,
+      "description": "This study investigates the comparative efficacy of DMSO, glycerol, and methanol as cryoprotectants for HeLa cells. It assesses cell viability and recovery rates using the trypan blue dye exclusion assay immediately post-thaw and after 48 hours under different storage conditions.",
+      "matched_on": [
+        "HeLa cells",
+        "DMSO",
+        "cryoprotectants",
+        "cell viability",
+        "post-thaw",
+        "trypan blue"
+      ],
+      "importance": "This paper is specifically important because it uses HeLa cells, the subject of the hypothesis, and evaluates DMSO as a cryoprotectant. It also uses trypan blue for viability assessment and considers post-thaw intervals, aligning with key aspects of the proposed methodology."
+    }
+  ],
+  "searched_at": "2026-04-26T00:21:22.405378+00:00",
+  "tavily_query": "HeLa cell post-thaw viability trehalose versus DMSO sucrose cryoprotectant slow freezing trypan blue",
+  "summary": "This research question is similar to existing work, as studies have investigated the comparative efficacy of various cryoprotectants, including trehalose, sucrose, and DMSO, on post-thaw cell viability. The closest precedents directly compare trehalose and DMSO, sometimes including sucrose, across different cell types and evaluate viability, often using trypan blue. However, a study that precisely matches the proposed concentrations (0.5M sucrose/trehalose, 10% DMSO) and the specific HeLa cell model within the exact same slow-freezing protocol was not found. Therefore, while the core comparison is precedented, the precise experimental setup with HeLa cells and the specified cryoprotectant concentrations still warrants investigation."
+}

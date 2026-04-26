@@ -4,20 +4,29 @@ Reads:  hypothesis
 Writes: lit_review
 
 Flow:
-  1. Rewrite the structured hypothesis into a precise scientific search query (LLM)
-  2. Tavily search (no `days` filter — foundational papers should surface)
-  3. LLM classifies novelty + selects 1-3 references, sorted by relevance then
-     recency, each with a neutral description, matched-on chips, and a relational
-     "why this matched" importance
-  4. Build a LitReviewSession and write to ExperimentPlan.lit_review
+  1. Rewrite the structured hypothesis into a precise scientific search query (LLM).
+  2. Semantic Scholar search → top-N papers with structured bibliographic
+     metadata (title, authors, year, venue, abstract, TLDR, DOI).
+  3. LLM editorial pass: classifies novelty signal, picks 1-3 papers most
+     relevant to the hypothesis, writes per-ref `description` (neutral) +
+     `importance` (relational) + `matched_on` tags + `relevance_score`.
+     Does NOT extract bibliographic fields — backend uses SS data directly.
+  4. Build a LitReviewSession and write to ExperimentPlan.lit_review.
+
+Why Semantic Scholar instead of Tavily here:
+  Tavily returns body text from web pages; bibliographic fields (authors,
+  year, venue, DOI) aren't reliably present in the returned snippets, which
+  forced LLM extraction of those fields and led to hallucinated authors.
+  Semantic Scholar returns structured metadata — no extraction needed.
 """
 
 from __future__ import annotations
 
 import json
 import uuid
+from typing import Any
 
-from src.clients import llm, tavily
+from src.clients import llm, semantic_scholar
 from src.types import (
     Citation,
     ExperimentPlan,
@@ -27,11 +36,17 @@ from src.types import (
     NoveltySignal,
     now,
 )
+from lit_review_pipeline.extractors import (
+    extract_doi,
+    extract_venue,
+    extract_year,
+)
 
-QUERY_REWRITE_SYSTEM = """You translate structured scientific hypotheses into precise web search queries for a novelty check.
+
+QUERY_REWRITE_SYSTEM = """You translate structured scientific hypotheses into precise scientific search queries for a Semantic Scholar novelty check.
 
 Rules:
-- 8-20 words.
+- 6-15 words.
 - Use precise scientific terminology.
 - Focus on the specific intervention + measured outcome + system/subject.
 - Do NOT include years, dates, or recency hints.
@@ -46,46 +61,32 @@ Expected outcome: {expected}
 Research question: {research_question}"""
 
 
-CLASSIFY_SYSTEM = """You evaluate scientific novelty. Given a structured hypothesis and web search results, classify the novelty signal, return relevant references, and write a holistic wrap-up summary.
+CLASSIFY_SYSTEM = """You evaluate scientific novelty. You receive a structured hypothesis and a list of pre-fetched papers from Semantic Scholar. Each paper already has bibliographic metadata (title, authors, year, venue) and an abstract or TLDR — DO NOT repeat those in your output. Your job is editorial.
 
-Rules:
-- signal must be one of: "novel" (no close prior work), "similar_work_exists" (related but not identical), "exact_match_found" (this exact experiment has been published).
-- description (top-level): 2-3 sentences. Be candid about how novel the question is and how it compares to the surfaced literature.
-- Pick at most 3 references. Sort primarily by relevance to the hypothesis, secondarily by recency (newer first).
-- For each reference include:
-    title
-    authors             (array; empty array if unknown)
-    year                (integer; null if unknown)
-    venue               (journal name, preprint server, or other publication venue, e.g. "Nature Reviews Microbiology"; null if unknown)
-    url
-    snippet             (1-2 sentences directly from the search result)
-    relevance_score     (0.0-1.0; the UI renders this as a percentage)
-    matched_on          (array of 3-5 short concept tags that bridge this paper to the hypothesis, e.g. ["E. coli", "Glucose", "Catabolite repression"])
-    description         (1-2 sentences, NEUTRAL: what does this paper actually cover? May note limitations factually but DO NOT compare to the user's study here)
-    importance          (1-2 sentences, RELATIONAL: why does this paper match the user's hypothesis? Where does it overlap, where does it differ, what gap does the user's study fill? This is "why this matched.")
-- If a field can't be determined, set it to null (or empty array for matched_on). Never invent authors, DOIs, or venues.
+Editorial output per chosen reference:
+- paper_index   (integer; index into the input papers array. Picking a paper that is not in the array is a failure.)
+- relevance_score (0.0-1.0; your judgment of relevance to the user's hypothesis, NOT generic citation count.)
+- matched_on    (array of 3-5 short concept tags that bridge this paper to the hypothesis, e.g. ["E. coli", "Glucose", "Catabolite repression"])
+- description   (1-2 sentences, NEUTRAL: synthesize what this paper actually covers, drawing from title + abstract + TLDR. May note limitations factually but DO NOT compare to the user's study here.)
+- importance    (1-2 sentences, RELATIONAL: why does this paper match the user's hypothesis? Where does it overlap, where does it differ, what gap does the user's study fill? This is "why this matched.")
 
-- summary (top-level, the final field): a HOLISTIC wrap-up for the researcher.
-  HARD LENGTH LIMIT: EXACTLY 3 OR 4 SENTENCES. Not 5. Not 6. Not a list. Not bullet points.
-  Count your sentences before responding. If you exceed 4 sentences, you have failed the task.
-  Cover, in order:
-    (a) novelty assessment in plain language ("This question is/isn't well-precedented because...");
-    (b) the key literature takeaway ("The closest precedent is X, which Y...");
-    (c) what gap the researcher's hypothesis fills, OR what to read first.
-  Do NOT restate the references list. Do NOT use markdown. Do NOT use phrases like "in summary" or "to summarize". Plain prose only.
+Top-level output:
+- signal       ("novel" — no close prior work | "similar_work_exists" — related but not identical | "exact_match_found" — this exact experiment has been published)
+- description  (2-3 sentences explaining the signal classification candidly)
+- summary      (HARD LIMIT: EXACTLY 3 OR 4 SENTENCES. Holistic wrap-up for the researcher: novelty assessment, key literature takeaway, what gap the hypothesis fills or what to read first. Plain prose, no markdown, no "in summary" phrasing.)
 
-Return ONLY a single valid JSON object matching this shape:
+Selection rules:
+- Choose at most 3 references (or fewer if the hypothesis is genuinely novel).
+- Sort by relevance to the hypothesis FIRST, recency SECOND.
+- Picking zero references is acceptable when nothing is relevant.
+
+Return ONLY a single valid JSON object:
 {
   "signal": "novel" | "similar_work_exists" | "exact_match_found",
   "description": "string",
   "references": [
     {
-      "title": "string",
-      "authors": ["string"],
-      "year": 2023 | null,
-      "venue": "string" | null,
-      "url": "string",
-      "snippet": "string",
+      "paper_index": 0,
       "relevance_score": 0.0,
       "matched_on": ["string"],
       "description": "string",
@@ -103,13 +104,10 @@ CLASSIFY_USER_TMPL = """Hypothesis (structured):
 - Expected outcome: {expected}
 - Research question: {research_question}
 
-Tavily search query used: {query}
+Semantic Scholar query used: {query}
 
-Tavily synthesized answer:
-{answer}
-
-Search results (top {n}):
-{results}"""
+Papers ({n} returned):
+{papers}"""
 
 
 def _rewrite_query(h: Hypothesis) -> str:
@@ -125,23 +123,69 @@ def _rewrite_query(h: Hypothesis) -> str:
     return llm.complete(QUERY_REWRITE_SYSTEM, user).strip().strip('"').strip("'")
 
 
-def _format_results(results: list[dict]) -> str:
+def _format_papers(papers: list[dict]) -> str:
+    """Render papers for the LLM prompt with structured metadata up front."""
     lines = []
-    for i, r in enumerate(results, 1):
-        title = r.get("title", "(no title)")
-        url = r.get("url", "")
-        content = (r.get("content") or "").strip().replace("\n", " ")
-        # Pass through enough content for the LLM to write a useful description
-        # and "why this matched" importance brief per reference.
-        if len(content) > 1500:
-            content = content[:1500] + "…"
-        lines.append(f"[{i}] {title}\n    {url}\n    {content}")
+    for i, p in enumerate(papers):
+        title = p.get("title") or "(no title)"
+        authors_list = [a.get("name") for a in (p.get("authors") or []) if a.get("name")]
+        authors = ", ".join(authors_list[:6]) + (" et al." if len(authors_list) > 6 else "")
+        year = p.get("year") if p.get("year") is not None else "n/a"
+        venue = p.get("venue") or "n/a"
+        body = (p.get("tldr") or {}).get("text") or p.get("abstract") or ""
+        if len(body) > 1500:
+            body = body[:1500] + "…"
+        lines.append(
+            f"[{i}] {title}\n"
+            f"    Authors: {authors or '(none listed)'}\n"
+            f"    {year}, {venue}\n"
+            f"    {body}"
+        )
     return "\n\n".join(lines)
 
 
-def _classify(h: Hypothesis, query: str, tavily_response: dict) -> tuple[NoveltySignal, str, list[Citation], str]:
+def _compose_citation(paper: dict, editorial: dict) -> Citation:
+    """Build a Citation from Semantic Scholar paper data + LLM editorial fields.
+
+    Bibliographic fields come straight from Semantic Scholar — no LLM extraction,
+    no validation needed (SS metadata is authoritative). When SS leaves a field
+    null we fall back to the deterministic regex extractors as a safety net.
+    """
+    authors = [a.get("name") for a in (paper.get("authors") or []) if a.get("name")]
+    external = paper.get("externalIds") or {}
+    ss_doi = external.get("DOI")
+    pdf_url = (paper.get("openAccessPdf") or {}).get("url")
+    page_url = paper.get("url") or pdf_url
+
+    # Snippet preference: TLDR (1-sentence AI summary) > abstract > nothing.
+    tldr_text = (paper.get("tldr") or {}).get("text")
+    snippet = tldr_text or paper.get("abstract")
+
+    return Citation(
+        source="semantic_scholar",
+        confidence="high",  # SS metadata is authoritative
+        title=paper.get("title"),
+        authors=authors,
+        year=paper.get("year") or extract_year(page_url, paper.get("title"), paper.get("abstract")),
+        venue=paper.get("venue") or extract_venue(page_url),
+        doi=ss_doi or extract_doi(page_url, paper.get("abstract")),
+        url=page_url,
+        snippet=snippet,
+        relevance_score=editorial.get("relevance_score"),
+        matched_on=editorial.get("matched_on") or [],
+        description=editorial.get("description"),
+        importance=editorial.get("importance"),
+    )
+
+
+def _classify(
+    h: Hypothesis,
+    query: str,
+    ss_response: dict,
+) -> tuple[NoveltySignal, str, list[Citation], str]:
     s = h.structured
-    results = tavily_response.get("results", [])
+    papers: list[dict] = ss_response.get("data") or []
+
     user = CLASSIFY_USER_TMPL.format(
         subject=s.subject,
         independent=s.independent,
@@ -150,35 +194,28 @@ def _classify(h: Hypothesis, query: str, tavily_response: dict) -> tuple[Novelty
         expected=s.expected,
         research_question=s.research_question,
         query=query,
-        answer=tavily_response.get("answer", "(no synthesized answer)"),
-        n=len(results),
-        results=_format_results(results),
+        n=len(papers),
+        papers=_format_papers(papers) or "(no papers returned)",
     )
 
-    raw = llm.complete(CLASSIFY_SYSTEM, user, json_mode=True).strip()
-    # Strip markdown fences if a model adds them despite instructions
-    if raw.startswith("```"):
-        raw = raw.strip("`").lstrip("json").strip()
+    def _call_and_parse() -> dict:
+        raw = llm.complete(CLASSIFY_SYSTEM, user, json_mode=True).strip()
+        if raw.startswith("```"):
+            raw = raw.strip("`").lstrip("json").strip()
+        return json.loads(raw)
 
-    parsed = json.loads(raw)
+    try:
+        parsed = _call_and_parse()
+    except json.JSONDecodeError:
+        parsed = _call_and_parse()  # one retry; JSON-mode occasionally hiccups
 
-    refs = [
-        Citation(
-            source="paper",
-            confidence="medium",
-            title=r.get("title"),
-            authors=r.get("authors") or [],
-            year=r.get("year"),
-            venue=r.get("venue"),
-            url=r.get("url"),
-            snippet=r.get("snippet"),
-            relevance_score=r.get("relevance_score"),
-            matched_on=r.get("matched_on") or [],
-            description=r.get("description"),
-            importance=r.get("importance"),
-        )
-        for r in parsed.get("references", [])
-    ][:3]
+    refs: list[Citation] = []
+    for r in parsed.get("references", [])[:3]:
+        idx = r.get("paper_index")
+        if not isinstance(idx, int) or idx < 0 or idx >= len(papers):
+            # LLM picked a phantom paper — skip silently rather than fabricate.
+            continue
+        refs.append(_compose_citation(papers[idx], r))
 
     summary = (parsed.get("summary") or "").strip()
     return parsed["signal"], parsed["description"], refs, summary
@@ -188,15 +225,15 @@ def run(plan: ExperimentPlan) -> LitReviewSession:
     """Stage runner. Returns the LitReviewSession; caller writes it to plan.lit_review."""
     h = plan.hypothesis
     query = _rewrite_query(h)
-    tavily_response = tavily.search_for_lit_review(query)
-    signal, description, refs, summary = _classify(h, query, tavily_response)
+    ss_response = semantic_scholar.search_for_lit_review(query)
+    signal, description, refs, summary = _classify(h, query, ss_response)
 
     initial = LitReviewOutput(
         signal=signal,
         description=description,
         references=refs,
         searched_at=now(),
-        tavily_query=query,
+        tavily_query=query,  # field name is historical; it's the SS query now
         summary=summary,
     )
 
@@ -205,6 +242,6 @@ def run(plan: ExperimentPlan) -> LitReviewSession:
         hypothesis_id=h.id,
         initial_result=initial,
         chat_history=[],
-        cached_tavily_context=json.dumps(tavily_response),
+        cached_tavily_context=json.dumps(ss_response),  # field name historical
         user_decision="pending",
     )

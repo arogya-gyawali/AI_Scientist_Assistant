@@ -1,0 +1,71 @@
+{
+  "signal": "similar_work_exists",
+  "description": "While no exact match was found, several studies describe similar paper-based or screen-printed electrochemical biosensors for C-reactive protein (CRP) detection in whole blood without preprocessing. These studies report comparable detection limits and rapid analysis times, suggesting the proposed research question aligns with current advancements in the field.",
+  "references": [
+    {
+      "source": "paper",
+      "confidence": "medium",
+      "doi": null,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40542313/",
+      "title": "A label-free electrochemical immunosensor on gold-printed electrode for the electrochemical detection of C-reactive protein from blood samples - PubMed",
+      "authors": [],
+      "year": null,
+      "venue": "PubMed",
+      "snippet": "of CRP in 1 × PBS, and achieving a detection limit (LOD) of 0.745 µg/mL within 30 min. Notably, the immunosensor successfully detected CRP in human ethylenediaminetetraacetic acid (EDTA)-anticoagulated whole blood with a detection limit of 0.177 µg/mL, which is within the clinical range for sepsis (5 µg/mL).",
+      "relevance_score": 0.95,
+      "description": "This paper describes a label-free electrochemical immunosensor on a gold-printed electrode modified with multi-walled carbon nanotubes for CRP detection. It achieved a detection limit of 0.177 µg/mL in human whole blood (EDTA-anticoagulated) within 30 minutes, without additional preprocessing.",
+      "matched_on": [
+        "electrochemical biosensor",
+        "anti-CRP antibodies",
+        "whole blood",
+        "detection limit",
+        "without preprocessing"
+      ],
+      "importance": "This reference is highly relevant as it demonstrates an electrochemical immunosensor detecting CRP in whole blood without preprocessing, similar to the hypothesis. The reported detection limit of 0.177 µg/mL (0.177 mg/L) is within the hypothesized range of <0.5 mg/L, although the time-to-result is 30 minutes, which is longer than the proposed 10 minutes."
+    },
+    {
+      "source": "paper",
+      "confidence": "medium",
+      "doi": "10.1007/s00604-025-07252-4",
+      "url": "https://link.springer.com/article/10.1007/s00604-025-07252-4",
+      "title": "A label-free electrochemical immunosensor on gold-printed ...",
+      "authors": [],
+      "year": null,
+      "venue": "Springer",
+      "snippet": "with only 2 µL of unprocessed whole blood, eliminating the need for labels or amplification due to the compact design of the working electrode (1 mm). This characteristic is particularly advantageous for clinical diagnostics in sepsis cases, where obtaining large blood volumes can be challenging.",
+      "relevance_score": 0.93,
+      "description": "This study details a label-free electrochemical immunosensor on a PCB gold electrode modified with MWCNTs for sensitive CRP detection in unprocessed whole blood, highlighting its suitability for point-of-care applications due to low sample volume and no preprocessing.",
+      "matched_on": [
+        "electrochemical biosensor",
+        "unprocessed whole blood",
+        "CRP detection",
+        "label-free"
+      ],
+      "importance": "This paper reinforces the feasibility of CRP detection in unprocessed whole blood using electrochemical biosensors, directly aligning with the core elements of the hypothesis regarding sample type and preprocessing. It further supports the clinical relevance and point-of-care potential."
+    },
+    {
+      "source": "paper",
+      "confidence": "medium",
+      "doi": null,
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S0956566324006730",
+      "title": "Reagent-free anti-fouling electrochemical immunosensor based on ...",
+      "authors": [],
+      "year": null,
+      "venue": "ScienceDirect",
+      "snippet": "linear relationship to CRP response, featuring a detection limit of 0.09 μg/mL, consistent with clinical reference range. In addition, the CRP immunosensor demonstrated excellent specificity in other inflammation-related proteins and commendable anti-interference performance for CRP detection in plasma and whole blood tests.",
+      "relevance_score": 0.9,
+      "description": "This work introduces a reagent-free anti-fouling electrochemical immunosensor constructed with a 3D \"flower-leaf\" structure for CRP detection in plasma and whole blood. It achieved a detection limit of 0.09 μg/mL with good specificity and anti-interference performance.",
+      "matched_on": [
+        "electrochemical immunosensor",
+        "CRP detection",
+        "whole blood",
+        "detection limit",
+        "reagent-free"
+      ],
+      "importance": "This reference is highly relevant as it presents an electrochemical immunosensor with a very low detection limit (0.09 µg/mL or 0.09 mg/L) for CRP in whole blood, directly addressing a key dependent variable in the hypothesis. The 'reagent-free' aspect also aligns with the simplified, rapid detection goal."
+    }
+  ],
+  "searched_at": "2026-04-26T00:21:38.625436+00:00",
+  "tavily_query": "paper-based electrochemical biosensor anti-CRP antibodies detection limit whole blood without preprocessing",
+  "summary": "This research question is not entirely novel, as similar work exists regarding paper-based or electrochemical biosensors for C-reactive protein (CRP) detection in whole blood without preprocessing. The closest precedent describes a label-free electrochemical immunosensor achieving a 0.177 mg/L detection limit in whole blood, which is comparable to the hypothesized sensitivity, though its analysis time of 30 minutes is longer than the proposed 10 minutes. The user's hypothesis specifically addresses the combined challenge of achieving sub-0.5 mg/L detection within 10 minutes, thereby defining a stricter performance target in terms of speed, which is a key distinguishing factor for point-of-care applications."
+}

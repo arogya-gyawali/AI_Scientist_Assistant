@@ -24,6 +24,7 @@ Verbose with output:
 from __future__ import annotations
 
 import os
+import shutil
 import time
 
 import pytest
@@ -94,6 +95,9 @@ class _CapturingTavilyClient:
 def fake_tavily(monkeypatch):
     monkeypatch.setenv("TAVILY_API_KEY", "fake-test-key")
     monkeypatch.setattr(tavily_client, "TavilyClient", _CapturingTavilyClient)
+    # Ensure mocked wrapper tests always exercise client call-shapes, not stale disk cache.
+    for namespace in ("tavily/lit_review", "tavily/gap_fill", "tavily/pricing"):
+        shutil.rmtree(cache.CACHE_DIR / namespace, ignore_errors=True)
     _CapturingTavilyClient.call_count = 0
     _CapturingTavilyClient.last_kwargs = {}
     _CapturingTavilyClient.return_value = {
@@ -177,16 +181,23 @@ class TestSupplierGapFillWrapper:
 
 class TestPricingWrapper:
     def test_scopes_to_single_vendor_domain(self, fake_tavily):
-        tavily_client.search_for_pricing("sigmaaldrich.com", "T9531")
+        tavily_client.search_for_pricing("Sigma-Aldrich", "sigmaaldrich.com", "T9531")
         assert fake_tavily.last_kwargs["include_domains"] == ["sigmaaldrich.com"]
 
     def test_requests_full_raw_content_for_price_extraction(self, fake_tavily):
-        tavily_client.search_for_pricing("thermofisher.com", "AM2616")
+        tavily_client.search_for_pricing("Thermo Fisher", "thermofisher.com", "AM2616")
         assert fake_tavily.last_kwargs["include_raw_content"] is True
 
     def test_only_fetches_top_one_result(self, fake_tavily):
-        tavily_client.search_for_pricing("promega.com", "M3001")
+        tavily_client.search_for_pricing("Promega", "promega.com", "M3001")
         assert fake_tavily.last_kwargs["max_results"] == 1
+
+    def test_query_includes_vendor_sku_and_price_keyword(self, fake_tavily):
+        tavily_client.search_for_pricing("Acme Bio", "acmebio.example", "SKU-UNIQUE-92417")
+        query = fake_tavily.last_kwargs["query"]
+        assert "Acme Bio" in query
+        assert "SKU-UNIQUE-92417" in query
+        assert "price" in query
 
 
 # =============================================================================

@@ -1,0 +1,84 @@
+{
+  "signal": "similar_work_exists",
+  "description": "Studies have already explored the impact of Lactobacillus rhamnosus GG (LGG) on intestinal permeability and tight junction protein expression in mice. While specific conditions vary, the core mechanism and measurements are well-precedented, suggesting a 'similar work exists' signal.",
+  "references": [
+    {
+      "source": "paper",
+      "confidence": "medium",
+      "doi": "10.3389/fmicb.2025.1580171/full",
+      "url": "https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2025.1580171/full",
+      "title": "Protective effects of Lactobacillus rhamnosus GG supernatant on ...",
+      "authors": [],
+      "year": 2025,
+      "venue": "Frontiers in Microbiology",
+      "snippet": "Further investigation into endotoxemia revealed that serum levels of LPS (Figure 3F) and FITC-dextran (Figure 3G) were significantly reduced in HFD mice following LGG gavage. These findings indicate that LGG improved intestinal integrity in HFD mice. [...] Consequently, expression levels of the tight junction proteins ZO-1 and occludin were downregulated in the ileal tissues of HFD-fed mice, as observed in this study.",
+      "relevance_score": 0.95,
+      "description": "This study demonstrates that supplementation with Lactobacillus rhamnosus GG (LGG) supernatant alleviates high-fat diet (HFD)-induced metabolic dysfunction-associated fatty liver disease (MAFLD) in mice by improving intestinal integrity, reducing LPS and FITC-dextran levels, and affecting tight junction proteins like ZO-1 and occludin.",
+      "matched_on": [
+        "Lactobacillus rhamnosus GG",
+        "FITC-dextran",
+        "intestinal permeability",
+        "occludin",
+        "mice"
+      ],
+      "importance": "This paper directly examines the effect of LGG on intestinal permeability using FITC-dextran and reports on occludin expression, highly aligning with the hypothesized dependent variables. It uses a high-fat diet model rather than healthy C57BL/6 mice, representing a related but different physiological context."
+    },
+    {
+      "source": "paper",
+      "confidence": "medium",
+      "doi": "10.1371/journal.pone.0080169.g003",
+      "url": "https://www.scienceopen.com/document_file/37e79858-59e1-4070-8872-5b14ee89b0af/PubMedCentral/37e79858-59e1-4070-8872-5b14ee89b0af.pdf",
+      "title": "Lactobacillus rhamnosus GG Protects against Non-Alcoholic Fatty Liver Disease in Mice",
+      "authors": [
+        "Yvonne Ritze",
+        "Gyo ¨ ngyi Ba ´rdos",
+        "Anke Claus",
+        "Veronika Ehrmann",
+        "Ina Bergheim",
+        "Andreas Schwiertz",
+        "Stephan C. Bischoff"
+      ],
+      "year": 2014,
+      "venue": "PLoS One",
+      "snippet": "Occludin and claudin-1 protein expression was significantly reduced in mice fed high-fructose diet compared to control diet. This reduction was removed following oral treatment of the mice with LGG (Fig. 2C,D). In contrast, zonula occludens 1 and 2 protein expression was neither influenced by high-fructose diet nor LGG treatment (data not shown).",
+      "relevance_score": 0.93,
+      "description": "This study investigates the protective effect of Lactobacillus rhamnosus GG (LGG) against non-alcoholic fatty liver disease (NAFLD) in mice by observing its impact on tight junction proteins, specifically claudin-1 and occludin, which were reduced by a high-fructose diet.",
+      "matched_on": [
+        "Lactobacillus rhamnosus GG",
+        "tight junction proteins",
+        "claudin-1",
+        "occludin",
+        "mice"
+      ],
+      "importance": "This paper is highly relevant as it demonstrates LGG's ability to modulate claudin-1 and occludin expression in mice, which are key dependent variables in the hypothesis. The model uses a high-fructose diet, which is a different trigger for gut barrier dysfunction compared to the hypothesis's healthy mice model."
+    },
+    {
+      "source": "paper",
+      "confidence": "medium",
+      "doi": "10.1016/j.clnu.2016.09.025",
+      "url": "https://scholars.duke.edu/publication/1152201",
+      "title": "Lactobacillus rhamnosus GG treatment improves intestinal permeability and modulates inflammatory response and homeostasis of spleen and colon in experimental model of Pseudomonas aeruginosa pneumonia.",
+      "authors": [
+        "Khailova L",
+        "Baird CH",
+        "Rush AA",
+        "Barnes C",
+        "Wischmeyer PE"
+      ],
+      "year": 2017,
+      "venue": "Clinical Nutrition",
+      "snippet": "Lactobacillus rhamnosus GG treatment improves intestinal permeability and modulates inflammatory response and homeostasis of spleen and colon in experimental model of Pseudomonas aeruginosa pneumonia.",
+      "relevance_score": 0.9,
+      "description": "This study explores how Lactobacillus rhamnosus GG treatment improves intestinal permeability and influences inflammatory responses and homeostasis in the spleen and colon within a mouse model of Pseudomonas aeruginosa pneumonia.",
+      "matched_on": [
+        "Lactobacillus rhamnosus GG",
+        "intestinal permeability",
+        "mice"
+      ],
+      "importance": "This reference confirms that LGG treatment improves intestinal permeability in a mouse model, directly supporting a core aspect of the hypothesis. However, it uses a disease model (Pseudomonas aeruginosa pneumonia) rather than healthy C57BL/6 mice, and does not specifically detail tight junction protein expression."
+    }
+  ],
+  "searched_at": "2026-04-26T00:21:46.512000+00:00",
+  "tavily_query": "Lactobacillus rhamnosus GG reduces intestinal permeability FITC-dextran claudin-1 occludin C57BL/6 mice",
+  "summary": "This research question is not novel, as multiple studies have already investigated the effect of Lactobacillus rhamnosus GG (LGG) on intestinal permeability and tight junction proteins in mice. The closest precedents demonstrate LGG's ability to reduce intestinal permeability (measured by FITC-dextran) and upregulate claudin-1 and occludin in various mouse models. The proposed study would contribute by specifically examining these effects in otherwise healthy C57BL/6 mice over a 4-week period without an induced disease state, offering a baseline understanding of LGG's impact under normal conditions."
+}

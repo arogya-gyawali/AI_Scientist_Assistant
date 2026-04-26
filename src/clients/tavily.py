@@ -69,10 +69,10 @@ def search_for_supplier(reagent_name: str) -> dict[str, Any]:
     return response
 
 
-def search_for_pricing(vendor_domain: str, sku: str) -> dict[str, Any]:
+def search_for_pricing(vendor: str, vendor_domain: str, sku: str) -> dict[str, Any]:
     """Stage 4 budget pricing: single-vendor, full raw content for price extraction."""
     payload = {
-        "query": f"{sku} price",
+        "query": f"{vendor} {sku} price",
         "search_depth": "basic",
         "max_results": 1,
         "include_answer": False,
