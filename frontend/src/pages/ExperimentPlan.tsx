@@ -1687,7 +1687,7 @@ const ExperimentPlan = () => {
                       : "Download PDF"}
                   </button>
                 )}
-
+                </div>
               </header>
 
               {/* TEXT VIEW — rich procedure-grouped when the backend ships
