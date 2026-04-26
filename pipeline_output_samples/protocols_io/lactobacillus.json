@@ -1,0 +1,2587 @@
+{
+  "query": "Lactobacillus",
+  "search": {
+    "items": [
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "Department of Urology, Ewha Womans University, School of Medicine",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Hyun Suk Yoon",
+            "username": ""
+          },
+          {
+            "affiliation": "Department of Urology, Hanyang University College of Medicine",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Yong Tae Kim",
+            "username": ""
+          },
+          {
+            "affiliation": "Department of Urology, Ewha Womans University, School of Medicine",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Bong Suk Shim",
+            "username": ""
+          },
+          {
+            "affiliation": "Department of Urology, Ewha Womans University, School of Medicine",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Hana Yoon",
+            "username": ""
+          }
+        ],
+        "before_start": "{\"blocks\":[{\"key\":\"8064m\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "created_on": 1514480394,
+        "creator": {
+          "affiliation": "",
+          "image": {
+            "placeholder": "https://www.protocols.io/img/avatars/001.png",
+            "source": "https://www.protocols.io/img/avatars/001.png"
+          },
+          "link": null,
+          "name": "Hyun Suk Yoon",
+          "username": "hyun-suk-yoon"
+        },
+        "description": "{\"blocks\":[{\"key\":\"5g7sk\",\"text\":\"This study aimed to investigate the effects of lactic acid bacterial fermentation extract (LABEF) on cystitis induced by Escherichia coli lipopolysaccharide (LPS) in the mouse bladder by pathological analyses and measurement of the levels of tumor necrosis factor-alpha (TNF-α) and interleukin-18 (IL-18). LABEF was administered orally (5 μg/L) to mice for 10 days following which, the study group (n = 12) was injected intravesically with 5 μg/L LPS. The bladder tissue was then harvested after 24 hours and subjected to hematoxylin and eosin (H-E) staining. A semiquantative score was used to evaluate inflammation (bladder inflammation index; BII). TNF-α immunohistochemical staining and multiplex cytokine assay were also performed. TNF-α and IL-18 levels were determined. The results were compared with those of the control group (n = 12). The BII in the control and study groups was 2.7 ± 0.5 and 1.1 ± 0.7, respectively, with the control group scores significantly differing from the study group scores (p value \\u003c 0.001). TNF-α immunohistochemical staining showed similar results. The TNF-α levels determined by the multiplex cytokine assay were 2.82 ± 1.35 pg/mg and 1.55 ± 0.56 pg/mg for the control and study groups, respectively, and the difference in values between these groups was statistically significant (p value = 0.007). Thus, oral administration of LABEF appears to have a preventive effect against the inflammatory responses and TNF-α expression induced by intravesical instillation of LPS in the mouse bladder. Further studies are required to determine the clinical application of this finding.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":121,\"length\":16}],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.17504/protocols.io.meyc3fw",
+        "funders": [],
+        "guid": "8731D531B9DA11E99CA40242AC110005",
+        "guidelines": "{\"blocks\":[{\"key\":\"8d8r3\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "id": 9400,
+        "image": {
+          "placeholder": "https://www.protocols.io/img/default_protocol.png",
+          "source": "https://www.protocols.io/img/default_protocol.png"
+        },
+        "link": "",
+        "materials": [],
+        "materials_text": null,
+        "peer_reviewed": false,
+        "public": true,
+        "published_on": 1514480589,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 0,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 37,
+          "number_of_forks": {
+            "private": 0,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 0,
+          "number_of_steps": 8,
+          "number_of_steps_comments": 0,
+          "number_of_views": 150,
+          "number_of_votes": 0
+        },
+        "title": "Preventive effect of Lactobacillus mixture on inflammation and cytokines in lipopolysaccharide-induced cystitis in mice",
+        "title_html": "Preventive effect of Lactobacillus mixture on inflammation and cytokines in lipopolysaccharide-induced cystitis in mice",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "preventive-effect-of-lactobacillus-mixture-on-infl-meyc3fw",
+        "url": "https://www.protocols.io/view/preventive-effect-of-lactobacillus-mixture-on-infl-meyc3fw",
+        "version_id": 2,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.17504/protocols.io.meyc3fw",
+            "guid": "",
+            "id": 9400,
+            "image": {
+              "placeholder": "https://www.protocols.io/img/default_protocol.png",
+              "source": "https://www.protocols.io/img/default_protocol.png"
+            },
+            "published_on": 1514480589,
+            "title": "Preventive effect of Lactobacillus mixture on inflammation and cytokines in lipopolysaccharide-induced cystitis in mice",
+            "title_html": "Preventive effect of Lactobacillus mixture on inflammation and cytokines in lipopolysaccharide-induced cystitis in mice",
+            "uri": "preventive-effect-of-lactobacillus-mixture-on-infl-meyc3fw",
+            "version_id": 2
+          }
+        ],
+        "warning": "{\"blocks\":[{\"key\":\"cu9tt\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}"
+      },
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "University of Milan and Universitat Autònoma de Barcelona",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": "",
+            "name": "Carlotta Catozzi",
+            "username": "carlotta-catozzi"
+          },
+          {
+            "affiliation": "Universitat Autónoma de Barcelona",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Anna Cusco",
+            "username": "anna-cusco"
+          }
+        ],
+        "before_start": "{\"blocks\":[{\"key\":\"6kkds\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "created_on": 1538731843,
+        "creator": {
+          "affiliation": "University of Milan",
+          "image": {
+            "placeholder": "https://www.protocols.io/img/avatars/001.png",
+            "source": "https://www.protocols.io/img/avatars/001.png"
+          },
+          "link": null,
+          "name": "Carlotta Catozzi",
+          "username": "carlotta-catozzi"
+        },
+        "description": "{\"blocks\":[{\"key\":\"82mt3\",\"text\":\"This workflow was performed using QIIME2 for a longitudinal study. The aim was to investigate the changes in mcirobiota after antibiotic and Lactobacillus rhamnosus treatment in water buffaloes affected by subclinical mastitis.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":141,\"length\":23}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.17504/protocols.io.ucpesvn",
+        "funders": [],
+        "guid": "86F70C60B9DA11E99CA40242AC110005",
+        "guidelines": "{\"blocks\":[{\"key\":\"aqg4a\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "id": 16495,
+        "image": {
+          "placeholder": "https://www.protocols.io/img/default_protocol.png",
+          "source": "https://www.protocols.io/img/default_protocol.png"
+        },
+        "link": "https://doi.org/10.1371/journal.pone.0210204",
+        "materials": [],
+        "materials_text": null,
+        "peer_reviewed": false,
+        "public": true,
+        "published_on": 1546963563,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 1,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 66,
+          "number_of_forks": {
+            "private": 0,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 1,
+          "number_of_steps": 0,
+          "number_of_steps_comments": 0,
+          "number_of_views": 387,
+          "number_of_votes": 1
+        },
+        "title": "Qiime 2 Workflow - Longitudinal study",
+        "title_html": "Qiime 2 Workflow - Longitudinal study",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "qiime-2-workflow-longitudinal-study-ucpesvn",
+        "url": "https://www.protocols.io/view/qiime-2-workflow-longitudinal-study-ucpesvn",
+        "version_id": 0,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.17504/protocols.io.ucpesvn",
+            "guid": "",
+            "id": 16495,
+            "image": {
+              "placeholder": "https://www.protocols.io/img/default_protocol.png",
+              "source": "https://www.protocols.io/img/default_protocol.png"
+            },
+            "published_on": 1546963563,
+            "title": "Qiime 2 Workflow - Longitudinal study",
+            "title_html": "Qiime 2 Workflow - Longitudinal study",
+            "uri": "qiime-2-workflow-longitudinal-study-ucpesvn",
+            "version_id": 0
+          }
+        ],
+        "warning": "{\"blocks\":[{\"key\":\"5qabd\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}"
+      },
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "BGI-SHENZHEN",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": "",
+            "name": "Chen Chen",
+            "username": "chen-chen3"
+          }
+        ],
+        "before_start": null,
+        "created_on": 1605602568,
+        "creator": {
+          "affiliation": "",
+          "image": {
+            "placeholder": "https://www.protocols.io/img/avatars/001.png",
+            "source": "https://www.protocols.io/img/avatars/001.png"
+          },
+          "link": null,
+          "name": "Lilan Hao",
+          "username": "lilan-hao"
+        },
+        "description": "{\"blocks\":[{\"key\":\"3s0r0\",\"text\":\"Quantitative Real-time Polymerase Chain Reaction(qPCR) for the four Lactobacillus species, including L.crispatus, L.gasseri, L.iners, L.jensenii.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":68,\"length\":13},{\"style\":\"italic\",\"offset\":101,\"length\":44}],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.17504/protocols.io.bps2mnge",
+        "funders": [],
+        "guid": "B1921C7028B011EBB7888D5EEF11E653",
+        "guidelines": null,
+        "id": 44602,
+        "image": {
+          "placeholder": "https://www.protocols.io/img/default_protocol.png",
+          "source": "https://www.protocols.io/img/default_protocol.png"
+        },
+        "link": "https://doi.org/10.46471/gigabyte.9",
+        "materials": [],
+        "materials_text": null,
+        "peer_reviewed": true,
+        "public": true,
+        "published_on": 1605604664,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 0,
+          "number_of_collections": 4,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 106,
+          "number_of_forks": {
+            "private": 0,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 0,
+          "number_of_steps": 5,
+          "number_of_steps_comments": 0,
+          "number_of_views": 664,
+          "number_of_votes": 0
+        },
+        "title": "Quantitative real-time PCR for the four Lactobacillus species",
+        "title_html": "<p>Quantitative real-time PCR for the four Lactobacillus species</p>",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "quantitative-real-time-pcr-for-the-four-lactobacil-bps2mnge",
+        "url": "https://www.protocols.io/view/quantitative-real-time-pcr-for-the-four-lactobacil-bps2mnge",
+        "version_id": 0,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.17504/protocols.io.bps2mnge",
+            "guid": "",
+            "id": 44602,
+            "image": {
+              "placeholder": "https://www.protocols.io/img/default_protocol.png",
+              "source": "https://www.protocols.io/img/default_protocol.png"
+            },
+            "published_on": 1605604664,
+            "title": "Quantitative real-time PCR for the four Lactobacillus species",
+            "title_html": "<p>Quantitative real-time PCR for the four Lactobacillus species</p>",
+            "uri": "quantitative-real-time-pcr-for-the-four-lactobacil-bps2mnge",
+            "version_id": 0
+          }
+        ],
+        "warning": null
+      },
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Chen Chen",
+            "username": "chen-chen"
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Lilan Hao",
+            "username": "lilan-hao"
+          },
+          {
+            "affiliation": "Peking University Shenzhen Hospital, Shenzhen 518036, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Weixia Wei",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Fei Li",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Liju Song",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Xiaowei Zhang",
+            "username": ""
+          },
+          {
+            "affiliation": "Peking University Shenzhen Hospital, Shenzhen 518036, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Juanjuan Dai",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Zhuye Jie",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Jiandong Li",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Xiaolei Song",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Zirong Wang",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Zhe Zhang",
+            "username": ""
+          },
+          {
+            "affiliation": "Peking University Shenzhen Hospital, Shenzhen 518036, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Liping Zeng",
+            "username": ""
+          },
+          {
+            "affiliation": "Peking University Shenzhen Hospital, Shenzhen 518036, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Hui Du",
+            "username": ""
+          },
+          {
+            "affiliation": "Peking University Shenzhen Hospital, Shenzhen 518036, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Huiru Tang",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Tao Zhang",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Huanming Yang",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Jian Wang",
+            "username": ""
+          },
+          {
+            "affiliation": "Department of Biotechnology and Biomedicine, Technical University of Denmark, Soltofts Plads, Building 221, 2800 Kgs. Lyngby, Denmark.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Susanne Brix",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Karsten Kristiansen",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Xun Xu",
+            "username": ""
+          },
+          {
+            "affiliation": "Peking University Shenzhen Hospital, Shenzhen 518036, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Ruifang Wu",
+            "username": ""
+          },
+          {
+            "affiliation": "BGI-Shenzhen, Shenzhen 518083, China.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Huijue Jia",
+            "username": ""
+          }
+        ],
+        "before_start": null,
+        "created_on": 1606268519,
+        "creator": {
+          "affiliation": "",
+          "image": {
+            "placeholder": "https://www.protocols.io/img/avatars/001.png",
+            "source": "https://www.protocols.io/img/avatars/001.png"
+          },
+          "link": null,
+          "name": "Lilan Hao",
+          "username": "lilan-hao"
+        },
+        "description": "{\"blocks\":[{\"key\":\"35oqc\",\"text\":\"Human urine is traditionally considered to be sterile, and whether the urine harbours distinct microbial communities has been a matter of debate. Potential links between female urine and reproductive tract microbial communities is currently not clear. Here, we collected urine samples from 147 Chinese women of reproductive age and explored the nature of colonization by 16S rRNA gene amplicon sequencing, quantitative real-time PCR, and live bacteria culture. To demonstrate the utility of this approach, the intra-individual Spearman's correlation was used to explore the relationship between urine and multiple sites of the reproductive tract. PERMANOVA was also performed to explore potential correlations between the lifestyle and various clinical factors and urinary bacterial communities. Our data demonstrated distinct bacterial communities in urine, indicative of a non-sterile environment. Streptococcus-dominated, Lactobacillus-dominated, and diverse type were the three most common urinary bacterial community types in the cohort. Detailed comparison of the urinary microbiota with multiple sites of the female reproductive tract microbiota demonstrated that the urinary microbiota were more similar to the microbiota in the cervix and uterine cavity than to those of the vagina in the same women. Our data demonstrate the potential connectivity among microbiota in the female urogenital system and provide insight and resources for exploring diseases of the urethra and genital tract.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":900,\"length\":13},{\"style\":\"italic\",\"offset\":925,\"length\":13}],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.17504/protocols.io.bp3wmqpe",
+        "funders": [],
+        "guid": "791D21828796470D97349780E395B9A9",
+        "guidelines": null,
+        "id": 44886,
+        "image": {
+          "placeholder": "https://files.protocols.io/external/cr27bbmjx-DB6C52E2687311F08F960A58A9FEAC02.png",
+          "source": "https://files.protocols.io/external/cr27bbmjx-DB6C52E2687311F08F960A58A9FEAC02.png"
+        },
+        "link": "https://doi.org/10.46471/gigabyte.9",
+        "materials": [],
+        "materials_text": null,
+        "peer_reviewed": true,
+        "public": true,
+        "published_on": 1606269116,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 0,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 120,
+          "number_of_forks": {
+            "private": 1,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 0,
+          "number_of_steps": 0,
+          "number_of_steps_comments": 0,
+          "number_of_views": 501,
+          "number_of_votes": 0
+        },
+        "title": "Protocols for &#34;The female urinary microbiota in relation to the reproductive tract microbiota.&#34;",
+        "title_html": "<p>Protocols for &quot;The female urinary microbiota in relation to the reproductive tract microbiota.&quot;</p>",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "protocols-for-34-the-female-urinary-microbiota-in-bp3wmqpe",
+        "url": "https://www.protocols.io/view/protocols-for-34-the-female-urinary-microbiota-in-bp3wmqpe",
+        "version_id": 3,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.17504/protocols.io.bpyumpww",
+            "guid": "",
+            "id": 44788,
+            "image": {
+              "placeholder": "https://files.protocols.io/external/cru9bbmjx-DA9390FA687311F08F960A58A9FEAC02.jpg",
+              "source": "https://files.protocols.io/external/cru9bbmjx-DA9390FA687311F08F960A58A9FEAC02.jpg"
+            },
+            "published_on": 1606111358,
+            "title": "Protocols for &#34;The female urinary microbiota in relation to the reproductive tract microbiota.&#34;",
+            "title_html": "<p>Protocols for &quot;The female urinary microbiota in relation to the reproductive tract microbiota.&quot;</p>",
+            "uri": "protocols-for-34-the-female-urinary-microbiota-in-bpyumpww",
+            "version_id": 2
+          },
+          {
+            "doi": "dx.doi.org/10.17504/protocols.io.bp3wmqpe",
+            "guid": "",
+            "id": 44886,
+            "image": {
+              "placeholder": "https://files.protocols.io/external/cr27bbmjx-DB6C52E2687311F08F960A58A9FEAC02.png",
+              "source": "https://files.protocols.io/external/cr27bbmjx-DB6C52E2687311F08F960A58A9FEAC02.png"
+            },
+            "published_on": 1606269116,
+            "title": "Protocols for &#34;The female urinary microbiota in relation to the reproductive tract microbiota.&#34;",
+            "title_html": "<p>Protocols for &quot;The female urinary microbiota in relation to the reproductive tract microbiota.&quot;</p>",
+            "uri": "protocols-for-34-the-female-urinary-microbiota-in-bp3wmqpe",
+            "version_id": 3
+          }
+        ],
+        "warning": null
+      },
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "Amsterdam Institute for Life and Environment (A-LIFE), Vrije Universiteit Amsterdam, The Netherlands",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Shardelice Illidge",
+            "username": ""
+          },
+          {
+            "affiliation": " Amsterdam Institute for Life and Environment (A-LIFE), Vrije Universiteit Amsterdam, The Netherlands; Stichting crispatus, Amsterdam, The Netherlands ; ARTIS-Micropia, Amsterdam, The Netherlands",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Remco Kort",
+            "username": ""
+          },
+          {
+            "affiliation": "Amsterdam Institute for Life and Environment (A-LIFE), Vrije Universiteit Amsterdam, The Netherlands; Stichting crispatus, Amsterdam, The Netherlands ",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Rosanne Hertzberger",
+            "username": ""
+          }
+        ],
+        "before_start": "{\"blocks\":[{\"key\":\"bekff\",\"text\":\"This protocol can be followed in a low-resource environment. All volunteers participating in the initiative must sign a consent form, ensuring they are both willing and legally competent to understand the implications of their involvement. It is paramount that privacy is upheld and guaranteed at all times, safeguarding the confidentiality of those involved.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "created_on": 1709618917,
+        "creator": {
+          "affiliation": "Amsterdam Institute for Life and Environment (A-LIFE), Vrije Universiteit Amsterdam, The Netherlands",
+          "image": {
+            "placeholder": "https://www.protocols.io/img/avatars/001.png",
+            "source": "https://www.protocols.io/img/avatars/001.png"
+          },
+          "link": "",
+          "name": "Remco Kort",
+          "username": "remco-kort"
+        },
+        "description": "{\"blocks\":[{\"key\":\"9cc3\",\"text\":\"A vaginal microbiome rich in Lactobacillus crispatus is associated with good reproductive and sexual health outcomes. Dysbiosis, indicated by a loss of Lactobacillus crispatus, is a risk factor for urogenital infections such as the clinical diagnosis of bacterial vaginosis (BV) or urinary tract infections. While many scientists explore probiotics using a conventional pharmaceutical approach, concerns about the accessibility and affordability prompt an investigation into a preventive approach using this naturally occurring bacterium. Our study is aimed at the exploration of a potential woman-friendly vaginal probiotic product by use of the naturally occurring bacterium Lactobacillus crispatus. Citizen scientists actively participated in a two-day practicum, successfully performing procedures with self-collected vaginal swabs. The practicum received a positive response from participants, who demonstrated notable engagement and enthusiasm. With expert guidance, participants without a laboratory background were able to successfully execute the assigned tasks. From the Dutch crispatus Citizen Science Collective of 48 women, 22 succeeded to isolate their own Lactobacillus crispatus strains, using a Loop-Mediated Isothermal Amplification (LAMP) protocol for identification. In addition, 48 metagenomes and 54 whole genomes from 22 individuals were sequenced for comparative analysis by an external company. This project effectively engaged a community of women into isolation of Lactobacillus crispatus strains from their vaginal microbiota followed by in vitro characterization experiments and a hackathon for the development of a probiotic product. Our citizen science approach opens up collaboration possibilities and new avenues for exploration in vaginal health, facilitating community involvement and the development of targeted intervention to enhance women’s well-being.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":29,\"length\":13},{\"style\":\"italic\",\"offset\":43,\"length\":9},{\"style\":\"italic\",\"offset\":152,\"length\":13},{\"style\":\"italic\",\"offset\":166,\"length\":9},{\"style\":\"italic\",\"offset\":677,\"length\":13},{\"style\":\"italic\",\"offset\":691,\"length\":9},{\"style\":\"italic\",\"offset\":1087,\"length\":9},{\"style\":\"italic\",\"offset\":1171,\"length\":13},{\"style\":\"italic\",\"offset\":1185,\"length\":9},{\"style\":\"italic\",\"offset\":1492,\"length\":13},{\"style\":\"italic\",\"offset\":1506,\"length\":9}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.17504/protocols.io.81wgbzdkygpk/v1",
+        "funders": [
+          {
+            "funder_name": "TKI-project Citizen Science for Health Care",
+            "grant_id": "404270598028"
+          }
+        ],
+        "guid": "32A66977E82E11EE8EA10A58A9FEAC02",
+        "guidelines": "{\"blocks\":[{\"key\":\"6gshn\",\"text\":\"Setting up a women’s collective:\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":32}],\"entityRanges\":[],\"data\":{}},{\"key\":\"e97ic\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"edqu\",\"text\":\"The ideas for the citizen science initiative described here were presented to “The crispatus foundation” to manifest its vision and curate a collection of L. crispatus isolates. Participants contribute their isolates under a licensing agreement, allowing the foundation to negotiate sub-licensing for probiotic product development. (Supplemental file 1: Appendix A. Licensing agreement).\",\"type\":\"unordered-list-item\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":83,\"length\":9},{\"style\":\"italic\",\"offset\":155,\"length\":12}],\"entityRanges\":[],\"data\":{}},{\"key\":\"a0f47\",\"text\":\"Participants retain ownership of their contributions, ensuring their intellectual property rights are safeguarded. Donors, upon joining a panel, gain oversight and voting rights concerning sub-licensing agreements. They are entitled to receive 20% of the profits generated, while the remaining 80% of the foundation’s profits are dedicated to funding new research initiatives.\",\"type\":\"unordered-list-item\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"bd913\",\"text\":\"For privacy concerns, every participant chose their own pseudonym. Zivver (Zivver, Amsterdam, The Netherlands), a platform that allows the exchange of information in an easy and secure way, was used for sharing sensitive information during digital communication.\",\"type\":\"unordered-list-item\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"5qs9r\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"b1ug6\",\"text\":\"Recruitment:\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":12}],\"entityRanges\":[],\"data\":{}},{\"key\":\"38gou\",\"text\":\"To keep the sample size closer to our target number, recruitment was mostly based on word of mouth, newsletters, a small publication in a local newspaper or a flyer on a college campus. Initially, we attracted a diverse group of women interested in participating in the study, all with different backgrounds and life experiences spanning ages 18 to 75. As we progressed, however, challenges in collecting L. crispatus from women aged 40 and above led us to refine the criteria, focusing on women between the ages of 18 and 40. We had a total of five practicals with 48 participants. We were able to isolate L. crispatus from 22 women. The practicals were held at three different locations in The Netherlands: Vrije Universiteit Amsterdam, Avans Hogeschool, Breda and BioARTLaboratories Eindhoven.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":405,\"length\":12},{\"style\":\"italic\",\"offset\":606,\"length\":13}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "id": 97133,
+        "image": {
+          "placeholder": "https://www.protocols.io/img/default_protocol.png",
+          "source": "https://www.protocols.io/img/default_protocol.png"
+        },
+        "link": "https://doi.org/10.1371/journal.pone.0308526",
+        "materials": [],
+        "materials_text": "",
+        "peer_reviewed": true,
+        "public": true,
+        "published_on": 1713196246,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 2,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 1,
+          "number_of_forks": {
+            "private": 0,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 0,
+          "number_of_steps": 26,
+          "number_of_steps_comments": 0,
+          "number_of_views": 478,
+          "number_of_votes": 0
+        },
+        "title": "‘From women for women’: A citizen science approach engaging women in the isolation and application of the vaginal health-associated bacterium Lactobacillus crispatus",
+        "title_html": "‘From women for women’: A citizen science approach engaging women in the isolation and application of the vaginal health-associated bacterium Lactobacillus crispatus",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1624,
+            "name": "g/L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3237,
+            "name": "g/L",
+            "read_only": 0,
+            "type_id": 3
+          }
+        ],
+        "uri": "from-women-for-women-a-citizen-science-approach-e-da4m2gu6",
+        "url": "https://www.protocols.io/view/from-women-for-women-a-citizen-science-approach-e-da4m2gu6",
+        "version_id": 0,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.17504/protocols.io.81wgbzdkygpk/v1",
+            "guid": "",
+            "id": 97133,
+            "image": {
+              "placeholder": "https://www.protocols.io/img/default_protocol.png",
+              "source": "https://www.protocols.io/img/default_protocol.png"
+            },
+            "published_on": 1713196246,
+            "title": "‘From women for women’: A citizen science approach engaging women in the isolation and application of the vaginal health-associated bacterium Lactobacillus crispatus",
+            "title_html": "‘From women for women’: A citizen science approach engaging women in the isolation and application of the vaginal health-associated bacterium Lactobacillus crispatus",
+            "uri": "from-women-for-women-a-citizen-science-approach-e-da4m2gu6",
+            "version_id": 0
+          }
+        ],
+        "warning": ""
+      }
+    ],
+    "pagination": {
+      "changed_on": null,
+      "current_page": 1,
+      "first": 0,
+      "last": 7,
+      "next_page": "https://www.protocols.io/api/v3/protocols?filter=public&key=Lactobacillus&order_dir=desc&order_field=activity&page_id=2&page_size=5",
+      "page_size": 5,
+      "prev_page": null,
+      "total_pages": 2,
+      "total_results": 8
+    },
+    "status_code": 0
+  },
+  "top_hit_id": 9400,
+  "top_hit_steps": {
+    "payload": [
+      {
+        "id": 600931,
+        "guid": "8097009766334AE685156C5CB8684D51",
+        "previous_id": null,
+        "previous_guid": null,
+        "section": "",
+        "section_color": null,
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"d58t4\",\"text\":\"Twenty-four 8-week old female black mice (C57BL/6, Orient Bio, Korea) were acclimatized for 1 week. The mice were kept in groups of two in cages with sawdust bedding. Water and feed was supplied freely, and temperature (21–24°C) and humidity (50–60%) conditions were controlled. The mice were subjected to 12-h light/12-h dark cycles. \",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 9400,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 600923,
+        "number": "1",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 600932,
+        "guid": "056D3BACEB5A4C3B9C92067935FA2D83",
+        "previous_id": 600931,
+        "previous_guid": "8097009766334AE685156C5CB8684D51",
+        "section": "",
+        "section_color": null,
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"4h5rr\",\"text\":\"Control group (n = 12): Mice were orally administered with normal saline 5 times/week for 2 weeks. On day 14, bladders were injected with LPS and harvested after 24 hours.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 9400,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 600924,
+        "number": "2",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 600933,
+        "guid": "13DACD0861614D639FEB52B0BA944A08",
+        "previous_id": 600932,
+        "previous_guid": "056D3BACEB5A4C3B9C92067935FA2D83",
+        "section": "",
+        "section_color": null,
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"34cuq\",\"text\":\"Study group (n = 12): Mice were orally administered SL 16 (B\\u0026S Corporation, Japan) 5 times/week for 2 weeks. On day 14, bladders were injected with LPS and harvested after 24 hours.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 9400,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 600925,
+        "number": "3",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 600934,
+        "guid": "357E41FE6BCA4BAAAB8A0BBE811757E2",
+        "previous_id": 600933,
+        "previous_guid": "13DACD0861614D639FEB52B0BA944A08",
+        "section": "",
+        "section_color": null,
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"25bai\",\"text\":\"SL 16 comprised 66.5% distilled water, 33% LABEF (soy milk 32%, Lactobacillus curvatus, Lactobacillus casei, Lactobacillus acidophilus, Lactobacillus plantarum, Lactobacillus fermentum, Lactobacillus salivarius, Lactobacillus brevis, and Lactobacillus rhamnosus), 1% citrate, and 0.5% lactate).\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":64,\"length\":22},{\"style\":\"italic\",\"offset\":88,\"length\":146},{\"style\":\"italic\",\"offset\":237,\"length\":24}],\"entityRanges\":[],\"data\":[]},{\"key\":\"c65va\",\"text\":\"Mice were anesthetized with Zoletil (0.6 g/kg, Virbac S.A., France) and Ropun (0.4 g/Kg, Bayer AG, Leverkusen, Germany) prior to bladder injection. A sterilized polyethylene vascular catheter (24G, 19 mm, Angiocath Plus, Becton Dickinson Medical(s) Pvt. Ltd., Singapore) was inserted through the urethra into the bladder and the bladder was emptied by applying pressure to the abdomen. Next, 150 µL of E. coli LPS strain 55:B5 mixture (100 µg/mL, Sigma, St. Louis, USA) was injected in both groups. For enhanced effects, this injection was repeated after 30 minutes and the catheter was blocked with a 1 mL syringe to avoid urine leakage for 30 minutes before removal.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":402,\"length\":7}],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 9400,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 600926,
+        "number": "4",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 600935,
+        "guid": "D5A5C08866404C21884EA986AD3B4FAE",
+        "previous_id": 600934,
+        "previous_guid": "357E41FE6BCA4BAAAB8A0BBE811757E2",
+        "section": "",
+        "section_color": null,
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"blfng\",\"text\":\"The animals were sacrificed by CO2 inhalation and the lower abdomen was disinfected with 70% ethanol, after which the abdominal cavity was exposed through a vertical midline incision of 5 cm. The bladder tissue was harvested and divided vertically. One half of the specimen was preserved at -70°C, and the other half was preserved in 10% formaldehyde.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 9400,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 600927,
+        "number": "5",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 600936,
+        "guid": "B912FDD069934B5ABA64DC194593EDAF",
+        "previous_id": 600935,
+        "previous_guid": "D5A5C08866404C21884EA986AD3B4FAE",
+        "section": "",
+        "section_color": null,
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"5tsgj\",\"text\":\"The tissue fixed in formaldehyde was used to prepare 5-µm vertical tissue sections after paraffin embedding. Hematoxylin and eosin (H-E) staining was performed per standard procedure. TNF-α immunostaining was done using TNF-α antibody (Anti-TNF-alpha antibody ab6671, Abcam, Cambridge, UK) as recommended by the manufacturer, with eosin staining as the control. Histopathology and TNF-α immunostaining of the bladder wall was observed through optical microscopy.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 9400,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 600928,
+        "number": "6",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 600937,
+        "guid": "C86A259E1AFA4940963E11C1A8412282",
+        "previous_id": 600936,
+        "previous_guid": "B912FDD069934B5ABA64DC194593EDAF",
+        "section": "",
+        "section_color": null,
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"8btt7\",\"text\":\"The severity of bladder inflammation was categorized according to the BII proposed by Jerde et al., by considering leukocyte infiltration into the lamina propria and interstitial tissue edema. Leukocyte infiltration was assessed in 1-mm2 areas of tissue sections. The score was considered 0 when there was no infiltration, 1 when there were less than 20 leukocytes, 2 with 20–45 leukocytes, and 3 when there were more than 45 leukocytes. With regard to edema in the interstitial tissue, scoring was as follows: a score of 0 was given for no edema; 1 for mild edema, thinner than the mucosa; 2 for moderate edema, thinner than twice the thickness of the mucosa; and 3 for severe edema, thicker than twice the thickness of the mucosa. The scores for leukocyte infiltration and interstitial edema were added and the average scores from three sites (bladder neck, lateral wall, and bladder dome) in each of the bladder specimens were compared.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 9400,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 600929,
+        "number": "7",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 600938,
+        "guid": "33FF6EB9AFF04FABA46545CD5A7119C3",
+        "previous_id": 600937,
+        "previous_guid": "C86A259E1AFA4940963E11C1A8412282",
+        "section": "",
+        "section_color": null,
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"cr0o6\",\"text\":\"Frozen bladder specimens were prepared as described previously. The buffer solution containing 2.66% Tris (hydroxymethyl) aminomethane HCl, 0.985% Tris (hydroxymethyl) aminomethane, 0.5 mM pepstatin A, 0.3 M aprotinin (all of the above were obtained from Tocris, Bristol, UK)), phenylmethylsulfonyl fluoride, and 1 M leupeptin, 1 M (both from EMD Millipore, Temecula, CA, USA) was applied, the specimen was pulverized on ice, and incubated at 4°C for 30 minutes. This preparation was subjected to centrifugal separation at 10,000 × g for 10 minutes at 4°C. The TNF-α and IL-18 levels in the supernatant were measured using the MILLIPLEX MAP Non-Human Primate Cytokine Magnetic Bead Panel-Immunology Multiplex Assay Kit (Merck Millipore, Billerica, MA, USA) and Luminex (Luminex, Austin, TX, USA), according to the manufacturers’ recommendations.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 9400,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 600930,
+        "number": "8",
+        "cases": [],
+        "critical": null
+      }
+    ],
+    "status_code": 0
+  },
+  "top_hit_materials": {
+    "materials": [],
+    "status_code": 0
+  }
+}

@@ -10,6 +10,13 @@ export type Money = {
 // ISO 8601 duration string, e.g. "PT2H30M" (2.5 hours), "P3D" (3 days), "P2W" (2 weeks)
 export type Duration = string;
 
+// Numeric value + unit pair. Used in Stage 2 step parameters for volume,
+// temperature, concentration, speed. Duration stays as ISO 8601 string.
+export type Quantity = {
+  value: number;
+  unit: string; // 'mL' | 'uL' | 'C' | 'rpm' | 'g' | 'M' | 'mM' | 'ng/uL' | ...
+};
+
 export type Citation = {
   source: string; // 'protocols.io' | 'tavily' | 'paper' | 'vendor' | 'llm_estimate' | 'supplier_lookup' | ...
   confidence: 'high' | 'medium' | 'low';

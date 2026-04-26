@@ -51,6 +51,17 @@
       "description": "ISO 8601 duration string, e.g. 'PT2H30M', 'P3D', 'P2W'"
     },
 
+    "Quantity": {
+      "type": "object",
+      "required": ["value", "unit"],
+      "additionalProperties": false,
+      "description": "Numeric value + unit. Stage 2 step parameters: volume, temperature, concentration, speed.",
+      "properties": {
+        "value": { "type": "number" },
+        "unit": { "type": "string", "description": "'mL' | 'uL' | 'C' | 'rpm' | 'g' | 'M' | 'mM' | 'ng/uL' | ..." }
+      }
+    },
+
     "DOI": {
       "type": "string",
       "description": "Digital Object Identifier, e.g. '10.17504/protocols.io.baaciaaw'"
@@ -213,9 +224,27 @@
       }
     },
 
+    "StepParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Structured parameters extracted from a step. All optional — not every step has every parameter.",
+      "properties": {
+        "volume": { "$ref": "#/definitions/Quantity" },
+        "temperature": { "$ref": "#/definitions/Quantity" },
+        "duration": { "$ref": "#/definitions/Duration" },
+        "concentration": { "$ref": "#/definitions/Quantity" },
+        "speed": { "$ref": "#/definitions/Quantity", "description": "rpm or g" },
+        "other": {
+          "type": "object",
+          "description": "Escape hatch for params we haven't promoted to first-class fields (pH, voltage, gas mix, ...).",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+
     "ProtocolStep": {
       "type": "object",
-      "required": ["n", "title", "body_md", "duration", "equipment_needed", "reagents_referenced"],
+      "required": ["n", "title", "body_md", "equipment_needed", "reagents_referenced", "params", "controls", "todo_for_researcher", "source_step_refs"],
       "additionalProperties": false,
       "properties": {
         "n": { "type": "integer", "minimum": 1 },
@@ -224,17 +253,66 @@
         "duration": { "$ref": "#/definitions/Duration" },
         "equipment_needed": { "type": "array", "items": { "type": "string" } },
         "reagents_referenced": { "type": "array", "items": { "type": "string" } },
+        "params": { "$ref": "#/definitions/StepParams" },
+        "controls": { "type": "array", "items": { "type": "string" } },
+        "todo_for_researcher": { "type": "array", "items": { "type": "string" }, "description": "Items the LLM flagged as needing a researcher decision before running." },
+        "source_step_refs": { "type": "array", "items": { "type": "string" }, "description": "protocols.io step ids that informed this step (auditability)." },
         "notes": { "type": "string" },
         "cited_doi": { "$ref": "#/definitions/DOI" }
       }
     },
 
+    "Deviation": {
+      "type": "object",
+      "required": ["from_source", "to_adapted", "reason", "source_protocol_id", "confidence"],
+      "additionalProperties": false,
+      "description": "An adaptation the LLM made from a source protocol. Required so researchers can audit every change rather than trusting blindly.",
+      "properties": {
+        "from_source": { "type": "string" },
+        "to_adapted": { "type": "string" },
+        "reason": { "type": "string" },
+        "source_protocol_id": { "type": "string" },
+        "confidence": { "type": "string", "enum": ["low", "medium", "high"] }
+      }
+    },
+
+    "ProcedureSuccessCriterion": {
+      "type": "object",
+      "required": ["what", "how_measured", "pass_fail"],
+      "additionalProperties": false,
+      "description": "Per-procedure marker. Stage 6 (Validation) owns the experiment-wide SuccessCriterion (richer: statistical_test, expected_value).",
+      "properties": {
+        "what": { "type": "string" },
+        "how_measured": { "type": "string" },
+        "threshold": { "type": "string" },
+        "pass_fail": { "type": "boolean" }
+      }
+    },
+
+    "Procedure": {
+      "type": "object",
+      "required": ["name", "intent", "steps", "equipment", "reagents", "deviations_from_source", "source_protocol_ids", "success_criteria"],
+      "additionalProperties": false,
+      "description": "A logical group of steps. Each procedure is the unit a single procedure-writer agent owns — context isolation by construction.",
+      "properties": {
+        "name": { "type": "string" },
+        "intent": { "type": "string" },
+        "steps": { "type": "array", "items": { "$ref": "#/definitions/ProtocolStep" } },
+        "equipment": { "type": "array", "items": { "type": "string" } },
+        "reagents": { "type": "array", "items": { "type": "string" } },
+        "deviations_from_source": { "type": "array", "items": { "$ref": "#/definitions/Deviation" } },
+        "source_protocol_ids": { "type": "array", "items": { "type": "string" } },
+        "success_criteria": { "type": "array", "items": { "$ref": "#/definitions/ProcedureSuccessCriterion" } }
+      }
+    },
+
     "CitedProtocol": {
       "type": "object",
-      "required": ["doi", "title", "contribution_weight"],
+      "required": ["title", "contribution_weight"],
       "additionalProperties": false,
       "properties": {
         "doi": { "$ref": "#/definitions/DOI" },
+        "protocols_io_id": { "type": "string" },
         "title": { "type": "string" },
         "contribution_weight": { "type": "number", "minimum": 0, "maximum": 1 }
       }
@@ -255,53 +333,46 @@
 
     "ProtocolGenerationOutput": {
       "type": "object",
-      "required": ["experiment_type", "domain", "steps", "cited_protocols", "regulatory_requirements", "assumptions", "total_steps"],
+      "required": ["experiment_type", "procedures", "steps", "cited_protocols", "regulatory_requirements", "assumptions", "total_steps", "source_protocol_ids", "generated_at"],
       "additionalProperties": false,
       "properties": {
         "experiment_type": { "type": "string" },
         "domain": { "type": "string" },
-        "steps": { "type": "array", "items": { "$ref": "#/definitions/ProtocolStep" } },
+        "procedures": { "type": "array", "items": { "$ref": "#/definitions/Procedure" } },
+        "steps": { "type": "array", "items": { "$ref": "#/definitions/ProtocolStep" }, "description": "Flat re-numbered view derived from procedures, for FE checklist rendering." },
         "cited_protocols": { "type": "array", "items": { "$ref": "#/definitions/CitedProtocol" } },
         "regulatory_requirements": { "type": "array", "items": { "$ref": "#/definitions/RegulatoryRequirement" } },
         "assumptions": { "type": "array", "items": { "type": "string" } },
-        "total_steps": { "type": "integer", "minimum": 0 }
-      }
-    },
-
-    "MaterialAlternative": {
-      "type": "object",
-      "required": ["vendor", "sku"],
-      "additionalProperties": false,
-      "properties": {
-        "vendor": { "type": "string" },
-        "sku": { "type": "string" },
-        "notes": { "type": "string" }
+        "total_steps": { "type": "integer", "minimum": 0 },
+        "source_protocol_ids": { "type": "array", "items": { "type": "string" } },
+        "generated_at": { "$ref": "#/definitions/ISO8601" }
       }
     },
 
     "Material": {
       "type": "object",
-      "required": ["id", "name", "category", "vendor", "sku", "qty", "unit", "citation"],
+      "required": ["id", "name", "category"],
       "additionalProperties": false,
+      "description": "vendor/sku left empty until Stage 4 (Budget) backfills them. spec/purpose populated for equipment items only.",
       "properties": {
         "id": { "type": "string" },
         "name": { "type": "string" },
-        "category": { "type": "string", "description": "'reagent' | 'consumable' | 'equipment' | 'cell_line' | 'organism' | other" },
-        "vendor": { "type": "string" },
-        "sku": { "type": "string" },
+        "category": { "type": "string", "enum": ["reagent", "consumable", "equipment", "cell_line", "organism"] },
         "qty": { "type": "number" },
         "unit": { "type": "string" },
-        "cited_doi": { "$ref": "#/definitions/DOI" },
-        "alternatives": { "type": "array", "items": { "$ref": "#/definitions/MaterialAlternative" } },
+        "spec": { "type": "string", "description": "Equipment only, e.g. 'benchtop centrifuge, >=3000g, refrigerated'." },
+        "purpose": { "type": "string", "description": "Equipment only, e.g. 'cell pelleting'." },
+        "vendor": { "type": "string", "description": "Backfilled by Stage 4." },
+        "sku": { "type": "string", "description": "Backfilled by Stage 4." },
         "storage": { "type": "string" },
         "hazard": { "type": "string" },
-        "citation": { "$ref": "#/definitions/Citation" }
+        "alternatives": { "type": "array", "items": { "type": "string" } }
       }
     },
 
     "MaterialsOutput": {
       "type": "object",
-      "required": ["materials", "total_unique_items", "by_category", "gaps"],
+      "required": ["materials", "total_unique_items", "by_category", "gaps", "generated_at"],
       "additionalProperties": false,
       "properties": {
         "materials": { "type": "array", "items": { "$ref": "#/definitions/Material" } },
@@ -310,7 +381,8 @@
           "type": "object",
           "additionalProperties": { "type": "integer", "minimum": 0 }
         },
-        "gaps": { "type": "array", "items": { "type": "string" } }
+        "gaps": { "type": "array", "items": { "type": "string" } },
+        "generated_at": { "$ref": "#/definitions/ISO8601" }
       }
     },
 

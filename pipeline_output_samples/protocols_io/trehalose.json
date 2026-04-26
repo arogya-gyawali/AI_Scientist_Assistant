@@ -1,0 +1,1545 @@
+{
+  "query": "trehalose",
+  "search": {
+    "items": [
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "Universidad UTE",
+            "image": {
+              "placeholder": "https://files.protocols.io/thumbnails/external/AOh14GjU0YiPGhq5TjjQTDbhSTkXCp3UFeUH9x9clLAxHQs96c-B1A62E3E5B2B11EFA2EF0A58A9FEAC02.jpeg/thumbnail-w100xh100.jpeg",
+              "source": "https://files.protocols.io/external/AOh14GjU0YiPGhq5TjjQTDbhSTkXCp3UFeUH9x9clLAxHQs96c-B1A62E3E5B2B11EFA2EF0A58A9FEAC02.jpeg"
+            },
+            "link": null,
+            "name": "Oscar Carrillo",
+            "username": "n4ple1z1s1v4ple1"
+          }
+        ],
+        "before_start": "{\"blocks\":[{\"key\":\"88gaf\",\"text\":\"Comenzar de placas NGM en estado de desnutrición (sin bacterias).\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "created_on": 1772730625,
+        "creator": {
+          "affiliation": "",
+          "image": {
+            "placeholder": "https://files.protocols.io/thumbnails/external/AOh14GjU0YiPGhq5TjjQTDbhSTkXCp3UFeUH9x9clLAxHQs96c-B1A62E3E5B2B11EFA2EF0A58A9FEAC02.jpeg/thumbnail-w100xh100.jpeg",
+            "source": "https://files.protocols.io/external/AOh14GjU0YiPGhq5TjjQTDbhSTkXCp3UFeUH9x9clLAxHQs96c-B1A62E3E5B2B11EFA2EF0A58A9FEAC02.jpeg"
+          },
+          "link": null,
+          "name": "Oscar Carrillo",
+          "username": "n4ple1z1s1v4ple1"
+        },
+        "description": "{\"blocks\":[{\"key\":\"3agad\",\"text\":\"Standard protocol for the cryopreservation of C. elegans.\\nBased on Cryopreservation of C. elegans and Other Nematodes with Dimethyl Sulfoxide and Trehalose - Kevin F. O’Conne\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.17504/protocols.io.n92ldex6ov5b/v1",
+        "funders": [],
+        "guid": "3376725A18B611F18B450A58A9FEAC02",
+        "guidelines": "",
+        "id": 260183,
+        "image": {
+          "placeholder": "https://files.protocols.io/external/CRISPRC.elegans-B06C43EE230111F181B80A58A9FEAC02.webp",
+          "source": "https://files.protocols.io/external/CRISPRC.elegans-B06C43EE230111F181B80A58A9FEAC02.webp"
+        },
+        "link": "",
+        "materials": [],
+        "materials_text": "{\"blocks\":[{\"key\":\"jetak\",\"text\":\"1. Buffer M9:\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"cs8dl\",\"text\":\"   a. 3 gramos de Fosfato monopotásico\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"l8df4\",\"text\":\"   b. 6 gramos de Fosfato disódico\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"1sicw\",\"text\":\"   c. 5 gramos de cloruro de sodio\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"j2gog\",\"text\":\"   d. 900 mililitros de agua destilada\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"bhspn\",\"text\":\"    i. Ajustar a 1 Litro y autoclavar\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ksjxf\",\"text\":\"   e. Una vez frío añadir 1ml estéril de 1M de Sulfato de magnesio y mezclar\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"gordk\",\"text\":\"2. Freezing buffer TDMSO\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ftiaj\",\"text\":\"   a. Trehalosa 0.08M\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"suivl\",\"text\":\"   b. DMSO 0.5M\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"mrksc\",\"text\":\"      i. Añadir 15.1 gramos de Trehalosa\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"m0b63\",\"text\":\"      ii. Añadir 17.7 ml de DMSO\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"kmn66\",\"text\":\"      iii. Aforar con 450 ml del Buffer M9\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"xshmq\",\"text\":\"         1. Ajustar a 500 ml\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"secaa\",\"text\":\"   c. Preservar por máximo 6 meses alicuotando en tubos Falcon de 50 ml con papel aluminio (FOTOSENSIBLE)\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"pdfnd\",\"text\":\"3. Tubos de Falcon de 15 ml\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"qdbhm\",\"text\":\"4. Pipetas Pasteur\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"awclt\",\"text\":\"5. Crioviales 1.5 ml\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "peer_reviewed": false,
+        "public": true,
+        "published_on": 1774015359,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 0,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 0,
+          "number_of_forks": {
+            "private": 0,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 0,
+          "number_of_steps": 13,
+          "number_of_steps_comments": 0,
+          "number_of_views": 39,
+          "number_of_votes": 0
+        },
+        "title": "Cryopreservation of C. elegans with DMSO and Trehalose",
+        "title_html": "<p>Cryopreservation of C. elegans with DMSO and Trehalose</p>",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "cryopreservation-of-c-elegans-with-dmso-and-trehal-iabxcaapp",
+        "url": "https://www.protocols.io/view/cryopreservation-of-c-elegans-with-dmso-and-trehal-iabxcaapp",
+        "version_id": 0,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.17504/protocols.io.n92ldex6ov5b/v1",
+            "guid": "",
+            "id": 260183,
+            "image": {
+              "placeholder": "https://files.protocols.io/external/CRISPRC.elegans-B06C43EE230111F181B80A58A9FEAC02.webp",
+              "source": "https://files.protocols.io/external/CRISPRC.elegans-B06C43EE230111F181B80A58A9FEAC02.webp"
+            },
+            "published_on": 1774015359,
+            "title": "Cryopreservation of C. elegans with DMSO and Trehalose",
+            "title_html": "<p>Cryopreservation of C. elegans with DMSO and Trehalose</p>",
+            "uri": "cryopreservation-of-c-elegans-with-dmso-and-trehal-iabxcaapp",
+            "version_id": 0
+          }
+        ],
+        "warning": "{\"blocks\":[{\"key\":\"mievw\",\"text\":\"Desde la re-suspensión en TDMSO no debe pasar más allá de 15 minutos para mayor viabilidad.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}"
+      },
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "Stony Brook University",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Jackie Collier",
+            "username": "jackie-collier"
+          }
+        ],
+        "before_start": "{\"blocks\":[{\"key\":\"brchb\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "created_on": 1523727247,
+        "creator": {
+          "affiliation": "Stony Brook University",
+          "image": {
+            "placeholder": "https://www.protocols.io/img/avatars/001.png",
+            "source": "https://www.protocols.io/img/avatars/001.png"
+          },
+          "link": null,
+          "name": "Jackie Collier",
+          "username": "jackie-collier"
+        },
+        "description": "{\"blocks\":[{\"key\":\"6sqk9\",\"text\":\"This method adapted from instructions provided by Daiske Honda, Konan University. \",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.17504/protocols.io.pgtdjwn",
+        "funders": [],
+        "guid": "8A48ED7AB9DA11E99CA40242AC110005",
+        "guidelines": "{\"blocks\":[{\"key\":\"e9aac\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}",
+        "id": 11507,
+        "image": {
+          "placeholder": "https://files.protocols.io/external/v2ddqew-3F845D71687311F08F960A58A9FEAC02.jpg",
+          "source": "https://files.protocols.io/external/v2ddqew-3F845D71687311F08F960A58A9FEAC02.jpg"
+        },
+        "link": "",
+        "materials": [],
+        "materials_text": null,
+        "peer_reviewed": false,
+        "public": true,
+        "published_on": 1526481202,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 2,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 45,
+          "number_of_forks": {
+            "private": 0,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 0,
+          "number_of_steps": 6,
+          "number_of_steps_comments": 0,
+          "number_of_views": 224,
+          "number_of_votes": 0
+        },
+        "title": "Cryopreservation of labyrinthulomycetes in trehalose",
+        "title_html": "Cryopreservation of labyrinthulomycetes in trehalose",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "cryopreservation-of-labyrinthulomycetes-in-trehalo-pgtdjwn",
+        "url": "https://www.protocols.io/view/cryopreservation-of-labyrinthulomycetes-in-trehalo-pgtdjwn",
+        "version_id": 0,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.17504/protocols.io.pgtdjwn",
+            "guid": "",
+            "id": 11507,
+            "image": {
+              "placeholder": "https://files.protocols.io/external/v2ddqew-3F845D71687311F08F960A58A9FEAC02.jpg",
+              "source": "https://files.protocols.io/external/v2ddqew-3F845D71687311F08F960A58A9FEAC02.jpg"
+            },
+            "published_on": 1526481202,
+            "title": "Cryopreservation of labyrinthulomycetes in trehalose",
+            "title_html": "Cryopreservation of labyrinthulomycetes in trehalose",
+            "uri": "cryopreservation-of-labyrinthulomycetes-in-trehalo-pgtdjwn",
+            "version_id": 0
+          }
+        ],
+        "warning": "{\"blocks\":[{\"key\":\"7fu79\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":[]}],\"entityMap\":{}}"
+      },
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "Plant and Food Research",
+            "image": {
+              "placeholder": "https://files.protocols.io/thumbnails/external/x7heupe-9AF4BF235B2A11EFA2EF0A58A9FEAC02.png/thumbnail-w100xh100.png",
+              "source": "https://files.protocols.io/external/x7heupe-9AF4BF235B2A11EFA2EF0A58A9FEAC02.png"
+            },
+            "link": "",
+            "name": "Elena Hilario",
+            "username": "elena-hilario"
+          }
+        ],
+        "before_start": "{\"blocks\":[{\"key\":\"chcur\",\"text\":\"Clean pipettes, tube racks, bench surfaces, tip boxes, etc., with 70% ethanol\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"92jr8\",\"text\":\"Use sterile tips, with or without aerosol barriers\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "created_on": 1626403631,
+        "creator": {
+          "affiliation": "Plant and Food Research",
+          "image": {
+            "placeholder": "https://files.protocols.io/thumbnails/external/x7heupe-9AF4BF235B2A11EFA2EF0A58A9FEAC02.png/thumbnail-w100xh100.png",
+            "source": "https://files.protocols.io/external/x7heupe-9AF4BF235B2A11EFA2EF0A58A9FEAC02.png"
+          },
+          "link": "",
+          "name": "Elena Hilario",
+          "username": "elena-hilario"
+        },
+        "description": "{\"blocks\":[{\"key\":\"9eub3\",\"text\":\"Isothermal amplification of a few nanograms of DNA with phi29 DNA polymerase in the presence of trehalose allows for a more stringent amplification temperature that prevents unspecific primer amplification in the water control reaction.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"9pgh5\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"b2885\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"aslnr\",\"text\":\"Spiess, A. N., Mueller, N. \\u0026 Ivell, R. Trehalose is a potent PCR enhancer: lowering of DNA melting temperature and thermal stabilization of taq polymerase by the disaccharide trehalose. Clin Chem 50, 1256-1259\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.17504/protocols.io.bwmzpc76",
+        "funders": [
+          {
+            "funder_name": "",
+            "grant_id": ""
+          }
+        ],
+        "guid": "771896E0E5DF11EB9993CDE2C86D7EF8",
+        "guidelines": "",
+        "id": 51609,
+        "image": {
+          "placeholder": "https://files.protocols.io/external/dz2jeupe-0B336038687411F08F960A58A9FEAC02.jpg",
+          "source": "https://files.protocols.io/external/dz2jeupe-0B336038687411F08F960A58A9FEAC02.jpg"
+        },
+        "link": "",
+        "materials": [],
+        "materials_text": "{\"blocks\":[{\"key\":\"13arq\",\"text\":\" \",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"key\":0,\"offset\":0,\"length\":1}],\"data\":{}},{\"key\":\"3bla\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"51b5\",\"text\":\" : Make a 1.2 M stock in deionized sterile water, final volume 50 mL. Make a few aliquots in 1.5 mL tubes, and store at -20ºC\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"key\":1,\"offset\":0,\"length\":1}],\"data\":{}},{\"key\":\"9iuo3\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"6a11d\",\"text\":\"8 mM dNTP mix (I use Thermofisher   and mix them at equal molar ratios in  sterile deionized water and store aliquots at -20ºC)\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"key\":2,\"offset\":34,\"length\":1}],\"data\":{}},{\"key\":\"5928q\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"1fjvk\",\"text\":\"  dissolved in TE buffer (sterile 10 mM Tris-HCl pH 7.5, 1 mM EDTA) or a custom made random hexamer with two PT-modified links at the 3'-end 5 ' -NNNN*N*N- 3 '\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"key\":3,\"offset\":0,\"length\":1}],\"data\":{}},{\"key\":\"2gr1n\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ftd7b\",\"text\":\"10 mM Tris-HCl pH, 1 mM MgCl2, pH 8.0, sterile\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sub\",\"offset\":28,\"length\":1}],\"entityRanges\":[],\"data\":{}},{\"key\":\"ac3v3\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"2bohf\",\"text\":\"Deionized water, sterile\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"8dv2o\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"85r8t\",\"text\":\"0.2 mL PCR tubes\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"38ih7\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"d9fat\",\"text\":\"1.5 mL microcentrifuge tubes\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"98qeb\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"9ecn3\",\"text\":\"PCR machine\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"elvhq\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"akabo\",\"text\":\"1% agarose gel in 1XTAE buffer, and gel box with power pack to run it\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"fp9ig\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"1b8t9\",\"text\":\"  diluted 1:10 in TE buffer and 1X loading buffer\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"key\":4,\"offset\":0,\"length\":1}],\"data\":{}},{\"key\":\"44hiv\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"asagv\",\"text\":\"1X TAE buffer: 40 mM Tris, 20 mM acetic acid, and 1 mM EDTA pH 8.3\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"7lf2r\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"7cdcv\",\"text\":\"   diluted 3 μL in 50 mL 1X TAE buffer, in a plastic box protected from the light\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"key\":5,\"offset\":0,\"length\":1}],\"data\":{}},{\"key\":\"c2b9r\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"7r603\",\"text\":\"Extra plastic box with a lid\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"d18sl\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"3bdpv\",\"text\":\"Gel documentation system\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"2gghv\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"4hb91\",\"text\":\"  with appropriate 0.5 mL tubes and fluorometer\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"key\":6,\"offset\":0,\"length\":1}],\"data\":{}},{\"key\":\"en3gh\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{\"0\":{\"type\":\"reagents\",\"mutability\":\"\",\"data\":{\"id\":661,\"guid\":\"4101B89A341F11EE9D4302C0B41BC903\",\"name\":\"phi29 DNA Polymerase - 250 units\",\"mol_weight\":0,\"sku\":\"M0269S\",\"url\":\"https://www.neb.com/M0269\",\"cas_number\":\"\",\"rrid\":\"\",\"vendor\":{\"id\":2,\"name\":\"New England Biolabs\",\"link\":\"https://www.neb.com/\",\"is_requested\":false,\"image\":{\"source\":\"/img/vendors/2.png\",\"placeholder\":\"/img/vendors/2.png\"}},\"is_public\":true,\"can_edit\":false}},\"1\":{\"type\":\"reagents\",\"mutability\":\"\",\"data\":{\"id\":581651,\"guid\":\"42620730341F11EE9D4302C0B41BC903\",\"name\":\"D-( )-Trehalose dihydrate\",\"mol_weight\":0,\"sku\":\"T5251\",\"url\":\"\",\"cas_number\":\"\",\"rrid\":\"\",\"vendor\":{\"id\":17,\"name\":\"Merck MilliporeSigma (Sigma-Aldrich)\",\"link\":\"http://sigmaaldrich.com\",\"is_requested\":false,\"image\":{\"source\":\"/img/vendors/placeholder.png\",\"placeholder\":\"/img/vendors/placeholder.png\"}},\"is_public\":true,\"can_edit\":false}},\"2\":{\"type\":\"reagents\",\"mutability\":\"\",\"data\":{\"id\":182588,\"guid\":\"41AA2E55341F11EE9D4302C0B41BC903\",\"name\":\"dNTP Set 100 mM Solutions\",\"mol_weight\":0,\"sku\":\"R0182\",\"url\":\"https://www.thermofisher.com/order/catalog/product/R0182\",\"cas_number\":\"\",\"rrid\":\"\",\"vendor\":{\"id\":95,\"name\":\"Thermo Fisher Scientific\",\"link\":\"https://www.thermofisher.com/us/en/home.html\",\"is_requested\":false,\"image\":{\"source\":\"/img/vendors/placeholder.png\",\"placeholder\":\"/img/vendors/placeholder.png\"}},\"is_public\":true,\"can_edit\":false}},\"3\":{\"type\":\"reagents\",\"mutability\":\"\",\"data\":{\"id\":268047,\"guid\":\"4241C48D341F11EE9D4302C0B41BC903\",\"name\":\"Exo-Resistant Random Primer\",\"mol_weight\":0,\"sku\":\"SO181\",\"url\":\"https://www.thermofisher.com/order/catalog/product/SO181\",\"cas_number\":\"\",\"rrid\":\"\",\"vendor\":{\"id\":440,\"name\":\"Thermo Fisher\",\"link\":\"https://www.thermofisher.com\",\"is_requested\":false,\"image\":{\"source\":\"/img/vendors/440.png\",\"placeholder\":\"/img/vendors/440.png\"}},\"is_public\":true,\"can_edit\":false}},\"4\":{\"type\":\"reagents\",\"mutability\":\"\",\"data\":{\"id\":128124,\"guid\":\"41A2C0B2341F11EE9D4302C0B41BC903\",\"name\":\"1 Kb Plus DNA Ladder\",\"mol_weight\":0,\"sku\":\"10787018\",\"url\":\"https://www.thermofisher.com/order/catalog/product/10787018?SID=srch-srp-10787018\",\"cas_number\":\"\",\"rrid\":\"\",\"vendor\":{\"id\":191,\"name\":\"Invitrogen - Thermo Fisher\",\"link\":\"http://www.thermofisher.com/us/en/home/brands/invitrogen.html\",\"is_requested\":false,\"image\":{\"source\":\"/img/vendors/placeholder.png\",\"placeholder\":\"/img/vendors/placeholder.png\"}},\"is_public\":true,\"can_edit\":false}},\"5\":{\"type\":\"reagents\",\"mutability\":\"\",\"data\":{\"id\":181207,\"guid\":\"41A825F7341F11EE9D4302C0B41BC903\",\"name\":\"SYBR SAFE DNA stain\",\"mol_weight\":0,\"sku\":\"S33102\",\"url\":\"https://www.thermofisher.com/order/catalog/product/S33102?SID=srch-srp-S33102\",\"cas_number\":\"\",\"rrid\":\"\",\"vendor\":{\"id\":191,\"name\":\"Invitrogen - Thermo Fisher\",\"link\":\"http://www.thermofisher.com/us/en/home/brands/invitrogen.html\",\"is_requested\":false,\"image\":{\"source\":\"/img/vendors/placeholder.png\",\"placeholder\":\"/img/vendors/placeholder.png\"}},\"is_public\":true,\"can_edit\":false}},\"6\":{\"type\":\"reagents\",\"mutability\":\"\",\"data\":{\"id\":3970,\"guid\":\"41066F3F341F11EE9D4302C0B41BC903\",\"name\":\"Qubit® dsDNA HS Assay Kit\",\"mol_weight\":0,\"sku\":\"Q32854\",\"url\":\"https://www.thermofisher.com/order/catalog/product/Q32854\",\"cas_number\":\"\",\"rrid\":\"\",\"vendor\":{\"id\":95,\"name\":\"Thermo Fisher Scientific\",\"link\":\"https://www.thermofisher.com/us/en/home.html\",\"is_requested\":false,\"image\":{\"source\":\"/img/vendors/placeholder.png\",\"placeholder\":\"/img/vendors/placeholder.png\"}},\"is_public\":true,\"can_edit\":false}}}}",
+        "peer_reviewed": false,
+        "public": true,
+        "published_on": 1626674092,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 9,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 25,
+          "number_of_forks": {
+            "private": 3,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 7,
+          "number_of_runs": 0,
+          "number_of_steps": 10,
+          "number_of_steps_comments": 0,
+          "number_of_views": 2026,
+          "number_of_votes": 0
+        },
+        "title": "phi29 DNA polymerase protocol",
+        "title_html": "<p>phi29 DNA polymerase protocol</p>",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "phi29-dna-polymerase-protocol-bwmzpc76",
+        "url": "https://www.protocols.io/view/phi29-dna-polymerase-protocol-bwmzpc76",
+        "version_id": 0,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.17504/protocols.io.bwmzpc76",
+            "guid": "",
+            "id": 51609,
+            "image": {
+              "placeholder": "https://files.protocols.io/external/dz2jeupe-0B336038687411F08F960A58A9FEAC02.jpg",
+              "source": "https://files.protocols.io/external/dz2jeupe-0B336038687411F08F960A58A9FEAC02.jpg"
+            },
+            "published_on": 1626674092,
+            "title": "phi29 DNA polymerase protocol",
+            "title_html": "<p>phi29 DNA polymerase protocol</p>",
+            "uri": "phi29-dna-polymerase-protocol-bwmzpc76",
+            "version_id": 0
+          }
+        ],
+        "warning": ""
+      }
+    ],
+    "pagination": {
+      "changed_on": null,
+      "current_page": 1,
+      "first": 0,
+      "last": 2,
+      "next_page": null,
+      "page_size": 5,
+      "prev_page": null,
+      "total_pages": 1,
+      "total_results": 3
+    },
+    "status_code": 0
+  },
+  "top_hit_id": 260183,
+  "top_hit_steps": {
+    "payload": [
+      {
+        "id": 9887402,
+        "guid": "3376404918B611F18B450A58A9FEAC02",
+        "previous_id": 0,
+        "previous_guid": null,
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"f64de\",\"text\":\"1er lavado con 10 ml de tampón M9 estéril a temperatura ambiente y transferir a tubo Falcon de 15 ml.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 180,
+        "original_id": 0,
+        "number": "1",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887403,
+        "guid": "337642B418B611F18B450A58A9FEAC02",
+        "previous_id": 9887402,
+        "previous_guid": "3376404918B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"pxl1k\",\"text\":\"2do lavado con 5 ml de tampón M9 estéril a temperatura ambiente y transferir a tubo Falcon de 15 ml.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 180,
+        "original_id": 0,
+        "number": "2",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887404,
+        "guid": "337644B718B611F18B450A58A9FEAC02",
+        "previous_id": 9887403,
+        "previous_guid": "337642B418B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"9ng5n\",\"text\":\"Centrifugar a 2000 G por 5 minutos a temperatura ambiente.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 300,
+        "original_id": 0,
+        "number": "3",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887405,
+        "guid": "3376472118B611F18B450A58A9FEAC02",
+        "previous_id": 9887404,
+        "previous_guid": "337644B718B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"tybu7\",\"text\":\"Retirar sobrenadante.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 180,
+        "original_id": 0,
+        "number": "4",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887406,
+        "guid": "3376487318B611F18B450A58A9FEAC02",
+        "previous_id": 9887405,
+        "previous_guid": "3376472118B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"3bcho\",\"text\":\"3er lavado con 4 ml de Buffer TDMSO.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 180,
+        "original_id": 0,
+        "number": "5",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887407,
+        "guid": "33764A2E18B611F18B450A58A9FEAC02",
+        "previous_id": 9887406,
+        "previous_guid": "3376487318B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"yqdzz\",\"text\":\"Repetir paso 4 y 5.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 900,
+        "original_id": 0,
+        "number": "6",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887408,
+        "guid": "33764B8118B611F18B450A58A9FEAC02",
+        "previous_id": 9887407,
+        "previous_guid": "33764A2E18B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"r24ag\",\"text\":\"Resuspender en 4ml de TDMSO.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 180,
+        "original_id": 0,
+        "number": "7",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887409,
+        "guid": "33764CE818B611F18B450A58A9FEAC02",
+        "previous_id": 9887408,
+        "previous_guid": "33764B8118B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"kfwdy\",\"text\":\"Alicuotar 1 ml en 4 frascos (crioviales).\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 180,
+        "original_id": 0,
+        "number": "8",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887410,
+        "guid": "33764E7218B611F18B450A58A9FEAC02",
+        "previous_id": 9887409,
+        "previous_guid": "33764CE818B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"qiirm\",\"text\":\"Desde la re-suspensión en TDMSO no debe pasar más allá de 15 minutos para mayor viabilidad.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":26,\"length\":5}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 900,
+        "original_id": 0,
+        "number": "9",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887411,
+        "guid": "337651C018B611F18B450A58A9FEAC02",
+        "previous_id": 9887410,
+        "previous_guid": "33764E7218B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"0qzvn\",\"text\":\"Colocar los crioviales en una caja de poliestireno y colocar a -1 ºC por 10 a 15 minutos.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 900,
+        "original_id": 0,
+        "number": "10",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887412,
+        "guid": "337653AE18B611F18B450A58A9FEAC02",
+        "previous_id": 9887411,
+        "previous_guid": "337651C018B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"wukmj\",\"text\":\"Pasar los tubos a -80 ºC.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 180,
+        "original_id": 0,
+        "number": "11",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887413,
+        "guid": "3376550B18B611F18B450A58A9FEAC02",
+        "previous_id": 9887412,
+        "previous_guid": "337653AE18B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"wk3xy\",\"text\":\"Probar la viabilidad en 1 semana y tras comprobarla se recomienda dejar 2 tubos en congelador a -80 ºC y otro en nitrógeno líquido.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 604800,
+        "original_id": 0,
+        "number": "12",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 9887414,
+        "guid": "3376573618B611F18B450A58A9FEAC02",
+        "previous_id": 9887413,
+        "previous_guid": "3376550B18B611F18B450A58A9FEAC02",
+        "section": "<p>Métodos</p>",
+        "section_color": "#50154a",
+        "section_duration": 609060,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"xe7gx\",\"text\":\"Para descongelarlos se recomienda descongelar todo el tubo y verterlo en una placa NGM o congelarlos de costado o boca abajo para poder raspar y revivirlos parcialmente.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 260183,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "13",
+        "cases": [],
+        "critical": null
+      }
+    ],
+    "status_code": 0
+  },
+  "top_hit_materials": {
+    "materials": [],
+    "status_code": 0
+  }
+}

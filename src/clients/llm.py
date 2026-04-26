@@ -11,6 +11,7 @@ loop on transient errors (rate limits, connection drops, server errors).
 
 from __future__ import annotations
 
+import json
 import os
 import time
 from functools import lru_cache
@@ -62,6 +63,39 @@ def complete(system: str, user: str, *, json_mode: bool = False) -> str:
     if _provider() == "openrouter":
         return _openrouter_complete(system, user, json_mode=json_mode)
     return _anthropic_complete(system, user, json_mode=json_mode)
+
+
+def complete_json(system: str, user: str, *, agent_name: str = "agent") -> dict:
+    """Single-turn completion in JSON mode, with one retry on parse failure.
+
+    Wraps `complete(json_mode=True)` with the boilerplate every Stage 2
+    agent was duplicating: strip whitespace, peel off ```json fences when
+    a model adds them anyway, parse, and on JSONDecodeError retry once.
+    On a second failure, raises RuntimeError naming the agent that broke
+    so the surfaced error tells the operator where to look.
+
+    `agent_name` shows up in the error message ("Architect: LLM returned
+    malformed JSON twice...") — pass the calling agent's name so the
+    failure mode is greppable in logs.
+    """
+    def _call() -> dict:
+        raw = complete(system, user, json_mode=True).strip()
+        # Some models wrap JSON in ```json fences despite json_mode being
+        # set; peel those off rather than letting json.loads fail on them.
+        if raw.startswith("```"):
+            raw = raw.strip("`").lstrip("json").strip()
+        return json.loads(raw)
+
+    try:
+        return _call()
+    except json.JSONDecodeError as first_exc:
+        try:
+            return _call()
+        except json.JSONDecodeError as retry_exc:
+            raise RuntimeError(
+                f"{agent_name}: LLM returned malformed JSON twice "
+                f"(first: {first_exc}; retry: {retry_exc})."
+            ) from retry_exc
 
 
 # ---------------------------------------------------------------------------

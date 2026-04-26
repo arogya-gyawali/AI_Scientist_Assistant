@@ -1,0 +1,2030 @@
+{
+  "query": "C-reactive protein",
+  "search": {
+    "items": [
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "University College London",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Mark Pepys",
+            "username": ""
+          },
+          {
+            "affiliation": "Cambridge University",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Anthony Coll",
+            "username": ""
+          },
+          {
+            "affiliation": "University College London",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Winston Hutchinson",
+            "username": ""
+          }
+        ],
+        "before_start": null,
+        "created_on": 1169617857,
+        "creator": {
+          "affiliation": "Dev",
+          "image": {
+            "placeholder": "https://files.protocols.io/thumbnails/external/Protocolimporter1-D47B48BD0A6811F08FE60A58A9FEAC02.jpg/thumbnail-w100xh100.jpg",
+            "source": "https://files.protocols.io/external/Protocolimporter1-D47B48BD0A6811F08FE60A58A9FEAC02.jpg"
+          },
+          "link": null,
+          "name": "Protocols Importer",
+          "username": "protocols-importer"
+        },
+        "description": "{\"blocks\":[{\"key\":\"fxgb1\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.1038/nprot.2007.63",
+        "funders": [],
+        "guid": "AD94D8A4EE9611EFA1610A58A9FEAC02",
+        "guidelines": "{\"blocks\":[{\"key\":\"zxsgj\",\"text\":\"Pentraxins.  SAP and C reactive protein(CRP) are closely related plasma proteins that comprise the highly conserved pentraxin family of homopentameric molecules, belonging to the ‘lectin fold’ superfamily1,2, with specific calcium dependent ligand binding properties.  Human CRP is the classical non-specific acute phase protein while human SAP is a stable constitutive plasma protein which does not increase in concentration during the early acute phase response but may rise modestly during chronic inflammation3.  Despite much information about their properties and behaviour in humans and other species, neither the normal physiological functions nor the actual roles of either of these proteins in pathophysiology of disease are known for certain.  No deficiency of either protein in humans, or even any structural polymorphism, has yet been reported, and even the glycan moiety of human SAP is remarkably invariant4.  No mouse CRP knockout has been reported but the mouse SAP knockout is fertile, healthy and lives a normal span, although it has altered innate immunity and impaired capacity to develop amyloidosis5,6.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":11},{\"style\":\"sup\",\"offset\":204,\"length\":3},{\"style\":\"sup\",\"offset\":513,\"length\":1},{\"style\":\"sup\",\"offset\":920,\"length\":1},{\"style\":\"sup\",\"offset\":1120,\"length\":3}],\"entityRanges\":[],\"data\":{}},{\"key\":\"em0rh\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ekaqy\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"5m86x\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"gllfi\",\"text\":\"Human CRP is a rapidly responsive non-specific acute phase protein with a fast plasma half life of 19 h and a dynamic range between less than 0.05 mg/l and more than 500 mg/l.  Despite stable phylogenetic conservation of protein sequence, there are marked differences between CRPs in different species in normal concentration, behaviour as acute phase proteins, fine ligand binding specificity, and secondary effects of ligand binding including precipitation, agglutination and complement activation7,8.  In order to be plausible, any in vivo role proposed for CRP, whether specifically human or phylogenetically conserved, should be consistent with these facts.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":499,\"length\":3}],\"entityRanges\":[],\"data\":{}},{\"key\":\"rixqd\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"pg9op\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"02jt1\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"fbldx\",\"text\":\"Pentraxin binding to agarose.  The characteristic functional property of all pentraxins is their calcium dependent binding to specific anion containing ligands.  Human CRP binds with greatest affinity to phosphocholine9 while human SAP binds to phosphoethanolamine10 and to the cyclic pyruvate acetal of galactose, a trace constituent of agarose, a galactan polysaccharide derived from seaweed11,12.  However, as has been known for decades, human CRP also binds weakly to agarose13, whereas rat CRP binds more avidly14.  CRP binding may reflect recognition of trace sulphate as well as pyruvate constituents of agarose, the abundance of both of which varies significantly between different batches of this biological product, and thus between different lots from the same manufacturer as well as between different manufacturers.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":29},{\"style\":\"sup\",\"offset\":218,\"length\":1},{\"style\":\"sup\",\"offset\":264,\"length\":2},{\"style\":\"sup\",\"offset\":393,\"length\":5},{\"style\":\"sup\",\"offset\":479,\"length\":2},{\"style\":\"sup\",\"offset\":516,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"shg22\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"2p8by\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"i9mvk\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ee6ly\",\"text\":\"Beaded agarose is widely used as a solid phase matrix for coupling of ligands and for affinity chromatography.  When binding by pentraxins to ligands immobilised on agarose is observed, it is absolutely essential to demonstrate that the interaction is with the ligand and not the matrix.  All such studies must therefore include the identical activated agarose beads, either coupled with a genuinely non reactive ligand, or simply blocked with the same blocking compound, most commonly Tris or ethanolamine, as used for the ligand coupled beads.  Specific binding to the coupled ligand is then indicated by a significant difference between binding under identical circumstances to the test and control beads.  Since we first reported the binding of pentraxins to agarose 30 years ago11,13, omission of this obvious and essential control procedure has led to several false conclusions about binding reactivity of different pentraxins, the most egregious being the claim that SAP was a fourth subcomponent, C1t, of the C1 component of the complement system15,16.  The claim that CRP binds to leptin is likely to reflect this same systematic error, since binding between these two proteins could not be reproduced, regardless of which one was immobilised and which one was in the fluid phase.  Human CRP also did not have any effect on the suppression of appetite and loss of weight induced by human leptin in mice.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":783,\"length\":5},{\"style\":\"sup\",\"offset\":1054,\"length\":5}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "id": 120939,
+        "image": {
+          "placeholder": "https://www.protocols.io/img/default_protocol.png",
+          "source": "https://www.protocols.io/img/default_protocol.png"
+        },
+        "link": "",
+        "materials": [],
+        "materials_text": null,
+        "peer_reviewed": false,
+        "public": true,
+        "published_on": 1169617857,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 0,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 0,
+          "number_of_forks": {
+            "private": 0,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 0,
+          "number_of_steps": 31,
+          "number_of_steps_comments": 0,
+          "number_of_views": 17,
+          "number_of_votes": 0
+        },
+        "title": "Calcium dependent by pentraxins to ligands immobilized on agarose, and effect of C-reactive protein on leptin action in mice in vivo",
+        "title_html": "Calcium dependent by pentraxins to ligands immobilized on agarose, and effect of C-reactive protein on leptin action in mice <em>in vivo</em>",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "calcium-dependent-by-pentraxins-to-ligands-immobil-d2cj8aun",
+        "url": "https://www.protocols.io/view/calcium-dependent-by-pentraxins-to-ligands-immobil-d2cj8aun",
+        "version_id": 0,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.1038/nprot.2007.63",
+            "guid": "",
+            "id": 120939,
+            "image": {
+              "placeholder": "https://www.protocols.io/img/default_protocol.png",
+              "source": "https://www.protocols.io/img/default_protocol.png"
+            },
+            "published_on": 1169617857,
+            "title": "Calcium dependent by pentraxins to ligands immobilized on agarose, and effect of C-reactive protein on leptin action in mice in vivo",
+            "title_html": "Calcium dependent by pentraxins to ligands immobilized on agarose, and effect of C-reactive protein on leptin action in mice <em>in vivo</em>",
+            "uri": "calcium-dependent-by-pentraxins-to-ligands-immobil-d2cj8aun",
+            "version_id": 0
+          }
+        ],
+        "warning": null
+      },
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "HSG-IMIT - Institut für Mikro- und Informationstechnik; Laboratory for MEMS Applications, Department of Microsystems Engineering -IMTEK, University of Freiburg, Georges-Koehler-Allee 103, 79110 Freiburg, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Sandeep Kumar Vashist",
+            "username": ""
+          },
+          {
+            "affiliation": "HSG-IMIT - Institut für Mikro- und Informationstechnik, Georges-Koehler-Allee 103, 79110 Freiburg, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Gregor Czilwik",
+            "username": ""
+          },
+          {
+            "affiliation": "HSG-IMIT - Institut für Mikro- und Informationstechnik, Georges-Koehler-Allee 103, 79110 Freiburg, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Thomas van Oordt",
+            "username": ""
+          },
+          {
+            "affiliation": "HSG-IMIT - Institut für Mikro- und Informationstechnik; Laboratory for MEMS Applications, Department of Microsystems Engineering -IMTEK, University of Freiburg, Georges-Koehler-Allee 103, 79110 Freiburg, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Felix von Stetten",
+            "username": ""
+          },
+          {
+            "affiliation": "HSG-IMIT - Institut für Mikro- und Informationstechnik; Laboratory for MEMS Applications, Department of Microsystems Engineering -IMTEK, University of Freiburg, Georges-Koehler-Allee 103, 79110 Freiburg, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Roland Zengerle",
+            "username": ""
+          },
+          {
+            "affiliation": "Sektion Experimentelle Anaesthesiologie, University Hospital Ulm, Albert Einstein Allee 23, 89081 Ulm, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "E. Marion Schneider",
+            "username": ""
+          },
+          {
+            "affiliation": "Innovative Chromatography Group, Irish Separation Science Cluster (ISSC), Department of Chemistry and Analytical, Biological Chemistry Research Facility (ABCRF), University College Cork, Cork, Ireland",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "John H.T. Luong",
+            "username": ""
+          }
+        ],
+        "before_start": null,
+        "created_on": 1401201741,
+        "creator": {
+          "affiliation": "Dev",
+          "image": {
+            "placeholder": "https://files.protocols.io/thumbnails/external/Protocolimporter1-D47B48BD0A6811F08FE60A58A9FEAC02.jpg/thumbnail-w100xh100.jpg",
+            "source": "https://files.protocols.io/external/Protocolimporter1-D47B48BD0A6811F08FE60A58A9FEAC02.jpg"
+          },
+          "link": null,
+          "name": "Protocols Importer",
+          "username": "protocols-importer"
+        },
+        "description": "{\"blocks\":[{\"key\":\"iwrfe\",\"text\":\"A rapid one-step kinetics-based sandwich enzyme-linked immunosorbent (ELISA) procedure has been developed for highly-sensitive detection of C-reactive protein (CRP) in less than 30 min. With minimal process steps, the procedure is highly simplified and cost-effective. The analysis only involves sequentially the formation of a sandwich immune complex on capture anti-CRP antibody (Ab)-bound Dynabeads, followed by two magnet-assisted washings and an enzymatic reaction. The developed immunoassay (IA) detected CRP in the dynamic range of 0.3-81 ng mL-1 with a limit of detection and analytical sensitivity of 0.4 ng mL-1 and 0.7 ng mL-1. Its analytical precision for analysis of CRP spiked in diluted human serum, whole blood, and ethylenediaminetetraacetic acid (EDTA) plasma samples of patients was validated by conventional ELISA, unravelling its immense potential for in vitro diagnostics (IVD).\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":873,\"length\":8},{\"style\":\"sup\",\"offset\":551,\"length\":2},{\"style\":\"sup\",\"offset\":619,\"length\":2},{\"style\":\"sup\",\"offset\":635,\"length\":2}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.1038/protex.2014.017",
+        "funders": [],
+        "guid": "FDDE5732EEC311EF8CCF0A58A9FEAC02",
+        "guidelines": "{\"blocks\":[{\"key\":\"483j2\",\"text\":\"As the gold standard for the detection of CRP in clinical diagnostics, ELISA exhibits high-throughput, excellent reproducibility, high precision and remarkable sensitivity. Last five decades have accumulated over 300,000 peer-reviewed articles related to ELISA. In particular, the last decade has also witnessed considerable advances in diversified CRP assay formats1-22, lateral flow20, immunoturbidimetry1,11, surface plasmon resonance14, piezoresistive cantilever-based IA10, chemiluminescent IA3, impedimetry23, electrochemistry17, reflectometric interference spectroscopy19, microfluidics7 and homogenous bead-based IA24. In general, most of these assay formats are based on a complex procedure comprising of many process steps with a lengthy analysis time25-28. Therefore, there is uttermost importance for the development of rapid and cost-effective IA procedures with high precision and minimal process steps to guide healthcare professionals to decide on the desired intervention at an early stage. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":366,\"length\":4},{\"style\":\"sup\",\"offset\":384,\"length\":2},{\"style\":\"sup\",\"offset\":406,\"length\":4},{\"style\":\"sup\",\"offset\":437,\"length\":2},{\"style\":\"sup\",\"offset\":475,\"length\":2},{\"style\":\"sup\",\"offset\":498,\"length\":1},{\"style\":\"sup\",\"offset\":512,\"length\":2},{\"style\":\"sup\",\"offset\":532,\"length\":2},{\"style\":\"sup\",\"offset\":576,\"length\":2},{\"style\":\"sup\",\"offset\":593,\"length\":1},{\"style\":\"sup\",\"offset\":623,\"length\":2},{\"style\":\"sup\",\"offset\":761,\"length\":5}],\"entityRanges\":[],\"data\":{}},{\"key\":\"e3wbc\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"vv9ma\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"4b5ha\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"vtg0h\",\"text\":\"CRP, a pentameric protein with a molecular weight of 118 kDa, is a member of a class of acute-phase reactants indicating activation of innate and adaptive immunity13,29,30. It plays an important role in host defense by binding to phosphocholine and related microbial molecules. As an early indicator of infectious or inflammatory conditions31,32, CRP is usually elevated in patients with neonatal sepsis33-35, meningitis, pancreatitis, pneumonia and pelvic inflammatory disease and occult bacteremia. The significantly elevated serum CRP levels are associated with malignant diseases, bacterial infections and correlate with  increased 30-day mortality rates in hospitalized patients36. The monomeric CRP binds to the surface of damaged cells and platelets, thereby activating the complement cascade that plays an important role in inflammation. The American Heart Association/Center for Disease Control has considered CRP as the best inflammatory marker for clinical diagnosis37. The precise and rapid determination of human C-reactive protein (CRP) is essential for diagnosis and management of neonatal sepsis33-35,38,39, cardiovascular diseases40-44, infectious/inflammatory conditions31 and diabetes45-47. The ability for repeated CRP measurements with high precision in an acute setting provides clinicians with the valuable information to assess disease diagnosis and circumvent any unnecessary administration of antibiotics. The normal CRP levels in  human serum are usually below 10 µg mL-1 30 but up to 350-400 µg mL-1 in several disease states. The CRP levels in the ranges of 10-40 µg mL-1, 40-200 µg mL-1, and \\u003e200 µg mL-1 are the indicators of mild or chronic inflammation and viral infections; acute inflammation and bacterial infections; and severe bacterial infections and burns, respectively30. The CRP levels beyond the cut-off point of 5 µg mL-1 are indicative of neonatal sepsis, which is diagnosed based on the determination of two CRP concentration ranges normal (0.2-480 µg mL-1) and high sensitivity (0.08-80 µg mL-1)30. The high sensitivity CRP assay is performed first, but the normal CRP assay is also performed if the CRP levels are \\u003e80 µg mL-1.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":163,\"length\":8},{\"style\":\"sup\",\"offset\":340,\"length\":5},{\"style\":\"sup\",\"offset\":403,\"length\":5},{\"style\":\"sup\",\"offset\":683,\"length\":2},{\"style\":\"sup\",\"offset\":977,\"length\":2},{\"style\":\"sup\",\"offset\":1111,\"length\":11},{\"style\":\"sup\",\"offset\":1147,\"length\":5},{\"style\":\"sup\",\"offset\":1188,\"length\":2},{\"style\":\"sup\",\"offset\":1203,\"length\":5},{\"style\":\"sup\",\"offset\":1496,\"length\":2},{\"style\":\"sup\",\"offset\":1499,\"length\":2},{\"style\":\"sup\",\"offset\":1525,\"length\":2},{\"style\":\"sup\",\"offset\":1598,\"length\":2},{\"style\":\"sup\",\"offset\":1614,\"length\":2},{\"style\":\"sup\",\"offset\":1632,\"length\":2},{\"style\":\"sup\",\"offset\":1808,\"length\":2},{\"style\":\"sup\",\"offset\":1862,\"length\":2},{\"style\":\"sup\",\"offset\":1999,\"length\":2},{\"style\":\"sup\",\"offset\":2038,\"length\":2},{\"style\":\"sup\",\"offset\":2041,\"length\":2},{\"style\":\"sup\",\"offset\":2170,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"adsil\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"amc1m\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"gfzsr\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"jl0v9\",\"text\":\"The existing analytical techniques for the determination of CRP have limitations in terms of prolonged IA duration and lower analytical sensitivity, as reviewed recently by Algarra et al.22. The clinical laboratory-based CRP assays, based on latex agglutination or nephelometry, and phosphocholine and O-phosphorylethanolamine based immunoassays can detect CRP only in the detection range of µg mL-1. On the other hand, the recently developed immunoassay formats, based on electrochemical techniques, nanoparticles, nanocomposites, chemiluminescence, total internal reflection and micromosiac immunoassays, have higher sensitivities in the range of ng mL-1 to µg mL-1. Similarly, the surface plasmon resonance based real-time and label-free immunoassay formats have sensitivity between ng mL-1 to g mL-1. Therefore, there is a critical need for a highly simplified, cost-effective, precise and highly sensitive IA format for the rapid detection of CRP.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":181,\"length\":6},{\"style\":\"sup\",\"offset\":187,\"length\":2},{\"style\":\"sup\",\"offset\":397,\"length\":2},{\"style\":\"sup\",\"offset\":654,\"length\":2},{\"style\":\"sup\",\"offset\":665,\"length\":2},{\"style\":\"sup\",\"offset\":791,\"length\":2},{\"style\":\"sup\",\"offset\":801,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"r7a1s\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"5wdqv\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"2zhuk\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ot41q\",\"text\":\"We have developed a rapid one-step kinetics-based sandwich ELISA procedure48 (Figure 1) to detect CRP in human whole blood and serum in less than 30 min. It has critically reduced the IA duration by more than 12-fold and the analysis cost by 2.5-fold in comparison to the conventional procedure. This novel ELISA format required also significantly reduced number of process steps and only two washing steps in comparison to the conventional counterpart (Table S1). Moreover, the high analytical precision of the developed procedure implies its tremendous potential for rapid analyte detection in clinical and bioanalytical settings.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":78,\"length\":8},{\"style\":\"bold\",\"offset\":454,\"length\":8},{\"style\":\"sup\",\"offset\":74,\"length\":2}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "id": 121577,
+        "image": {
+          "placeholder": "https://www.protocols.io/img/default_protocol.png",
+          "source": "https://www.protocols.io/img/default_protocol.png"
+        },
+        "link": "",
+        "materials": [],
+        "materials_text": "{\"blocks\":[{\"key\":\"ymqvu\",\"text\":\"Reagents\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"fxy4c\",\"text\":\"• Human CRP Duoset kit (R \\u0026 D Systems, UK, cat. no. DY1707E) !CAUTION Store reconstituted Ab and antigen at 2-8 °C, if they are used within a month. Otherwise, make aliquots and store at -20 °C to -70 °C for up to 6 months. The kit comprises of\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":61,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"cifkx\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"6gy88\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"j3jau\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"09nwr\",\"text\":\"• Mouse anti-human CRP capture Ab (360 μg mL-1) \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":44,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"waauo\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"qs5tf\",\"text\":\"• Recombinant human CRP (90 ng mL-1)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":33,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"xono8\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"tdo3g\",\"text\":\"• Biotinylated mouse anti-human CRP detection Ab (22.5 µg mL-1)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":60,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"phisu\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"sfagj\",\"text\":\"• Streptavidin-conjugated horseradish peroxidase (SA-HRP) !CAUTION Do not freeze. Store in the dark as streptavidin is light-sensitive.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":58,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"kjddn\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"2yfio\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"mbmv7\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"0x46h\",\"text\":\"The Human CRP Duoset kit’s components can also be procured separately, i.e. human CRP antibody (cat. no. MAB17071), human CRP biotinylated antibody (cat. no. BAM17072) and recombinant human CRP (cat. no. 1707-CR).\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"7xlyr\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"kfwam\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"hlc8z\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"jkt4i\",\"text\":\"• Blocker BSA in PBS (10X), pH 7.4, 10% (w/v) (Thermo Scientific, Ireland, cat. no. 37525) CRITICAL Filter with 0.2 µm pore size filter paper prior to use to avoid contamination. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":91,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"sirqc\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"wedma\",\"text\":\"• Dynabeads® M-280 Tosylactivated (Thermo Fisher Scientific, Ireland)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":11,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"cj9fr\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"aidl0\",\"text\":\"• Sulfuric acid (Aldrich, cat. no. 339741) !CAUTION Avoid skin contact as it is a strongly corrosive agent and an irritant. Use personal protective equipment (PPE), such as chemical safety glasses, chemical-resistant shoes and lab coats, for handling. Handle only in a fume cabinet. In case of skin contact, wash immediately with acid neutralizers and seek medical advice as soon as possible.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":43,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"du3t9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"chqgl\",\"text\":\"• BupH Phosphate Buffered Saline Packs (0.1 M sodium phosphate, 0.15 M sodium chloride, pH 7.2) (Thermo Scientific, Ireland, cat. no. 18372) !CAUTION Avoid inhalation.  CRITICAL Prepare in autoclaved DIW (18Ω), see REAGENT SETUP.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":141,\"length\":8},{\"style\":\"bold\",\"offset\":169,\"length\":8},{\"style\":\"bold\",\"offset\":215,\"length\":13}],\"entityRanges\":[],\"data\":{}},{\"key\":\"bodkb\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"lumk5\",\"text\":\"• TMB substrate kit (Thermo Scientific, Ireland, cat. no. 34021)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"xxe7h\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"yijhp\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"uoxtf\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"rfegd\",\"text\":\"• TMB solution (0.4 g L-1) !CAUTION Skin, eye and lung irritant. In case of skin contact, wash with plenty of water. CRITICAL The TMB to peroxide ratio is critical for color development. Maintain the ratio 1:1. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":27,\"length\":8},{\"style\":\"bold\",\"offset\":117,\"length\":8},{\"style\":\"sup\",\"offset\":23,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"kfk6x\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"jfjcq\",\"text\":\"• Hydrogen peroxide solution (containing 0.02 % v/v H2O2 in citric acid buffer) (Thermo Scientific, Ireland). !CAUTION Strong oxidizing agent. Harmful if swallowed. Severe risk of damage to eyes. Rinse immediately with plenty of water in case of contact and seek medical attention. Wear \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":110,\"length\":8},{\"style\":\"sub\",\"offset\":53,\"length\":1},{\"style\":\"sub\",\"offset\":55,\"length\":1}],\"entityRanges\":[],\"data\":{}},{\"key\":\"iwtby\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"etbqa\",\"text\":\"suitable protection and work in a safety cabinet or fume cupboard. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"61agf\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"5gc0g\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"vrm9i\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"tqucq\",\"text\":\"• Human whole blood (HQ-Chex level 2, cat. no. 232754, Streck) 180 day closed-vial stability and 30 day open-vial stability. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"seenx\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"iu30i\",\"text\":\"• Human serum (CRP free serum, cat. no. 8CFS, HyTest Ltd., Finland)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"mk7xu\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"2f1kh\",\"text\":\"• Deionized water (18 Ω, DIW). (Direct-Q®3 Water Purification System, Millipore, USA) \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":40,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"u935v\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"nhvxz\",\"text\":\"• Nunc microwell 96-well polystyrene plates, flat bottom (non-treated), sterile (Sigma Aldrich, cat. no. P7491)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"wkxp2\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ycinh\",\"text\":\"• Eppendorf microtubes (1.5 mL; Sigma Aldrich, cat. no. Z606340)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"qj9p3\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"nqvcj\",\"text\":\"• Sigmaplot software version 11.2 from Systat \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"9fxmm\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"i5bvg\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"rbjgo\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"74p5r\",\"text\":\"REAGENT SETUP\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":13}],\"entityRanges\":[],\"data\":{}},{\"key\":\"wl9c1\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"d4gau\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"3vpet\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"08ch3\",\"text\":\"PBS. Add a BupH Phosphate Buffered Saline Pack to 100 mL of autoclaved DIW, dissolve well and make the volume up to 500 mL using autoclaved DIW. Each pack makes 500 mL of PBS at pH 7.2, which can be stored at RT for a week and at 4 ºC for up to four weeks. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":4}],\"entityRanges\":[],\"data\":{}},{\"key\":\"tyoag\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"aax3k\",\"text\":\"Binding buffer. 0.1% BSA in PBS, pH 7.2.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":15}],\"entityRanges\":[],\"data\":{}},{\"key\":\"7z9ct\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"licih\",\"text\":\"Washing buffer. 0.05% Tween® 20 in PBS, pH 7.2.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":15},{\"style\":\"sup\",\"offset\":27,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"ogtjs\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"dbbzt\",\"text\":\"Anti-CRP capture Ab-bound Dynabeads®. The anti-CRP capture Ab was bound to the tosylated Dynabeads® using the standard immobilization procedure provided by the manufacturer (Invitrogen). The prepared stock solution of anti-CRP capture Ab-bound Dynabeads® was then stored at 4 °C. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":49},{\"style\":\"sup\",\"offset\":35,\"length\":2},{\"style\":\"sup\",\"offset\":98,\"length\":2},{\"style\":\"sup\",\"offset\":253,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"rbaeo\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"cdtt8\",\"text\":\"Biotinylated anti-CRP detection Ab conjugated to SA-HRP. Biotinylated anti-CRP detection Ab conjugated to SA-HRP was prepared by adding 1 µL of biotinylated anti-CRP detection antibody (0.5 mg mL-1) to 1 µL of SA-HRP to 2998 µL of the binding buffer followed by 20 min of incubation at room temperature (RT). As a result, the concentration of biotinylated anti-CRP detection Ab used was 0.17 µg mL-1, while SA-HRP dilution employed was 1:3000.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":56},{\"style\":\"sup\",\"offset\":195,\"length\":2},{\"style\":\"sup\",\"offset\":397,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"qt8at\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ps5xj\",\"text\":\"Equipment\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":9}],\"entityRanges\":[],\"data\":{}},{\"key\":\"bnfs2\",\"text\":\"• -70 °C freezer (operating range -60 to -86 °C) (New Brunswick)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"kftno\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"mjlga\",\"text\":\"• 2-8 °C refrigerator (Future, UK)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"r8eq0\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"mduvm\",\"text\":\"• Direct-Q® 3 water purification system (Millipore, USA) \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":10,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"hxbre\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"jnihn\",\"text\":\"• Tecan Infinite M200 Pro microplate reader (Tecan, Austria GmBH)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"5m6ak\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"oqwii\",\"text\":\"• Mini incubator (Labnet Inc., UK)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"etbef\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"kw2l1\",\"text\":\"• Quadermagnet magnetic holder (Supermagnete, Germany)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"bkorg\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"9mnqr\",\"text\":\"• PVC fume cupboard Chemflow range (CSC Ltd.)\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "peer_reviewed": false,
+        "public": true,
+        "published_on": 1401201741,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 0,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 0,
+          "number_of_forks": {
+            "private": 0,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 0,
+          "number_of_steps": 13,
+          "number_of_steps_comments": 0,
+          "number_of_views": 41,
+          "number_of_votes": 0
+        },
+        "title": "A rapid one-step kinetics-based immunoassay procedure for the highly-sensitive detection of C-reactive protein",
+        "title_html": "A rapid one-step kinetics-based immunoassay procedure for the highly-sensitive detection of C-reactive protein",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "a-rapid-one-step-kinetics-based-immunoassay-proced-d2yh8ft6",
+        "url": "https://www.protocols.io/view/a-rapid-one-step-kinetics-based-immunoassay-proced-d2yh8ft6",
+        "version_id": 0,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.1038/protex.2014.017",
+            "guid": "",
+            "id": 121577,
+            "image": {
+              "placeholder": "https://www.protocols.io/img/default_protocol.png",
+              "source": "https://www.protocols.io/img/default_protocol.png"
+            },
+            "published_on": 1401201741,
+            "title": "A rapid one-step kinetics-based immunoassay procedure for the highly-sensitive detection of C-reactive protein",
+            "title_html": "A rapid one-step kinetics-based immunoassay procedure for the highly-sensitive detection of C-reactive protein",
+            "uri": "a-rapid-one-step-kinetics-based-immunoassay-proced-d2yh8ft6",
+            "version_id": 0
+          }
+        ],
+        "warning": null
+      },
+      {
+        "acknowledgements": null,
+        "authors": [
+          {
+            "affiliation": "HSG-IMIT - Institut für Mikro- und Informationstechnik and Laboratory for MEMS Applications, Department of Microsystems Engineering -IMTEK, University of Freiburg, Georges-Koehler-Allee 103, 79110 Freiburg, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Sandeep Kumar Vashist",
+            "username": ""
+          },
+          {
+            "affiliation": "Department of Electrical and Computer Engineering, Jacobs School of Engineering, University of California San Diego, San Diego CA 92093, U.S.A.",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "A.G. Venkatesh",
+            "username": ""
+          },
+          {
+            "affiliation": "Sektion Experimentelle Anaesthesiologie, University Hospital Ulm, Albert Einstein Allee 23, 89081 Ulm, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "E. Marion  Schneider",
+            "username": ""
+          },
+          {
+            "affiliation": "HSG-IMIT - Institut für Mikro- und Informationstechnik and Laboratory for MEMS Applications, Department of Microsystems Engineering -IMTEK, University of Freiburg, Georges-Koehler-Allee 103, 79110 Freiburg, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Roland Zengerle",
+            "username": ""
+          },
+          {
+            "affiliation": "HSG-IMIT - Institut für Mikro- und Informationstechnik and Laboratory for MEMS Applications, Department of Microsystems Engineering -IMTEK, University of Freiburg, Georges-Koehler-Allee 103, 79110 Freiburg, Germany",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "Felix von Stetten",
+            "username": ""
+          },
+          {
+            "affiliation": "Innovative Chromatography Group, Irish Separation Science Cluster (ISSC), Department of Chemistry and Analytical, Biological Chemistry Research Facility (ABCRF), University College Cork, Cork, Ireland",
+            "image": {
+              "placeholder": "https://www.protocols.io/img/avatars/001.png",
+              "source": "https://www.protocols.io/img/avatars/001.png"
+            },
+            "link": null,
+            "name": "John H.T. Luong",
+            "username": ""
+          }
+        ],
+        "before_start": null,
+        "created_on": 1427734900,
+        "creator": {
+          "affiliation": "Dev",
+          "image": {
+            "placeholder": "https://files.protocols.io/thumbnails/external/Protocolimporter1-D47B48BD0A6811F08FE60A58A9FEAC02.jpg/thumbnail-w100xh100.jpg",
+            "source": "https://files.protocols.io/external/Protocolimporter1-D47B48BD0A6811F08FE60A58A9FEAC02.jpg"
+          },
+          "link": null,
+          "name": "Protocols Importer",
+          "username": "protocols-importer"
+        },
+        "description": "{\"blocks\":[{\"key\":\"4qala\",\"text\":\"A highly-sensitive immunoassay (IA) procedure with minimal process steps has been developed for the detection of human C-reactive protein (CRP) in less than 30 min. Graphene nanoplatelets (GNP) was admixed with 3-aminopropyltriethoxysilane (APTES) and EDC-activated anti-human CRP antibody (Ab) to form a stable complex that was then covalently attached to a KOH-pretreated polystyrene microtiter plate (MTP). The developed one-step kinetics-based IA involves the formation of a sandwich immune complex followed by two washings and an enzyme-based colorimetric reaction that was read by a smartphone-based colorimetric reader (SBCR). The detection range of CRP was 0.03-81 ng mL-1 with a limit of detection (LOD) and a limit of quantification (LOQ) of 0.07 ng mL-1 and 0.9 ng mL-1, respectively. Moreover, the developed IA enabled the detection of CRP spiked in diluted human whole blood and plasma as well as CRP present in clinical plasma samples with high analytical precision, thereby demonstrating its immense utility for biomedical diagnostics.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":678,\"length\":2},{\"style\":\"sup\",\"offset\":762,\"length\":2},{\"style\":\"sup\",\"offset\":778,\"length\":2}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "doi": "dx.doi.org/10.1038/protex.2015.033",
+        "funders": [],
+        "guid": "7AE89EB2EEC911EF977B0A58A9FEAC02",
+        "guidelines": "{\"blocks\":[{\"key\":\"38b1a\",\"text\":\"As member of a class of acute-phase reactants that mediates innate and adaptive immunity 1-3, CRP plays an important role in the host defense by binding to phosphocholine and related molecules on microorganisms. This important biomarker needs to be measured routinely in infectious and inflammatory conditions 4, neonatal sepsis 5-9, depressive and posttraumatic stress 10-12, diabetes 13-15 and cardiovascular diseases 16-20. The normal human sera contain CRP in the range of 0.8-480 µg mL-1 2, compared to 10-40 µg mL-1 in patients with mild inflammation and viral infection. In active inflammation and bacterial infections, and severe bacterial infections, the CRP levels in sera are in the ranges of 40-200 µg mL-1 and \\u003e200 µg mL-1, respectively 2. In case of neonatal sepsis, two clinically-relevant CRP concentration ranges need to be determined i.e. normal (0.2-480 µg mL-1) and high sensitivity (0.08-80 µg mL-1). A high sensitive CRP IA is performed, which is followed by the normal CRP IA if the CRP level is above 80 µg mL-1. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":89,\"length\":3},{\"style\":\"sup\",\"offset\":310,\"length\":1},{\"style\":\"sup\",\"offset\":329,\"length\":3},{\"style\":\"sup\",\"offset\":370,\"length\":5},{\"style\":\"sup\",\"offset\":386,\"length\":5},{\"style\":\"sup\",\"offset\":420,\"length\":5},{\"style\":\"sup\",\"offset\":490,\"length\":2},{\"style\":\"sup\",\"offset\":493,\"length\":1},{\"style\":\"sup\",\"offset\":519,\"length\":2},{\"style\":\"sup\",\"offset\":716,\"length\":2},{\"style\":\"sup\",\"offset\":733,\"length\":2},{\"style\":\"sup\",\"offset\":750,\"length\":1},{\"style\":\"sup\",\"offset\":878,\"length\":2},{\"style\":\"sup\",\"offset\":917,\"length\":2},{\"style\":\"sup\",\"offset\":1033,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"fwhlu\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"kpzjt\",\"text\":\"To date, different analytical methods 21 have been developed for the determination of CRP, such as immunoturbidimetry 22,23, enzyme-linked immunosorbent assay (ELISA) 24-26, surface plasmon resonance 27, chemiluminescence 28, impedimetry 29, beads 30, microgravimetry 31, reflectometric interference spectroscopy 32, electrochemistry 33 and microfluidics 34. Nevertheless, ELISA is still the most widely used IA format in clinical settings due to its high precision and sensitivity. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":38,\"length\":2},{\"style\":\"sup\",\"offset\":118,\"length\":5},{\"style\":\"sup\",\"offset\":167,\"length\":5},{\"style\":\"sup\",\"offset\":200,\"length\":2},{\"style\":\"sup\",\"offset\":222,\"length\":2},{\"style\":\"sup\",\"offset\":238,\"length\":2},{\"style\":\"sup\",\"offset\":248,\"length\":2},{\"style\":\"sup\",\"offset\":268,\"length\":2},{\"style\":\"sup\",\"offset\":313,\"length\":2},{\"style\":\"sup\",\"offset\":334,\"length\":2},{\"style\":\"sup\",\"offset\":355,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"npbpo\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"tbvmm\",\"text\":\"This article describes a rapid and highly-sensitive CRP IA format 35 (Fig. 1) in conjunction with a smartphone-based colorimetric reader (SBCR) 26, which enables the precise determination of CRP in diluted human whole blood and plasma. The developed IA (DIA) aims at the differential diagnosis of neonatal sepsis 36,37. It is a signal-enhanced IA format based on the increased surface area provided by the use of graphene nanoplatelets (GNPs), which leads to higher covalent binding of the capture CRP antibody (Ab). The Ab immobilization is performed by a novel and highly simplified procedure based on the admixing of EDC-activated Ab with GNPs in APTES inside the MTP wells. The use of APTES 38 and heterobifunctional crosslinking yields a leach-proof covalent binding of Ab to the GNPs-functionalized MTP. The bioanalytical performance of the DIA is compared with that of the conventional sandwich ELISA and the clinically-accredited analyzer-based IA.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":70,\"length\":6},{\"style\":\"sup\",\"offset\":66,\"length\":2},{\"style\":\"sup\",\"offset\":144,\"length\":2},{\"style\":\"sup\",\"offset\":313,\"length\":5},{\"style\":\"sup\",\"offset\":695,\"length\":2}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "id": 121647,
+        "image": {
+          "placeholder": "https://www.protocols.io/img/default_protocol.png",
+          "source": "https://www.protocols.io/img/default_protocol.png"
+        },
+        "link": "",
+        "materials": [],
+        "materials_text": "{\"blocks\":[{\"key\":\"xkdpt\",\"text\":\"Reagents\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"iwczn\",\"text\":\"• Human CRP Duoset kit (R \\u0026 D Systems, cat. no. DY1707E) !CAUTION Store reconstituted Ab and antigen at 2-8 °C, if they are to be used within a month. Otherwise, prepare aliquots and store at -20 °C to -70 °C for up to 6 months. The kit comprises of\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":20},{\"style\":\"bold\",\"offset\":57,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"kcwon\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"wjn2n\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"63dcl\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"x5ey5\",\"text\":\"• Mouse anti-human CRP capture Ab (360 μg mL-1) \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":44,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"rm2bi\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ap2r7\",\"text\":\"• Recombinant human CRP (90 ng mL-1)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":33,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"ekfly\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"4ipe0\",\"text\":\"• Biotinylated mouse anti-human CRP detection Ab (22.5 µg mL-1)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":60,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"mrwcf\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ijwvl\",\"text\":\"• Streptavidin-conjugated horseradish peroxidase (SA-HRP) !CAUTION Do not freeze. Store in the dark as streptavidin is light-sensitive.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":58,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"j2lmh\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"w5ypd\",\"text\":\"The Human CRP Duoset kit’s components can also be purchased separately, i.e. human CRP Ab (cat. no. MAB17071), human CRP biotinylated antibody (cat. no. BAM17072) and recombinant human CRP (cat. no. 1707-CR).\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"s5wg6\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"mbjdx\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"twikv\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"gn0td\",\"text\":\"• Blocker BSA in PBS (10X), pH 7.4, 10% (w/v) (Thermo Scientific, cat. no. 37525)  CRITICAL Filter with 0.2 µm pore size filter paper prior to use to avoid contamination. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":18},{\"style\":\"bold\",\"offset\":83,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"ijfh1\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"hfh65\",\"text\":\"• Sulfuric acid (Aldrich, cat. no. 339741) !CAUTION Use personal protective equipment (PPE), such as chemical safety glasses, chemical-resistant shoes and lab coats, for handling. Handle only in a fume cabinet. Avoid skin contact as it is a strong corrosive agent and an irritant. In case of skin contact, wash immediately with acid neutralizers and seek medical advice as soon as possible. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":13},{\"style\":\"bold\",\"offset\":43,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"igdqb\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"hojl0\",\"text\":\"• BupH Phosphate Buffered Saline Packs (0.1 M sodium phosphate, 0.15 M sodium chloride, pH 7.2) (Thermo Scientific, cat. no. 18372) !CAUTION Avoid inhalation.  CRITICAL Prepare in autoclaved DIW (18Ω), see REAGENT SETUP.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":36},{\"style\":\"bold\",\"offset\":132,\"length\":8},{\"style\":\"bold\",\"offset\":160,\"length\":8},{\"style\":\"bold\",\"offset\":206,\"length\":13}],\"entityRanges\":[],\"data\":{}},{\"key\":\"g5deb\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"y90u9\",\"text\":\"• BupH MES Buffered Saline Packs (0.1 M MES [2-(N- morpholino)ethane sulfonic acid], 0.9 % (w/v) sodium chloride, pH 4.7) (Thermo Scientific, cat no. 28390) !CAUTION Avoid inhalation.   CRITICAL Prepare in autoclaved DIW, see REAGENT SETUP.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":30},{\"style\":\"bold\",\"offset\":157,\"length\":8},{\"style\":\"bold\",\"offset\":186,\"length\":8},{\"style\":\"bold\",\"offset\":226,\"length\":13}],\"entityRanges\":[],\"data\":{}},{\"key\":\"n3wvl\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"rujuc\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"lujtm\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"k8ifd\",\"text\":\"• TMB substrate kit (Thermo Scientific, cat. no. 34021)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":17}],\"entityRanges\":[],\"data\":{}},{\"key\":\"5aash\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"jheuz\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"0ud9n\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"xiat7\",\"text\":\"• TMB solution (0.4 g L-1) !CAUTION Skin, eye and lung irritant. In case of skin contact, wash with plenty of water.  CRITICAL Maintain the TMB to peroxide ratio as 1:1 as it is critical for color development. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":27,\"length\":8},{\"style\":\"bold\",\"offset\":118,\"length\":8},{\"style\":\"sup\",\"offset\":23,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"1tupe\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"vrr77\",\"text\":\"• Hydrogen peroxide solution (containing 0.02 % v/v H2O2 in citric acid buffer) (Thermo Scientific). !CAUTION Use PPE and work in a safety cabinet or fume cupboard. It is a strong oxidizing agent, harmful if swallowed, and caused severe risk of damage to eyes. In case of contact, rinse immediately with plenty of water and seek medical attention. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":101,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"lbod3\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"smaq6\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"v8n1x\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"pkp4s\",\"text\":\"• KOH pellets (99.99%), semiconductor grade (Sigma Aldrich, cat. no. 306568) !CAUTION Use PPE and handle in a safety cabinet. Avoid contact with skin and eyes as it can cause severe burns. CRITICAL The concentration of KOH must be 1% (w/v) in autoclaved DIW. Higher concentrations may affect the surface properties, thereby leading to decreased binding of capture antibodies.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":41},{\"style\":\"bold\",\"offset\":77,\"length\":8},{\"style\":\"bold\",\"offset\":189,\"length\":8}],\"entityRanges\":[],\"data\":{}},{\"key\":\"ix7jb\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"sn254\",\"text\":\"• 3-aminopropyltriethoxysilane (3-APTES) (Sigma Aldrich, cat. no. A3684) !CAUTION Use PPE and handle in a safety cabinet. Avoid contact with skin and eyes as it is a skin and eye irritant, and highly toxic to kidney.  CRITICAL Prepare in autoclaved DIW, see REAGENT SETUP.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":38},{\"style\":\"bold\",\"offset\":73,\"length\":8},{\"style\":\"bold\",\"offset\":218,\"length\":8},{\"style\":\"bold\",\"offset\":258,\"length\":13}],\"entityRanges\":[],\"data\":{}},{\"key\":\"e6wdj\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"igso1\",\"text\":\"• Human whole blood (HQ-Chex level 2) (Streck, cat. no. 232754) 180 day closed-vial stability and 30 day open-vial stability. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":35}],\"entityRanges\":[],\"data\":{}},{\"key\":\"3jxnw\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"hthem\",\"text\":\"• Human serum (CRP free) (HyTest Ltd., cat. no. 8CFS)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":22}],\"entityRanges\":[],\"data\":{}},{\"key\":\"g5ffr\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"5k6kh\",\"text\":\"• 1-Ethyl-3-(3-dimethylaminopropyl)-carbodiimide hydrochloride (EDC) (Thermo Scientific, cat. no. 22981) !CAUTION Use PPE and handle inside a fume cupboard as it is an irritant. Being hygroscopic, it absorbs moisture that leads to loss of its activity. Equilibrate to room temperature (RT) before opening the container.  CRITICAL Store at recommended temperature (-20 °C). Reconstitute in 0.1M MES, pH 4.7, see REAGENT SETUP.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":66},{\"style\":\"bold\",\"offset\":105,\"length\":8},{\"style\":\"bold\",\"offset\":321,\"length\":8},{\"style\":\"bold\",\"offset\":411,\"length\":13}],\"entityRanges\":[],\"data\":{}},{\"key\":\"e0qw5\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"1pyof\",\"text\":\"• Graphene nanoplatelets (diameter 5 µm) (Cheap Tubes Inc., cat. no. Grade 2 Graphene Nanoplatelets) \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":2,\"length\":22}],\"entityRanges\":[],\"data\":{}},{\"key\":\"3fifs\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"knmkk\",\"text\":\"• Recombinant human serum albumin (HSA), human fetuin A (HFA), human lipocalin 2 (LCN2), interleukin (IL)-1β, IL-6, IL-8 and tumor necrosis factor (TNF)-α (RnD Systems)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"6mytn\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"jf1yk\",\"text\":\"• Deionized water (18 Ω, DIW). (Millipore, Direct-Q®3 Water Purification System) \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":51,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"m77lc\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"qlv0n\",\"text\":\"• Nunc microwell 96-well polystyrene plates, flat bottom (non-treated), sterile (Sigma Aldrich, cat. no. P7491)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"qwrmu\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"x0wnr\",\"text\":\"• Eppendorf microtubes (1.5 mL; Sigma Aldrich, cat. no. Z 606340)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ehrzg\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"uhwat\",\"text\":\"• Sigmaplot software version 11.2 (Systat) \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"0vdmv\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"5elyp\",\"text\":\"\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ecqoe\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"1qu08\",\"text\":\"REAGENT SETUP\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":13}],\"entityRanges\":[],\"data\":{}},{\"key\":\"fipwq\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"nsw9r\",\"text\":\"PBS. Add a BupH PBS pack to 100 mL of autoclaved DIW, dissolve well and adjust the volume up to 500 mL using autoclaved DIW. Each pack makes 500 mL of PBS at pH 7.2, which can be stored at RT for a week and up to four weeks at 4ºC  \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":3}],\"entityRanges\":[],\"data\":{}},{\"key\":\"cu4ls\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ukpp8\",\"text\":\"MES. Add a BupH MES pack to 100 mL of autoclaved DIW, dissolve well and adjust the volume up to 500 mL using autoclaved DIW. Each pack makes 500 mL of MES at pH 4.7, which can be stored at RT for up to two weeks. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":3}],\"entityRanges\":[],\"data\":{}},{\"key\":\"icp8w\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"2x60n\",\"text\":\"APTES. Reconstitute the commercially supplied APTES solution (99% purity) in autoclaved DIW to make an effective 0.25% (v/v) solution. Prepare a fresh solution for each DIA run.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":5}],\"entityRanges\":[],\"data\":{}},{\"key\":\"btj6p\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"3f9tl\",\"text\":\"EDC. Each pack contains 25 g EDC. Reconstitute in 0.1M MES buffer, pH 4.7, at a concentration of 8 mg mL-1. Aliquots can be stored for six months at -20 °C.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":3},{\"style\":\"sup\",\"offset\":104,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"7vztw\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"djju1\",\"text\":\"Binding buffer. 0.1% BSA in PBS, pH 7.4.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":14}],\"entityRanges\":[],\"data\":{}},{\"key\":\"h6j9b\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"c2q24\",\"text\":\"Washing buffer. 0.05% Tween® 20 in PBS, pH 7.4 (PBST).\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":14},{\"style\":\"sup\",\"offset\":27,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"xzfko\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"de50r\",\"text\":\"GNPs. GNPs (1 mg) was mixed with 1 mL of 0.25% APTES followed by sonication for 1 h.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":4}],\"entityRanges\":[],\"data\":{}},{\"key\":\"kjhv9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"vbyoh\",\"text\":\"EDC-activated anti-human CRP Ab. Dissolve 0.4 mg EDC in 100 µL of 0.1M MES, pH 4.7. Incubate 990 μL of the anti-human CRP Ab (4 μg mL-1) with 10 μL of EDC (4 mg mL-1) solution for 15 min at RT.  CRITICAL STEP The concentration of EDC is important for optimal cross-linking. Use the recommended concentration of EDC. ?TROUBLESHOOTING\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":31},{\"style\":\"bold\",\"offset\":195,\"length\":13},{\"style\":\"bold\",\"offset\":316,\"length\":16},{\"style\":\"sup\",\"offset\":133,\"length\":2},{\"style\":\"sup\",\"offset\":163,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"k3cmd\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"xgqiy\",\"text\":\"Anti-CRP capture Ab-bound GNPs. The EDC-activated Ab was mixed with GNPs (1 mg mL-1) in 0.25% APTES in the ratio of 1:1 (v/v). Thereafter, the anti-human CRP Ab solution (2 µg mL-1, 0.5 mg mL-1 GNPs and 0.125% APTES) was added to the MTP wells and incubated for 30 min at RT. The resulting wells were then washed five times with PBST. \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":30},{\"style\":\"sup\",\"offset\":81,\"length\":2},{\"style\":\"sup\",\"offset\":178,\"length\":2},{\"style\":\"sup\",\"offset\":191,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"25miw\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"euamb\",\"text\":\"Biotinylated anti-CRP detection Ab conjugated to SA-HRP. Biotinylated anti-CRP detection Ab conjugated to SA-HRP was prepared by adding 1 µL of biotinylated anti-CRP detection antibody (0.5 mg mL-1) to 1 µL of SA-HRP to 2998 µL of the binding buffer followed by 20 min of incubation at RT. As a result, the concentration of biotinylated anti-CRP detection Ab used was 0.17 µg mL-1, while SA-HRP dilution employed was 1:3000.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":55},{\"style\":\"sup\",\"offset\":195,\"length\":2},{\"style\":\"sup\",\"offset\":378,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"zjrt7\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"hdl4l\",\"text\":\"CRP spiked diluted human whole blood or serum. The CRP spiked samples (0.3-81 ng mL-1) were prepared by mixing the desired CRP concentrations in 1:100 diluted human whole blood/serum.\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":46},{\"style\":\"sup\",\"offset\":83,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"1ryar\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ro5x1\",\"text\":\"EDTA plasma samples from anonymized patients. The EDTA plasma samples from anonymized patients were diluted 1:1000 and 1:4000 in the binding buffer.  The resulting CRP concentration in these samples falls within the linear range of the DIA, thereby enabling the detection of an entire pathophysiological concentration range of human CRP.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"r7wze\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"htvib\",\"text\":\"Equipment\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"bold\",\"offset\":0,\"length\":9}],\"entityRanges\":[],\"data\":{}},{\"key\":\"1mgt2\",\"text\":\"• -70 °C freezer (operating range -60 to -86 °C) (New Brunswick)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ev8gs\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"8onvb\",\"text\":\"• 2-8 °C refrigerator (Future, UK)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"e87yb\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"f1xe2\",\"text\":\"• Direct-Q®3 water purification system (Millipore, USA) \\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":10,\"length\":2}],\"entityRanges\":[],\"data\":{}},{\"key\":\"nvpxi\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"2jgh6\",\"text\":\"• Tecan Infinite M200 Pro microplate reader (Tecan, Austria GmbH)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"4aocp\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"75ids\",\"text\":\"• Mini incubator (Labnet Inc., UK)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"xecb1\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ghjml\",\"text\":\"• PVC fume cupboard Chemflow range (CSC Ltd.)\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"4pqy7\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"ovxsr\",\"text\":\"• Roche COBAS® 8000 modular analyzer\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"w296e\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"25na3\",\"text\":\"• Samsung Galaxy SIII mini\\r\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"vve7y\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"uqvzi\",\"text\":\"• iPAD mini\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "peer_reviewed": false,
+        "public": true,
+        "published_on": 1427734900,
+        "stats": {
+          "is_voted": false,
+          "number_of_accessible_forks": 0,
+          "number_of_bookmarked_comments": 0,
+          "number_of_bookmarks": 0,
+          "number_of_collections": 0,
+          "number_of_comments": 0,
+          "number_of_equipments": 0,
+          "number_of_exports": 0,
+          "number_of_forks": {
+            "private": 0,
+            "public": 0
+          },
+          "number_of_protocol_comments": 0,
+          "number_of_reagents": 0,
+          "number_of_runs": 0,
+          "number_of_steps": 15,
+          "number_of_steps_comments": 0,
+          "number_of_views": 41,
+          "number_of_votes": 0
+        },
+        "title": "Graphene-based C-reactive protein immunoassay with smartphone readout",
+        "title_html": "Graphene-based C-reactive protein immunoassay with smartphone readout",
+        "units": [
+          {
+            "can_manage": 0,
+            "id": 1,
+            "name": "µL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 2,
+            "name": "mL",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 3,
+            "name": "L",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 4,
+            "name": "µg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 5,
+            "name": "mg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 6,
+            "name": "g",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 7,
+            "name": "kg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 8,
+            "name": "ng",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 9,
+            "name": "Hz",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 10,
+            "name": "°C",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 11,
+            "name": "°К",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 12,
+            "name": "°F",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 13,
+            "name": "Mass Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 14,
+            "name": "% volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 15,
+            "name": "Mass / % volume",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 16,
+            "name": "Parts per Million (PPM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 17,
+            "name": "Parts per Billion (PPB)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 18,
+            "name": "Parts per Trillion (PPT)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 19,
+            "name": "Mole Fraction",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 20,
+            "name": "Mole Percent",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 21,
+            "name": "Molarity (M)",
+            "read_only": 1,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 22,
+            "name": "Molarity (M)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 23,
+            "name": "Genome copies per ml",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 24,
+            "name": "μV",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 25,
+            "name": "ms",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 26,
+            "name": "pg",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 27,
+            "name": "Molarity dilutions",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 28,
+            "name": "millimolar (mM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 29,
+            "name": "micromolar (µM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 30,
+            "name": "nanomolar (nM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 31,
+            "name": "picomolar (pM)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 32,
+            "name": "Room temperature",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 33,
+            "name": "rpm",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 34,
+            "name": "x g",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 165,
+            "name": "On ice",
+            "read_only": 0,
+            "type_id": 24
+          },
+          {
+            "can_manage": 0,
+            "id": 200,
+            "name": "cm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 201,
+            "name": "mm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 202,
+            "name": "µm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 203,
+            "name": "nm",
+            "read_only": 0,
+            "type_id": 32
+          },
+          {
+            "can_manage": 0,
+            "id": 204,
+            "name": "mg/mL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 205,
+            "name": "µg/µL",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 206,
+            "name": "% (v/v)",
+            "read_only": 0,
+            "type_id": 25
+          },
+          {
+            "can_manage": 0,
+            "id": 207,
+            "name": "V",
+            "read_only": 0,
+            "type_id": 3
+          },
+          {
+            "can_manage": 0,
+            "id": 208,
+            "name": "Undetermined",
+            "read_only": 0,
+            "type_id": 0
+          },
+          {
+            "can_manage": 0,
+            "id": 1324,
+            "name": "rcf",
+            "read_only": 0,
+            "type_id": 30
+          },
+          {
+            "can_manage": 0,
+            "id": 1359,
+            "name": "Bar",
+            "read_only": 0,
+            "type_id": 35
+          },
+          {
+            "can_manage": 0,
+            "id": 1360,
+            "name": "Pa",
+            "read_only": 0,
+            "type_id": 35
+          }
+        ],
+        "uri": "graphene-based-c-reactive-protein-immunoassay-with-d22p8gdn",
+        "url": "https://www.protocols.io/view/graphene-based-c-reactive-protein-immunoassay-with-d22p8gdn",
+        "version_id": 0,
+        "versions": [
+          {
+            "doi": "dx.doi.org/10.1038/protex.2015.033",
+            "guid": "",
+            "id": 121647,
+            "image": {
+              "placeholder": "https://www.protocols.io/img/default_protocol.png",
+              "source": "https://www.protocols.io/img/default_protocol.png"
+            },
+            "published_on": 1427734900,
+            "title": "Graphene-based C-reactive protein immunoassay with smartphone readout",
+            "title_html": "Graphene-based C-reactive protein immunoassay with smartphone readout",
+            "uri": "graphene-based-c-reactive-protein-immunoassay-with-d22p8gdn",
+            "version_id": 0
+          }
+        ],
+        "warning": null
+      }
+    ],
+    "pagination": {
+      "changed_on": null,
+      "current_page": 1,
+      "first": 0,
+      "last": 2,
+      "next_page": null,
+      "page_size": 5,
+      "prev_page": null,
+      "total_pages": 1,
+      "total_results": 3
+    },
+    "status_code": 0
+  },
+  "top_hit_id": 120939,
+  "top_hit_steps": {
+    "payload": [
+      {
+        "id": 2550680,
+        "guid": "CD9657AEEE9611EFA1610A58A9FEAC02",
+        "previous_id": 0,
+        "previous_guid": null,
+        "section": "<p>Procedure: A) Testing for binding of CRP to immobilized leptin.</p>",
+        "section_color": "#A492FF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"5vy3f\",\"text\":\"Offer leptin (792 μg) for coupling to Aminolink® agarose (2 ml) and block excess unreacted sites according to the manufacturer’s instructions. Check supernatant from the coupling reaction to ensure that all the offered protein is bound.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "1",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550681,
+        "guid": "CD968311EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550680,
+        "previous_guid": "CD9657AEEE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: A) Testing for binding of CRP to immobilized leptin.</p>",
+        "section_color": "#A492FF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"neag5\",\"text\":\"Process a separate 2 ml volume of the Aminolink® agarose identically but without addition of leptin and then block identically.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "2",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550682,
+        "guid": "CD96910EEE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550681,
+        "previous_guid": "CD968311EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: A) Testing for binding of CRP to immobilized leptin.</p>",
+        "section_color": "#A492FF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"rcxph\",\"text\":\"Equilibrate both lots of beads with TC buffer (10 mM Tris, 2 mM CaCl2, 140 mM NaCl, pH 8.0).\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "3",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550683,
+        "guid": "CD96BD78EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550682,
+        "previous_guid": "CD96910EEE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: A) Testing for binding of CRP to immobilized leptin.</p>",
+        "section_color": "#A492FF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"f6twi\",\"text\":\"Add normal human serum (1.5 ml containing 1 mg/l CRP) or acute phase human serum (1.5 ml containing 69 mg/l CRP), previously stored at 80°C, to 1 ml aliquots of each set of beads, and rotate the mixtures for 30 min at room temperature.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "4",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550684,
+        "guid": "CD96CC12EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550683,
+        "previous_guid": "CD96BD78EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: A) Testing for binding of CRP to immobilized leptin.</p>",
+        "section_color": "#A492FF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"42shu\",\"text\":\"Sediment the beads by centrifugation, remove the supernatants, and wash the gels with 20 ml TC buffer.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "5",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550685,
+        "guid": "CD96DA9CEE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550684,
+        "previous_guid": "CD96CC12EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: A) Testing for binding of CRP to immobilized leptin.</p>",
+        "section_color": "#A492FF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"osaja\",\"text\":\"Elute bound material with 2 washes, each of 1 ml, of TE buffer (10 mM Tris, 140 mM NaCl, 10 mM EDTA, pH 8.0) or 10 mM glycine/HCl, pH 2.0.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "6",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550686,
+        "guid": "CD96E836EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550685,
+        "previous_guid": "CD96DA9CEE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: A) Testing for binding of CRP to immobilized leptin.</p>",
+        "section_color": "#A492FF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"evmo3\",\"text\":\"Neutralize the acid eluates immediately with 1.0 M Tris, 14.3 mM CaCl2 to give a final concentration of 140 mM Tris, 2 mM calcium and pH 7.5.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sub\",\"offset\":69,\"length\":1}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "7",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550687,
+        "guid": "CD96FACBEE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550686,
+        "previous_guid": "CD96E836EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: A) Testing for binding of CRP to immobilized leptin.</p>",
+        "section_color": "#A492FF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"luhjo\",\"text\":\"Assay CRP in the washes and eluates in the Dade-Behring BN II instrument (TE eluates only since acid elution denatures CRP), and detect by Western blotting after SDS-PAGE, using monospecific goat anti-human CRP antibodies and the ECL Western blotting detection system (GE Healthcare).\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "8",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550688,
+        "guid": "CD970875EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550687,
+        "previous_guid": "CD96FACBEE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: B) Testing for binding of radiolabelled leptin by immobilized CRP, SAP and leptin receptor.</p>",
+        "section_color": "#7794FE",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"0fo1x\",\"text\":\"Radioiodinate human recombinant leptin with 125iodine using N bromosuccinimide17 to provide specific activity of approximately 8.4 MBq/mg.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":44,\"length\":3},{\"style\":\"sup\",\"offset\":78,\"length\":2}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "9",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550689,
+        "guid": "CD9716E9EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550688,
+        "previous_guid": "CD970875EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: B) Testing for binding of radiolabelled leptin by immobilized CRP, SAP and leptin receptor.</p>",
+        "section_color": "#7794FE",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"9xz1n\",\"text\":\"Couple recombinant human leptin receptor (OB-R) (100 μg) (R\\u0026D Systems, catalogue number 389-LR-100) to CNBr activated Sepharose® (0.3g) according to the manufacturer’s instructions (GE Healthcare); all the offered protein should be bound.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "10",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550690,
+        "guid": "CD972440EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550689,
+        "previous_guid": "CD9716E9EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: B) Testing for binding of radiolabelled leptin by immobilized CRP, SAP and leptin receptor.</p>",
+        "section_color": "#7794FE",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"kl8d1\",\"text\":\"Couple highly purified and structurally and functionally intact human CRP and SAP, isolated as previously described18, to CNBr activated Sepharose® as previously described19,20. The proteins should be at bound at ~8 10 mg/ml beads, and the functional integrity of the coupled pentraxins for specific ligand binding should be confirmed as previously reported19,20.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":115,\"length\":2},{\"style\":\"sup\",\"offset\":171,\"length\":5},{\"style\":\"sup\",\"offset\":357,\"length\":5}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "11",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550691,
+        "guid": "CD9736CDEE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550690,
+        "previous_guid": "CD972440EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: B) Testing for binding of radiolabelled leptin by immobilized CRP, SAP and leptin receptor.</p>",
+        "section_color": "#7794FE",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"4jedy\",\"text\":\"A further batch of the same beads with no coupled protein should be simply blocked with ethanolamine.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "12",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550692,
+        "guid": "CD974673EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550691,
+        "previous_guid": "CD9736CDEE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: B) Testing for binding of radiolabelled leptin by immobilized CRP, SAP and leptin receptor.</p>",
+        "section_color": "#7794FE",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"lucoh\",\"text\":\"Equilibrate each of the different sets of beads with TC.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "13",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550693,
+        "guid": "CD97559EEE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550692,
+        "previous_guid": "CD974673EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: B) Testing for binding of radiolabelled leptin by immobilized CRP, SAP and leptin receptor.</p>",
+        "section_color": "#7794FE",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"3wan4\",\"text\":\"Add radioiodinated leptin, 100 μl containing 0.25 μg protein in TCB buffer (TC containing 4% w/v BSA), to replicate sets of 25 μl packed bead volumes of each of the bead types, and rotate the mixtures gently at room temperature for 30 min.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "14",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550694,
+        "guid": "CD976415EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550693,
+        "previous_guid": "CD97559EEE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: B) Testing for binding of radiolabelled leptin by immobilized CRP, SAP and leptin receptor.</p>",
+        "section_color": "#7794FE",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"zwipo\",\"text\":\"Sediment the beads by centrifugation and aspirate supernatants carefully before washing one set of each bead type with TC and one with TE buffer using three 250 μl washes.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "15",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550695,
+        "guid": "CD9773E0EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550694,
+        "previous_guid": "CD976415EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: B) Testing for binding of radiolabelled leptin by immobilized CRP, SAP and leptin receptor.</p>",
+        "section_color": "#7794FE",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"vu1mv\",\"text\":\"Measure radioactivity in the final gel pellets and each of the supernatants and washes.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "16",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550696,
+        "guid": "CD9780F9EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550695,
+        "previous_guid": "CD9773E0EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"opfwf\",\"text\":\"Male 10 week old mice should be obtained 10 days before the start of the study and immediately housed singly.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "17",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550697,
+        "guid": "CD978EB8EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550696,
+        "previous_guid": "CD9780F9EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"9jaqx\",\"text\":\"In the week before the start of the study proper handle each mouse for at least 5 min daily.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "18",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550698,
+        "guid": "CD979BCFEE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550697,
+        "previous_guid": "CD978EB8EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"aqh91\",\"text\":\"In the 4 days prior to study, weigh body weight and food intake daily between 08.00 and 09.00 and give each mouse a “mock” treatment of intraperitoneal injection with an empty syringe.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "19",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550699,
+        "guid": "CD97AB05EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550698,
+        "previous_guid": "CD979BCFEE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"qc9eg\",\"text\":\"Continue with the actual experiment only with mice which maintain constant food intake and weight in the 2 preceding days. We excluded eight of 32 original animals in our study because of food grinding and/or loss in body weight with mock treatment, leaving 6 mice in each of the different treatment groups. All experimental mice must have stable and identical weight and food intake before the different treatments are started. In our experiment body weights (mean, SEM, g) were: vehicle alone group, 27.2, 1.2; leptin group 26.9, 0.8; CRP group, 27.0, 0.8; and leptin plus CRP group, 27.0, 0.8. Daily food intake (mean, SEM, g/day) for these same groups was 4.7, 0.3; 4.6, 0.3; 4.6, 0.2; and 4.8, 0.2 respectively.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "20",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550700,
+        "guid": "CD97C1B2EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550699,
+        "previous_guid": "CD97AB05EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"yj2bc\",\"text\":\"Inject all mice intraperitoneally twice daily at 08.00 and 20.00 for 4 days.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "21",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550701,
+        "guid": "CD97D045EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550700,
+        "previous_guid": "CD97C1B2EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"ipuxb\",\"text\":\"Weigh food and body weight at the time of the 08.00 injection.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "22",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550702,
+        "guid": "CD97DDA5EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550701,
+        "previous_guid": "CD97D045EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"xofaf\",\"text\":\"Reconstitute human recombinant leptin from Calbiochem (catalogue number 429700) from the lyophilized state exactly as directed on the data sheet, with 15 mM sterile HCl and then 7.5 mM sterile NaOH added to give a leptin stock solution with a concentration of 1.25 mg/ml, which can be divided into 50 μl aliquots and stored at -80°C until required.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "23",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550703,
+        "guid": "CD97EBC1EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550702,
+        "previous_guid": "CD97DDA5EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"mwhcy\",\"text\":\"Keep human CRP, isolated as previously described18 and stored at -80°C until prior the study, at 2-4°C at a concentration of 8.7 mg/ml in TC buffer.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"sup\",\"offset\":48,\"length\":2}],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "24",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550704,
+        "guid": "CD97F9B6EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550703,
+        "previous_guid": "CD97EBC1EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"nriow\",\"text\":\"For each treatment group, make up a fresh working solution for injection 30 min before each injection time point, to provide the desired dose in a constant volume of 270 μl.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "25",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550705,
+        "guid": "CD980681EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550704,
+        "previous_guid": "CD97F9B6EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": true,
+        "step": "{\"blocks\":[{\"key\":\"d8xj0\",\"text\":\"Leptin: Prepare a working solution of 0.25 mg/ml by mixing 0.4 ml of leptin stock at 1.25 mg/ml with 1.6 ml TC buffer. Injection of 270 μl of working solution thus provides 0.0675 mg of leptin, corresponding to 2.5 mg/kg body weight.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "25.1",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550706,
+        "guid": "CD981CCBEE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550705,
+        "previous_guid": "CD980681EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": true,
+        "step": "{\"blocks\":[{\"key\":\"ouxu5\",\"text\":\"CRP: Prepare a working solution of 6.96 mg/ml by mixing 1.6 ml of CRP stock at 8.7 mg/ml with 0.4 ml TC buffer. Injection of 270 μl of working solution provides 1.8792 mg of CRP, corresponding to 69.6 mg/kg body weight.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "25.2",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550707,
+        "guid": "CD982A58EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550706,
+        "previous_guid": "CD981CCBEE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": true,
+        "step": "{\"blocks\":[{\"key\":\"oxbyb\",\"text\":\"Leptin plus CRP: Prepare a working solution by mixing 1.6 ml of CRP stock at 8.7 mg/ml with 0.4 ml leptin stock at 1.25 mg/ml. Injection of 270 μl thus provides 0.0675 mg leptin and 1.8792 mg CRP for each dose per mouse, corresponding to 2.5 mg/kg of leptin and 69.6 mg/kg of CRP.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "25.3",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550708,
+        "guid": "CD9838A7EE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550707,
+        "previous_guid": "CD982A58EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": true,
+        "step": "{\"blocks\":[{\"key\":\"7wuvx\",\"text\":\"Vehicle: For each set of injections, draw 2 ml of TC buffer from refrigerated stock and inject 270 μl per mouse.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "25.4",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550709,
+        "guid": "CD98471BEE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550708,
+        "previous_guid": "CD9838A7EE9611EFA1610A58A9FEAC02",
+        "section": "<p>Procedure: C) Testing for effect of human CRP on human leptin action in mice.</p>",
+        "section_color": "#A1EDFF",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"wjjdr\",\"text\":\"The method of administration of working solution for each of the four groups should be identical. From the 2 ml working solution, draw up 0.3ml into 6 separate 0.5 ml insulin syringes. Inject each of the six mice in each treatment group with 270 μl intraperitoneally. Then discard the syringe plus remaining solution.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "26",
+        "cases": [],
+        "critical": null
+      },
+      {
+        "id": 2550710,
+        "guid": "CD98545CEE9611EFA1610A58A9FEAC02",
+        "previous_id": 2550709,
+        "previous_guid": "CD98471BEE9611EFA1610A58A9FEAC02",
+        "section": "<p>Associated Publications</p>",
+        "section_color": "#84CE84",
+        "section_duration": 0,
+        "is_substep": false,
+        "step": "{\"blocks\":[{\"key\":\"buhum\",\"text\":\"\\u003ca href=\\\"https://dx.doi.org/10.1038/nm0107-17 \\\"\\u003eIs leptin an important physiological regulator of CRP?\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"3q05d\",\"text\":\"by Hutchinson, W.L. et al.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"cfejp\",\"text\":\"published in Nature Medicine on 01 Nov, 2006\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"style\":\"italic\",\"offset\":13,\"length\":15}],\"entityRanges\":[],\"data\":{}},{\"key\":\"99hlo\",\"text\":\"https://dx.doi.org/10.1038/nm0107-17 \",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+        "data": null,
+        "protocol_id": 120939,
+        "case_id": 0,
+        "critical_ids": "",
+        "duration": 0,
+        "original_id": 0,
+        "number": "27",
+        "cases": [],
+        "critical": null
+      }
+    ],
+    "status_code": 0
+  },
+  "top_hit_materials": {
+    "materials": [],
+    "status_code": 0
+  }
+}
