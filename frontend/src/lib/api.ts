@@ -274,6 +274,43 @@ export type ValidationResponse = {
   validation: ValidationOutput;
 };
 
+// ----- /critique response (Stage 7) ---------------------------------------
+// Single LLM call. Output schema forces every risk and confounder to
+// carry `cites` pointing to a procedure/step/hypothesis-field. The
+// parser validates against the protocol's procedure list and drops
+// ungrounded entries server-side, so anything that reaches the FE is
+// auditable.
+
+export type Risk = {
+  name: string;
+  severity: "low" | "medium" | "high";
+  category: "statistical" | "experimental" | "biological" | "technical" | "ethical" | "regulatory";
+  description: string;
+  mitigation: string;
+  cites: string;
+};
+
+export type Confounder = {
+  variable: string;
+  why_confounding: string;
+  control_strategy: string;
+  cites: string;
+};
+
+export type CritiqueOutput = {
+  risks: Risk[];
+  confounders: Confounder[];
+  overall_assessment: string;
+  recommendation: "proceed" | "proceed_with_caution" | "revise_design";
+  methodology: string;
+  generated_at: string;
+};
+
+export type CritiqueResponse = {
+  plan_id: string;
+  critique: CritiqueOutput;
+};
+
 // ----- Error shape -------------------------------------------------------
 
 export type ApiError = {
@@ -366,4 +403,8 @@ export function postTimeline(body: StageRequest, signal?: AbortSignal): Promise<
 
 export function postValidation(body: StageRequest, signal?: AbortSignal): Promise<ValidationResponse> {
   return postJson("/validation", body, signal);
+}
+
+export function postCritique(body: StageRequest, signal?: AbortSignal): Promise<CritiqueResponse> {
+  return postJson("/critique", body, signal);
 }

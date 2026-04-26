@@ -426,6 +426,48 @@ class ValidationOutput(BaseModel):
     generated_at: str = Field(default_factory=now)
 
 
+# ---- Stage 7: Critique ---------------------------------------------------
+# Single LLM call. Output schema FORCES every risk + confounder to carry
+# `cites` pointing to a known procedure name (or step "N (procedure X)",
+# or a hypothesis field). The parser validates against the protocol's
+# procedure list and drops anything ungrounded — a critique entry without
+# a citation is a vibes-based concern, not an auditable one.
+
+class Risk(BaseModel):
+    """A specific risk to the experiment producing a clean answer.
+    `severity` reflects how strongly it could compromise the result.
+    `category` lets the FE group risks by type. `cites` is REQUIRED."""
+    name: str
+    severity: Literal["low", "medium", "high"]
+    category: Literal["statistical", "experimental", "biological", "technical", "ethical", "regulatory"]
+    description: str
+    mitigation: str
+    cites: str  # "procedure 'X'" | "step N (procedure 'Y')" | "hypothesis.{field}"
+
+
+class Confounder(BaseModel):
+    """A variable that could confound the dependent measurement.
+    Different from a Risk — confounders are variables the experiment
+    fails to control for, not steps that can fail."""
+    variable: str
+    why_confounding: str
+    control_strategy: str
+    cites: str
+
+
+class CritiqueOutput(BaseModel):
+    """Stage 7 output. `overall_assessment` summarizes go/no-go from
+    the risk profile; `methodology` documents how the critique was
+    produced (model + citation enforcement) so the audit trail lives
+    with the data."""
+    risks: list[Risk]
+    confounders: list[Confounder]
+    overall_assessment: str
+    recommendation: Literal["proceed", "proceed_with_caution", "revise_design"]
+    methodology: str
+    generated_at: str = Field(default_factory=now)
+
+
 # ---- ExperimentPlan (blackboard) -----------------------------------------
 
 class ExperimentPlanMeta(BaseModel):
@@ -453,7 +495,7 @@ class ExperimentPlan(BaseModel):
     budget: Optional[dict[str, Any]] = None          # -> BudgetOutput
     timeline: Optional[TimelineOutput] = None
     validation: Optional[ValidationOutput] = None
-    critique: Optional[dict[str, Any]] = None        # -> DesignCritique
+    critique: Optional[CritiqueOutput] = None
     summary: Optional[dict[str, Any]] = None         # -> SummaryOutput
 
     status: dict[StageName, StageStatus]

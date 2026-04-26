@@ -515,6 +515,83 @@ def validation():
     })
 
 
+# ---------------------------------------------------------------------------
+# POST /critique
+# ---------------------------------------------------------------------------
+
+@app.post("/critique")
+def critique():
+    """Stage 7: design critique.
+
+    One LLM call audits the protocol against the hypothesis and emits
+    risks + confounders. Every entry is REQUIRED to cite a specific
+    procedure, step, or hypothesis field; the parser validates against
+    the protocol's procedure list and drops ungrounded entries. The
+    `recommendation` is recomputed deterministically from the parsed
+    risk severities so it always matches the visible risk profile.
+
+    Same `_resolve_plan` shape as /protocol /materials /timeline /validation.
+
+    Response:
+        {
+          "plan_id": "...",
+          "critique": CritiqueOutput   // risks[], confounders[],
+                                       //   overall_assessment,
+                                       //   recommendation, methodology
+        }
+    """
+    body = request.get_json(silent=True) or {}
+
+    try:
+        plan, is_new = _resolve_plan(body)
+    except ValidationError as exc:
+        return jsonify({"error": "validation_error", "detail": exc.errors()}), 422
+    except ValueError as exc:
+        return jsonify({"error": "bad_request", "detail": str(exc)}), 400
+
+    if not is_new and plan.protocol is None:
+        return jsonify({
+            "error": "protocol_not_run",
+            "detail": "This plan has no protocol yet. POST /protocol first, then retry /critique.",
+        }), 400
+
+    if plan.protocol is None:
+        started = now()
+        plan.status["protocol"] = StageStatusRunning(started_at=started)
+        plan.updated_at = started
+        plan_lib.save_plan(plan)
+        try:
+            protocol_out, _outline = protocol_stage.run_protocol_only(plan.hypothesis)
+        except Exception as exc:
+            return _stage_failed_response("protocol", plan, exc)
+        completed = now()
+        plan.protocol = protocol_out
+        plan.status["protocol"] = StageStatusComplete(completed_at=completed)
+        plan.updated_at = completed
+        plan_lib.save_plan(plan)
+
+    started = now()
+    plan.status["critique"] = StageStatusRunning(started_at=started)
+    plan.updated_at = started
+    plan_lib.save_plan(plan)
+
+    try:
+        critique_out = protocol_stage.run_critique_only(plan.hypothesis, plan.protocol)
+    except Exception as exc:
+        return _stage_failed_response("critique", plan, exc)
+
+    completed = now()
+    plan.critique = critique_out
+    plan.status["critique"] = StageStatusComplete(completed_at=completed)
+    plan.updated_at = completed
+    plan_lib.save_plan(plan)
+
+    return jsonify({
+        "plan_id": plan.id,
+        "critique": critique_out.model_dump(mode="json"),
+    })
+
+
 if __name__ == "__main__":
     # Flask's app.run() is for local development only. For deployment
     # (Render / Railway / Fly / Cloud Run / etc.), run with a production

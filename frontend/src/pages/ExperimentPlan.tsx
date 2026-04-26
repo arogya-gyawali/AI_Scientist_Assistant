@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
+  postCritique,
   postMaterials,
   postProtocol,
   postTimeline,
   postValidation,
+  type CritiqueOutput,
   type FEMaterialGroup,
   type FEMaterialsView,
   type FEProcedureGroup,
@@ -920,6 +922,7 @@ const ExperimentPlan = () => {
   const [apiMaterialsView, setApiMaterialsView] = useState<FEMaterialsView | null>(null);
   const [apiTimeline, setApiTimeline] = useState<TimelineOutput | null>(null);
   const [apiValidation, setApiValidation] = useState<ValidationOutput | null>(null);
+  const [apiCritique, setApiCritique] = useState<CritiqueOutput | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
 
   const useMockData = !incomingPlanId && !incomingStructured;
@@ -977,6 +980,16 @@ const ExperimentPlan = () => {
         } catch {
           // non-fatal — Phase A wiring still gives a procedure-derived
           // criteria list, just without power calc / failure modes.
+        }
+
+        // Stage 7: critique. One LLM call (risks + confounders, all
+        // citation-validated). If it fails the FE falls back to the
+        // hardcoded FEASIBILITY.risks panel.
+        try {
+          const crit = await postCritique({ plan_id: proto.plan_id }, ac.signal);
+          setApiCritique(crit.critique);
+        } catch {
+          // non-fatal — feasibility risks fallback handles this.
         }
 
         // The remaining reveal stages (3, 4) gate budget/timeline/validation.
@@ -2487,7 +2500,11 @@ const ExperimentPlan = () => {
                   </ul>
                 </div>
 
-                {/* Risks */}
+                {/* Risks. Phase D: when /critique returned real risks
+                    (each cite-validated server-side), render those with
+                    severity chips and citation back-link. Falls back to
+                    the hardcoded FEASIBILITY.risks for mock-only mode
+                    or when the /critique call failed. */}
                 <div className="relative sm:border-l sm:border-rule sm:pl-8">
                   <div className="flex items-baseline justify-between">
                     <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-ink-soft">
@@ -2497,19 +2514,109 @@ const ExperimentPlan = () => {
                       What could bias the result
                     </p>
                   </div>
-                  <ul className="mt-3 space-y-2.5">
-                    {FEASIBILITY.risks.map((r, i) => (
-                      <li
-                        key={i}
-                        className="flex gap-3 text-[15px] leading-[1.65] text-ink-soft"
-                      >
-                        <span className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                          R{i + 1}
-                        </span>
-                        <span>{r}</span>
-                      </li>
-                    ))}
+                  <ul className="mt-3 space-y-3">
+                    {(apiCritique && apiCritique.risks.length > 0) ? (
+                      apiCritique.risks.map((r, i) => {
+                        const sevColor =
+                          r.severity === "high"
+                            ? "text-destructive"
+                            : r.severity === "medium"
+                            ? "text-[hsl(28_70%_38%)]"
+                            : "text-muted-foreground";
+                        return (
+                          <li key={i} className="text-[14px] leading-[1.55] text-ink-soft">
+                            <div className="flex items-baseline gap-2">
+                              <span className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                                R{i + 1}
+                              </span>
+                              <span className={`font-mono-notebook text-[10px] uppercase tracking-[0.22em] ${sevColor}`}>
+                                {r.severity}
+                              </span>
+                              <span className="font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                                · {r.category}
+                              </span>
+                            </div>
+                            <p className="mt-1 text-[15px] leading-[1.55] text-ink">{r.name}</p>
+                            <p className="mt-0.5 text-[13px] leading-[1.55] text-ink-soft">{r.description}</p>
+                            <p className="mt-1 text-[13px] leading-[1.55] text-ink-soft">
+                              <span className="font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-sage">mitigation</span>{" "}
+                              {r.mitigation}
+                            </p>
+                            <p className="mt-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                              ↑ {r.cites}
+                            </p>
+                          </li>
+                        );
+                      })
+                    ) : (
+                      FEASIBILITY.risks.map((r, i) => (
+                        <li key={i} className="flex gap-3 text-[15px] leading-[1.65] text-ink-soft">
+                          <span className="font-mono-notebook text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                            R{i + 1}
+                          </span>
+                          <span>{r}</span>
+                        </li>
+                      ))
+                    )}
                   </ul>
+
+                  {/* Confounders block — only renders when /critique
+                      returned at least one. Each carries cite + control
+                      strategy alongside the why-confounding rationale. */}
+                  {apiCritique && apiCritique.confounders.length > 0 && (
+                    <div className="mt-5 border-t border-rule pt-4">
+                      <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-ink-soft">
+                        Confounders
+                      </p>
+                      <ul className="mt-3 space-y-3">
+                        {apiCritique.confounders.map((c, i) => (
+                          <li key={i} className="text-[14px] leading-[1.55] text-ink-soft">
+                            <p className="text-[15px] text-ink">{c.variable}</p>
+                            <p className="mt-0.5 text-[13px] leading-[1.55] text-ink-soft">{c.why_confounding}</p>
+                            <p className="mt-1 text-[13px] leading-[1.55] text-ink-soft">
+                              <span className="font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-sage">control</span>{" "}
+                              {c.control_strategy}
+                            </p>
+                            <p className="mt-1 font-mono-notebook text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                              ↑ {c.cites}
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Overall assessment + recommendation chip — only
+                      when real critique loaded. Recommendation is
+                      computed deterministically server-side from the
+                      risk profile, not a free-text LLM verdict. */}
+                  {apiCritique && (
+                    <div className="mt-5 border-t border-rule pt-4">
+                      <div className="flex items-baseline gap-2">
+                        <p className="font-mono-notebook text-[11px] uppercase tracking-[0.22em] text-ink-soft">
+                          Recommendation
+                        </p>
+                        <span
+                          className={
+                            "font-mono-notebook text-[10px] uppercase tracking-[0.22em] " +
+                            (apiCritique.recommendation === "revise_design"
+                              ? "text-destructive"
+                              : apiCritique.recommendation === "proceed_with_caution"
+                              ? "text-[hsl(28_70%_38%)]"
+                              : "text-sage")
+                          }
+                        >
+                          {apiCritique.recommendation.replace(/_/g, " ")}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-[14px] leading-[1.55] text-ink-soft">
+                        {apiCritique.overall_assessment}
+                      </p>
+                      <p className="mt-3 font-mono-notebook text-[11px] leading-[1.55] text-muted-foreground">
+                        {apiCritique.methodology}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
