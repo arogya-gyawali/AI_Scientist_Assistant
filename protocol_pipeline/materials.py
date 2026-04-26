@@ -21,7 +21,6 @@ vendor/sku stay None — Stage 4 backfills them.
 
 from __future__ import annotations
 
-import json
 import uuid
 from collections import Counter
 
@@ -107,7 +106,7 @@ def roll_up_materials(procedures: list[Procedure]) -> MaterialsOutput:
     blob = "\n\n".join(_format_procedure(p) for p in procedures)
     user = ROLLUP_USER_TMPL.format(n=len(procedures), procedures_blob=blob)
 
-    parsed = _llm_call_with_retry(user)
+    parsed = llm.complete_json(ROLLUP_SYSTEM, user, agent_name="Materials roll-up")
 
     materials = _build_materials(parsed.get("materials") or [])
     gaps = [str(x) for x in (parsed.get("gaps") or [])]
@@ -154,35 +153,24 @@ def _build_materials(raw: list) -> list[Material]:
             except (TypeError, ValueError):
                 qty = None
 
+        # Single-lookup pattern for optional string fields: read once into a
+        # local, coerce to str only if truthy. Faster than .get + ["..."]
+        # and avoids the readability cost of repeated dict access.
+        unit = item.get("unit")
+        spec = item.get("spec")
+        purpose = item.get("purpose")
+        storage = item.get("storage")
+        hazard = item.get("hazard")
         out.append(Material(
             id=f"mat_{uuid.uuid4().hex[:10]}",
             name=name,
             category=cat,
             qty=qty,
-            unit=str(item["unit"]) if item.get("unit") else None,
-            spec=str(item["spec"]) if item.get("spec") else None,
-            purpose=str(item["purpose"]) if item.get("purpose") else None,
-            storage=str(item["storage"]) if item.get("storage") else None,
-            hazard=str(item["hazard"]) if item.get("hazard") else None,
+            unit=str(unit) if unit else None,
+            spec=str(spec) if spec else None,
+            purpose=str(purpose) if purpose else None,
+            storage=str(storage) if storage else None,
+            hazard=str(hazard) if hazard else None,
             alternatives=[str(x) for x in (item.get("alternatives") or [])],
         ))
     return out
-
-
-def _llm_call_with_retry(user: str) -> dict:
-    def _call() -> dict:
-        raw = llm.complete(ROLLUP_SYSTEM, user, json_mode=True).strip()
-        if raw.startswith("```"):
-            raw = raw.strip("`").lstrip("json").strip()
-        return json.loads(raw)
-
-    try:
-        return _call()
-    except json.JSONDecodeError as first_exc:
-        try:
-            return _call()
-        except json.JSONDecodeError as retry_exc:
-            raise RuntimeError(
-                f"Materials roll-up: LLM returned malformed JSON twice "
-                f"(first: {first_exc}; retry: {retry_exc})."
-            ) from retry_exc

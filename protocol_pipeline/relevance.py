@@ -20,7 +20,6 @@ Why a low default threshold (0.2):
 
 from __future__ import annotations
 
-import json
 from typing import NamedTuple
 
 from src.clients import llm
@@ -132,7 +131,7 @@ def score_protocols(
         sources=sources_blob,
     )
 
-    parsed = _llm_call_with_retry(user)
+    parsed = llm.complete_json(RELEVANCE_SYSTEM, user, agent_name="Relevance filter")
     scores_by_id = _index_scores(parsed.get("scores") or [], known_ids={p.id for p in protocols})
 
     out: list[ScoredProtocol] = []
@@ -167,26 +166,6 @@ def filter_relevant(
 # --------------------------------------------------------------------------
 # Internals
 # --------------------------------------------------------------------------
-
-def _llm_call_with_retry(user: str) -> dict:
-    """One retry on JSONDecodeError. Same pattern as lit_review_pipeline.stage."""
-    def _call() -> dict:
-        raw = llm.complete(RELEVANCE_SYSTEM, user, json_mode=True).strip()
-        if raw.startswith("```"):
-            raw = raw.strip("`").lstrip("json").strip()
-        return json.loads(raw)
-
-    try:
-        return _call()
-    except json.JSONDecodeError as first_exc:
-        try:
-            return _call()
-        except json.JSONDecodeError as retry_exc:
-            raise RuntimeError(
-                f"Relevance filter: LLM returned malformed JSON twice "
-                f"(first: {first_exc}; retry: {retry_exc})."
-            ) from retry_exc
-
 
 def _index_scores(raw_scores: list, *, known_ids: set[str]) -> dict[str, RelevanceScore]:
     """Coerce LLM output into RelevanceScore objects, dropping anything that

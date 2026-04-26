@@ -19,7 +19,6 @@ Why this is its own pass:
 
 from __future__ import annotations
 
-import json
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -149,7 +148,7 @@ def plan_outline(
         sources=sources_blob,
     )
 
-    parsed = _llm_call_with_retry(user)
+    parsed = llm.complete_json(ARCHITECT_SYSTEM, user, agent_name="Architect")
     known_ids = {sp.protocol.id for sp in scored}
 
     procs: list[ProcedureOutline] = []
@@ -186,26 +185,3 @@ def plan_outline(
         overall_assumptions=[str(x) for x in (parsed.get("overall_assumptions") or [])],
         overall_controls=[str(x) for x in (parsed.get("overall_controls") or [])],
     )
-
-
-# --------------------------------------------------------------------------
-# Internals
-# --------------------------------------------------------------------------
-
-def _llm_call_with_retry(user: str) -> dict:
-    def _call() -> dict:
-        raw = llm.complete(ARCHITECT_SYSTEM, user, json_mode=True).strip()
-        if raw.startswith("```"):
-            raw = raw.strip("`").lstrip("json").strip()
-        return json.loads(raw)
-
-    try:
-        return _call()
-    except json.JSONDecodeError as first_exc:
-        try:
-            return _call()
-        except json.JSONDecodeError as retry_exc:
-            raise RuntimeError(
-                f"Architect: LLM returned malformed JSON twice "
-                f"(first: {first_exc}; retry: {retry_exc})."
-            ) from retry_exc

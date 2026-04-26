@@ -31,6 +31,10 @@ from src.types import (
     MaterialsOutput,
     ProtocolGenerationOutput,
     ProtocolStep,
+    StageStatusComplete,
+    StageStatusFailed,
+    StageStatusRunning,
+    now,
 )
 
 from .architect import ProtocolOutline, plan_outline
@@ -138,14 +142,40 @@ def run_and_write(
     max_writer_workers: int = 5,
 ) -> ExperimentPlan:
     """Run the pipeline and write the results to the shared blackboard.
-    Mirrors `lit_review_pipeline.stage.run`'s pattern of mutating the
-    ExperimentPlan in place; returns the same plan for chaining."""
-    result = run(
-        plan.hypothesis,
-        sources=sources,
-        relevance_threshold=relevance_threshold,
-        max_writer_workers=max_writer_workers,
-    )
+
+    Updates `plan.protocol`, `plan.materials`, BOTH stage statuses, and
+    `plan.updated_at`. The blackboard pattern requires every consumer to
+    be able to ask "did Stage 2 complete?" and "when was the plan last
+    touched?" — silently mutating the output fields without updating
+    status leaves downstream stages unable to gate on completion.
+
+    Both stages share the same lifecycle here because they emit together
+    in this pipeline (the materials roll-up runs as the final agent of
+    the same orchestration). On exception, both are marked failed.
+    """
+    started = now()
+    plan.status["protocol"] = StageStatusRunning(started_at=started)
+    plan.status["materials"] = StageStatusRunning(started_at=started)
+    plan.updated_at = started
+
+    try:
+        result = run(
+            plan.hypothesis,
+            sources=sources,
+            relevance_threshold=relevance_threshold,
+            max_writer_workers=max_writer_workers,
+        )
+    except Exception as exc:
+        failed_at = now()
+        plan.status["protocol"] = StageStatusFailed(failed_at=failed_at, error=str(exc))
+        plan.status["materials"] = StageStatusFailed(failed_at=failed_at, error=str(exc))
+        plan.updated_at = failed_at
+        raise
+
+    completed_at = now()
     plan.protocol = result.protocol
     plan.materials = result.materials
+    plan.status["protocol"] = StageStatusComplete(completed_at=completed_at)
+    plan.status["materials"] = StageStatusComplete(completed_at=completed_at)
+    plan.updated_at = completed_at
     return plan

@@ -189,7 +189,7 @@ def write_procedure(
         sources=sources_blob,
     )
 
-    parsed = _llm_call_with_retry(user)
+    parsed = llm.complete_json(WRITER_SYSTEM, user, agent_name="Procedure writer")
 
     steps = _build_steps(parsed.get("steps") or [], known_source_ids={
         s.id for p in relevant_sources for s in p.steps
@@ -260,13 +260,15 @@ def _coerce_quantity(raw) -> Quantity | None:
 def _coerce_params(raw) -> StepParams:
     if not isinstance(raw, dict):
         return StepParams()
-    other = raw.get("other") or {}
-    if not isinstance(other, dict):
-        other = {}
+    # `other` may be missing, None, or (rarely) a non-dict if the LLM
+    # mistypes the field. One isinstance check covers all three.
+    other_raw = raw.get("other")
+    other = other_raw if isinstance(other_raw, dict) else {}
+    duration = raw.get("duration")
     return StepParams(
         volume=_coerce_quantity(raw.get("volume")),
         temperature=_coerce_quantity(raw.get("temperature")),
-        duration=str(raw["duration"]) if raw.get("duration") else None,
+        duration=str(duration) if duration else None,
         concentration=_coerce_quantity(raw.get("concentration")),
         speed=_coerce_quantity(raw.get("speed")),
         other={str(k): str(v) for k, v in other.items()},
@@ -284,18 +286,21 @@ def _build_steps(raw_steps: Iterable, *, known_source_ids: set[str]) -> list[Pro
         refs = [str(x) for x in (raw.get("source_step_refs") or [])]
         if known_source_ids:
             refs = [r for r in refs if r in known_source_ids]
+        n_raw = raw.get("n")
+        duration = raw.get("duration")
+        notes = raw.get("notes")
         steps.append(ProtocolStep(
-            n=raw.get("n") if isinstance(raw.get("n"), int) else i,
+            n=n_raw if isinstance(n_raw, int) else i,
             title=str(raw.get("title") or f"Step {i}"),
             body_md=str(raw.get("body_md") or ""),
-            duration=str(raw["duration"]) if raw.get("duration") else None,
+            duration=str(duration) if duration else None,
             equipment_needed=[str(x) for x in (raw.get("equipment_needed") or [])],
             reagents_referenced=[str(x) for x in (raw.get("reagents_referenced") or [])],
             params=_coerce_params(raw.get("params")),
             controls=[str(x) for x in (raw.get("controls") or [])],
             todo_for_researcher=[str(x) for x in (raw.get("todo_for_researcher") or [])],
             source_step_refs=refs,
-            notes=str(raw["notes"]) if raw.get("notes") else None,
+            notes=str(notes) if notes else None,
         ))
     return steps
 
@@ -327,29 +332,11 @@ def _build_success_criteria(raw_sc: Iterable) -> list[ProcedureSuccessCriterion]
     for raw in raw_sc:
         if not isinstance(raw, dict):
             continue
+        threshold = raw.get("threshold")
         out.append(ProcedureSuccessCriterion(
             what=str(raw.get("what") or ""),
             how_measured=str(raw.get("how_measured") or ""),
-            threshold=str(raw["threshold"]) if raw.get("threshold") else None,
+            threshold=str(threshold) if threshold else None,
             pass_fail=bool(raw.get("pass_fail", True)),
         ))
     return out
-
-
-def _llm_call_with_retry(user: str) -> dict:
-    def _call() -> dict:
-        raw = llm.complete(WRITER_SYSTEM, user, json_mode=True).strip()
-        if raw.startswith("```"):
-            raw = raw.strip("`").lstrip("json").strip()
-        return json.loads(raw)
-
-    try:
-        return _call()
-    except json.JSONDecodeError as first_exc:
-        try:
-            return _call()
-        except json.JSONDecodeError as retry_exc:
-            raise RuntimeError(
-                f"Procedure writer: LLM returned malformed JSON twice "
-                f"(first: {first_exc}; retry: {retry_exc})."
-            ) from retry_exc
