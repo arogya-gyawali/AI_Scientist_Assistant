@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => ({
       "/materials":    "http://localhost:5000",
       "/timeline":     "http://localhost:5000",
       "/validation":   "http://localhost:5000",
+      "/critique":     "http://localhost:5000",
       "/health":       "http://localhost:5000",
     },
   },

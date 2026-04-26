@@ -266,6 +266,18 @@ def run_validation_only(
     return compute_validation(hypothesis, protocol)
 
 
+def run_critique_only(
+    hypothesis: Hypothesis,
+    protocol: ProtocolGenerationOutput,
+):
+    """Run Stage 7 only: design critique. One LLM call with citation
+    enforcement (ungrounded risks/confounders dropped by the parser).
+    Designed for a /critique endpoint that chains off a previously-
+    saved protocol."""
+    from .critique import compute_critique
+    return compute_critique(hypothesis, protocol)
+
+
 def run(
     hypothesis: Hypothesis,
     *,
