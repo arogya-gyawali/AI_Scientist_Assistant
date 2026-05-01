@@ -1,5 +1,8 @@
-"""LLM client abstraction. Picks OpenRouter or Anthropic from LLM_PROVIDER.
+"""LLM client abstraction. Picks OpenRouter, Anthropic, or Hybrid from LLM_PROVIDER.
 Stages call llm.complete(system, user) without caring which provider runs.
+
+`LLM_PROVIDER=hybrid` routes lightweight tasks (task= parsing/formatting/extraction)
+to local Ollama and reasoning workloads to OpenRouter, with cross-fallback.
 
 Client instances are cached per API key so we get TLS/connection reuse across
 calls. Tests that swap env vars mid-run automatically get fresh clients
@@ -14,12 +17,18 @@ from __future__ import annotations
 import json
 import os
 import time
+import urllib.error
+import urllib.request
 import uuid
 from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Any, Callable, Literal, TypeVar
 
-Provider = Literal["openrouter", "anthropic"]
+Provider = Literal["openrouter", "anthropic", "hybrid"]
+
+_OLLAMA_LIGHT_TASKS = frozenset({"parsing", "formatting", "extraction"})
+_DEFAULT_OLLAMA_GENERATE_URL = "http://localhost:11434/api/generate"
+_DEFAULT_OLLAMA_TIMEOUT_S = 120.0
 
 T = TypeVar("T")
 
@@ -69,27 +78,80 @@ def _retry_transient(fn: Callable[[], T], *, retriable: tuple[type[BaseException
     raise last_exc
 
 
-def _provider() -> Provider:
+def _provider_raw() -> Provider:
+    """Env-selected provider including hybrid."""
     p = os.environ.get("LLM_PROVIDER", "openrouter").lower()
-    if p not in ("openrouter", "anthropic"):
-        raise RuntimeError(f"LLM_PROVIDER must be 'openrouter' or 'anthropic', got {p!r}")
+    if p not in ("openrouter", "anthropic", "hybrid"):
+        raise RuntimeError(
+            f"LLM_PROVIDER must be 'openrouter', 'anthropic', or 'hybrid', got {p!r}"
+        )
     return p  # type: ignore[return-value]
 
 
+def _provider() -> Provider:
+    """Alias for `_provider_raw()` (external scripts e.g. run_lr print this)."""
+    return _provider_raw()
+
+
+def _route_model(task: str) -> Literal["openrouter", "anthropic", "ollama"]:
+    """Pick backend for complete(); mirrors hybrid routing rules."""
+    raw = _provider_raw()
+    if raw == "hybrid":
+        if task in _OLLAMA_LIGHT_TASKS:
+            return "ollama"
+        return "openrouter"
+    if raw == "anthropic":
+        return "anthropic"
+    return "openrouter"
+
+
 def model_id() -> str:
-    if _provider() == "openrouter":
-        return os.environ.get("OPENROUTER_MODEL", "google/gemini-2.5-flash")
-    return os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6")
+    """Model id reported for OpenRouter/Gemini path (includes hybrid)."""
+    if _provider_raw() == "anthropic":
+        return os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6")
+    return os.environ.get("OPENROUTER_MODEL", "google/gemini-2.5-flash")
 
 
-def complete(system: str, user: str, *, json_mode: bool = False) -> str:
-    """Single-turn completion. Returns the assistant's text content."""
-    if _provider() == "openrouter":
-        return _openrouter_complete(system, user, json_mode=json_mode)
+def complete(system: str, user: str, *, json_mode: bool = False, task: str = "reasoning") -> str:
+    """Single-turn completion. Returns the assistant's text content.
+
+    Optional ``task`` selects routing when ``LLM_PROVIDER=hybrid`` (see
+    ``_route_model``). Ignored for pure openrouter/anthropic modes except
+    passed through unchanged by callers using keyword-only kwargs.
+    """
+    routed = _route_model(task)
+    hybrid_mode = _provider_raw() == "hybrid"
+
+    if routed == "ollama":
+        try:
+            return _ollama_complete(system, user, json_mode=json_mode)
+        except Exception as o_exc:
+            try:
+                return _openrouter_complete(system, user, json_mode=json_mode)
+            except Exception as or_exc:
+                raise RuntimeError(
+                    "Hybrid completion failed: Ollama error "
+                    f"({o_exc!s}); OpenRouter fallback also failed ({or_exc!s})."
+                ) from or_exc
+
+    if routed == "openrouter":
+        try:
+            return _openrouter_complete(system, user, json_mode=json_mode)
+        except Exception as or_exc:
+            if hybrid_mode:
+                try:
+                    return _ollama_complete(system, user, json_mode=json_mode)
+                except Exception as ol_exc:
+                    raise RuntimeError(
+                        "Hybrid completion failed: OpenRouter error "
+                        f"({or_exc!s}); Ollama fallback also failed ({ol_exc!s})."
+                    ) from or_exc
+            raise
+
     return _anthropic_complete(system, user, json_mode=json_mode)
 
 
-def complete_json(system: str, user: str, *, agent_name: str = "agent") -> dict:
+def complete_json(system: str, user: str, *, agent_name: str = "agent", task: str = "reasoning") -> dict:
     """Single-turn completion in JSON mode, with one retry on parse failure.
 
     Wraps `complete(json_mode=True)` with the boilerplate every Stage 2
@@ -103,7 +165,7 @@ def complete_json(system: str, user: str, *, agent_name: str = "agent") -> dict:
     failure mode is greppable in logs.
     """
     def _call() -> dict:
-        raw = complete(system, user, json_mode=True).strip()
+        raw = complete(system, user, json_mode=True, task=task).strip()
         # Some models wrap JSON in ```json fences despite json_mode being
         # set; peel those off rather than letting json.loads fail on them.
         if raw.startswith("```"):
@@ -120,6 +182,51 @@ def complete_json(system: str, user: str, *, agent_name: str = "agent") -> dict:
                 f"{agent_name}: LLM returned malformed JSON twice "
                 f"(first: {first_exc}; retry: {retry_exc})."
             ) from retry_exc
+
+
+def _ollama_complete(system: str, user: str, *, json_mode: bool) -> str:
+    """POST /api/generate on local Ollama; returns the ``response`` text field."""
+    model = os.environ.get("OLLAMA_MODEL", "llama3")
+    url = os.environ.get("OLLAMA_API_URL", _DEFAULT_OLLAMA_GENERATE_URL)
+    parts: list[str] = []
+    if system.strip():
+        parts.append(system.strip())
+    if json_mode:
+        parts.append("Return ONLY valid JSON. No prose, no markdown fences.")
+    parts.append(user)
+    prompt = "\n\n".join(parts)
+
+    payload = json.dumps({"model": model, "prompt": prompt, "stream": False}).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=payload,
+        method="POST",
+        headers={"Content-Type": "application/json"},
+    )
+    timeout_s = float(os.environ.get("OLLAMA_TIMEOUT_S", _DEFAULT_OLLAMA_TIMEOUT_S))
+
+    try:
+        with urllib.request.urlopen(req, timeout=timeout_s) as resp:
+            raw_body = resp.read().decode("utf-8")
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")[:500]
+        raise RuntimeError(f"Ollama HTTP {exc.code}: {detail}") from exc
+    except urllib.error.URLError as exc:
+        raise RuntimeError(f"Ollama request failed: {exc.reason!s}") from exc
+    except TimeoutError as exc:
+        raise RuntimeError(f"Ollama request timed out after {timeout_s}s") from exc
+
+    try:
+        data = json.loads(raw_body)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"Ollama returned invalid JSON: {raw_body[:200]!r}") from exc
+
+    text = data.get("response")
+    if not isinstance(text, str):
+        raise RuntimeError(f"Ollama response missing string 'response' field: {data!r}")
+    if not text.strip():
+        raise RuntimeError("Ollama returned empty response text.")
+    return text
 
 
 # ---------------------------------------------------------------------------
@@ -241,9 +348,10 @@ def complete_with_tools(
     `tools` uses Anthropic's shape: `[{name, description, input_schema}, ...]`.
     For OpenRouter we adapt to OpenAI's `{type: "function", function: ...}`.
     """
-    if _provider() == "openrouter":
-        return _openrouter_with_tools(system, user, tools, history or [], max_tokens)
-    return _anthropic_with_tools(system, user, tools, history or [], max_tokens)
+    # Hybrid uses OpenRouter for tool-capable completions (local Ollama is not routed here).
+    if _provider_raw() == "anthropic":
+        return _anthropic_with_tools(system, user, tools, history or [], max_tokens)
+    return _openrouter_with_tools(system, user, tools, history or [], max_tokens)
 
 
 def _anthropic_with_tools(
