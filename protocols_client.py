@@ -26,7 +26,6 @@ import os
 import re
 import requests
 
-PROTOCOLS_IO_TOKEN = os.environ.get("PROTOCOLS_IO_TOKEN")
 BASE_URL = "https://www.protocols.io/api"
 
 # Module-level logger so callers can configure verbosity (e.g. silencing
@@ -35,6 +34,67 @@ BASE_URL = "https://www.protocols.io/api"
 # invalid token or a downed protocols.io is visible in the server log
 # while the caller still gets a graceful empty-result fallback.
 _LOG = logging.getLogger(__name__)
+
+# Avoid spamming logs when many callers skip live API without a token.
+_MISSING_TOKEN_WARNED = False
+
+
+def _protocols_io_token():
+    """Read token from the environment each call so dotenv/load order cannot strand us.
+
+    protocols.io expects ``Authorization: Bearer <access_token>`` (see API docs). Users
+    sometimes paste ``Bearer …`` into ``.env`` or wrap the value in quotes — normalize so
+    we never send ``Bearer Bearer …`` or quoted secrets.
+    """
+    raw = (
+        os.environ.get("PROTOCOLS_IO_TOKEN")
+        or os.environ.get("PROTOCOLS_IO_ACCESS_TOKEN")
+        or ""
+    )
+    raw = raw.strip()
+    if not raw:
+        return None
+    if (len(raw) >= 2 and raw[0] == raw[-1]) and raw[0] in "\"'":
+        raw = raw[1:-1].strip()
+    low = raw.lower()
+    if low.startswith("bearer "):
+        raw = raw[7:].strip()
+    return raw or None
+
+
+def _protocols_io_auth_headers():
+    """Headers that authenticate against protocols.io (Bearer token only when set)."""
+    headers = {}
+    tok = _protocols_io_token()
+    if tok:
+        headers["Authorization"] = f"Bearer {tok}"
+    return headers
+
+
+def _log_protocols_io_failure(where: str, exc: BaseException) -> None:
+    """Attach response body snippet when requests HTTP errors hide the API JSON."""
+    detail = ""
+    resp = getattr(exc, "response", None)
+    if resp is not None:
+        try:
+            detail = (resp.text or "")[:800]
+        except Exception:
+            detail = ""
+    if detail:
+        _LOG.warning("protocols.io %s failed: %s — response: %s", where, exc, detail)
+    else:
+        _LOG.warning("protocols.io %s failed: %s", where, exc)
+
+
+def _warn_missing_token_once():
+    global _MISSING_TOKEN_WARNED
+    if _MISSING_TOKEN_WARNED:
+        return
+    _MISSING_TOKEN_WARNED = True
+    _LOG.warning(
+        "PROTOCOLS_IO_TOKEN is not set; protocols.io live API calls are skipped."
+    )
+
 
 _HTML_TAG_RE = re.compile(r"<[^>]+>")
 
@@ -86,11 +146,8 @@ class ProtocolsIoError(Exception):
 
 def get_headers():
     """Return headers for API requests."""
-    headers = {
-        "Content-Type": "application/json"
-    }
-    if PROTOCOLS_IO_TOKEN:
-        headers["Authorization"] = f"Bearer {PROTOCOLS_IO_TOKEN}"
+    headers = {"Accept": "application/json"}
+    headers.update(_protocols_io_auth_headers())
     return headers
 
 
@@ -105,15 +162,19 @@ def search_protocols(query: str, limit: int = 5) -> list:
     Returns:
         List of normalized protocol candidates
     """
-    if not PROTOCOLS_IO_TOKEN:
+    if not _protocols_io_token():
+        _warn_missing_token_once()
         return []
-    
+
     try:
+        # Docs mark ``key`` as required; empty values have triggered 400 "missing or empty"
+        # responses in the wild — use a single space so we still issue a legal search.
+        key = (query or "").strip() or " "
         response = requests.get(
             f"{BASE_URL}/v3/protocols",
             params={
                 "filter": "public",
-                "key": query,
+                "key": key,
                 # BUGFIX(protocols.io) #1: order_field=relevance returns
                 # a 400 SQL error from protocols.io's backend
                 # ("Unknown column 'an.author_name' in 'order clause'").
@@ -122,10 +183,12 @@ def search_protocols(query: str, limit: int = 5) -> list:
                 # tend to be better-maintained).
                 "order_field": "activity",
                 "order_dir": "desc",
-                "page_size": limit
+                # API docs describe page_size / page_id as string params.
+                "page_size": str(limit),
+                "page_id": "1",
             },
             headers=get_headers(),
-            timeout=10
+            timeout=10,
         )
         response.raise_for_status()
         data = response.json()
@@ -154,13 +217,9 @@ def search_protocols(query: str, limit: int = 5) -> list:
             candidates.append(protocol)
         
         return candidates
-    
+
     except requests.RequestException as exc:
-        # Log so operators see "API down" / "bad token" in server logs
-        # rather than silently degrading. Return [] so callers still
-        # get a graceful no-results fallback (the offline static-samples
-        # path picks up).
-        _LOG.warning("protocols.io request failed: %s", exc)
+        _log_protocols_io_failure("search_protocols", exc)
         return []
 
 
@@ -178,41 +237,45 @@ def get_protocol_metadata(protocol_id: str) -> dict:
     it straight into `_bundle_to_normalized`. Returns {} when the
     token is missing, the API errors, or the protocol id isn't found.
     """
-    if not PROTOCOLS_IO_TOKEN:
+    if not _protocols_io_token():
         return {}
 
     try:
+        # Prefer v4 — current docs center on GET /v4/protocols/[id] with {"payload": …}.
         response = requests.get(
-            f"{BASE_URL}/v3/protocols/{protocol_id}",
+            f"{BASE_URL}/v4/protocols/{protocol_id}",
             headers=get_headers(),
             timeout=10,
         )
         response.raise_for_status()
         data = response.json()
-        # protocols.io wraps single-protocol responses in {"protocol":
-        # {...}} or sometimes returns the protocol dict at the top level
-        # depending on the endpoint version. Handle both shapes.
-        item = data.get("protocol") or data
+        item = data.get("payload") or data.get("protocol") or data
         if not isinstance(item, dict):
             return {}
-        # Same DraftJS-or-plain-text dance as search_protocols. Strip
-        # to plaintext via _parse_draftjs, then cap at 500 chars so
-        # downstream rendering is uniform.
+        stats = item.get("stats") if isinstance(item.get("stats"), dict) else {}
+        n_steps = int(stats.get("number_of_steps") or 0)
+        n_reagents = int(stats.get("number_of_reagents") or 0)
+        mats = item.get("materials")
+        steps_available = bool(n_steps or item.get("steps"))
+        materials_available = bool(
+            n_reagents or (isinstance(mats, list) and len(mats) > 0)
+        )
         desc = _parse_draftjs(item.get("description") or "")[:500]
+        uri = item.get("uri") or ""
+        url = item.get("url") or ""
         return {
             "id": str(item.get("id", protocol_id)),
             "title": item.get("title", ""),
             "description": desc,
-            "url": item.get("uri", "") or item.get("url", ""),
+            "url": url or uri,
             "doi": item.get("doi", ""),
-            "uri": item.get("uri", ""),
+            "uri": uri,
             "source": "protocols.io",
-            "materials_available": item.get("has_materials", False),
-            "steps_available": item.get("has_steps", False),
+            "materials_available": materials_available or item.get("has_materials", False),
+            "steps_available": steps_available or item.get("has_steps", False),
         }
     except requests.RequestException as exc:
-        _LOG.warning("protocols.io get_protocol_metadata(%s) failed: %s",
-                     protocol_id, exc)
+        _log_protocols_io_failure(f"get_protocol_metadata({protocol_id})", exc)
         return {}
 
 
@@ -226,14 +289,14 @@ def get_protocol_steps(protocol_id: str) -> list:
     Returns:
         List of protocol steps
     """
-    if not PROTOCOLS_IO_TOKEN:
+    if not _protocols_io_token():
         return []
-    
+
     try:
         response = requests.get(
             f"{BASE_URL}/v4/protocols/{protocol_id}/steps",
             headers=get_headers(),
-            timeout=10
+            timeout=10,
         )
         response.raise_for_status()
         data = response.json()
@@ -271,11 +334,7 @@ def get_protocol_steps(protocol_id: str) -> list:
         return steps
     
     except requests.RequestException as exc:
-        # Log so operators see "API down" / "bad token" in server logs
-        # rather than silently degrading. Return [] so callers still
-        # get a graceful no-results fallback (the offline static-samples
-        # path picks up).
-        _LOG.warning("protocols.io request failed: %s", exc)
+        _log_protocols_io_failure(f"get_protocol_steps({protocol_id})", exc)
         return []
 
 
@@ -289,14 +348,14 @@ def get_protocol_materials(protocol_id: str) -> list:
     Returns:
         List of protocol materials
     """
-    if not PROTOCOLS_IO_TOKEN:
+    if not _protocols_io_token():
         return []
-    
+
     try:
         response = requests.get(
             f"{BASE_URL}/v3/protocols/{protocol_id}/materials",
             headers=get_headers(),
-            timeout=10
+            timeout=10,
         )
         response.raise_for_status()
         data = response.json()
@@ -316,11 +375,7 @@ def get_protocol_materials(protocol_id: str) -> list:
         return materials
     
     except requests.RequestException as exc:
-        # Log so operators see "API down" / "bad token" in server logs
-        # rather than silently degrading. Return [] so callers still
-        # get a graceful no-results fallback (the offline static-samples
-        # path picks up).
-        _LOG.warning("protocols.io request failed: %s", exc)
+        _log_protocols_io_failure(f"get_protocol_materials({protocol_id})", exc)
         return []
 
 
@@ -336,7 +391,7 @@ def get_protocol_bundle(query: str, selected_protocol_id: str = None) -> dict:
         Protocol bundle with candidates, steps, materials, and gaps
     """
     # Check for missing token
-    if not PROTOCOLS_IO_TOKEN:
+    if not _protocols_io_token():
         return {
             "grounding_status": "missing_token",
             "selection_mode": "none",

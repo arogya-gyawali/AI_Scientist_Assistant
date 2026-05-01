@@ -30,6 +30,8 @@ _OLLAMA_LIGHT_TASKS = frozenset({"parsing", "formatting", "extraction"})
 _DEFAULT_OLLAMA_GENERATE_URL = "http://localhost:11434/api/generate"
 _DEFAULT_OLLAMA_TIMEOUT_S = 120.0
 
+LLM_DEBUG = os.getenv("LLM_DEBUG", "false").lower() == "true"
+
 T = TypeVar("T")
 
 
@@ -122,11 +124,20 @@ def complete(system: str, user: str, *, json_mode: bool = False, task: str = "re
     routed = _route_model(task)
     hybrid_mode = _provider_raw() == "hybrid"
 
+    if LLM_DEBUG:
+        print(f"[LLM ROUTER] task={task} → provider={routed}")
+
     if routed == "ollama":
+        if LLM_DEBUG:
+            print("[LLM CALL] Using Ollama")
         try:
             return _ollama_complete(system, user, json_mode=json_mode)
         except Exception as o_exc:
+            if LLM_DEBUG:
+                print("[LLM FALLBACK] Ollama failed → switching to OpenRouter")
             try:
+                if LLM_DEBUG:
+                    print("[LLM CALL] Using OpenRouter")
                 return _openrouter_complete(system, user, json_mode=json_mode)
             except Exception as or_exc:
                 raise RuntimeError(
@@ -135,11 +146,17 @@ def complete(system: str, user: str, *, json_mode: bool = False, task: str = "re
                 ) from or_exc
 
     if routed == "openrouter":
+        if LLM_DEBUG:
+            print("[LLM CALL] Using OpenRouter")
         try:
             return _openrouter_complete(system, user, json_mode=json_mode)
         except Exception as or_exc:
             if hybrid_mode:
+                if LLM_DEBUG:
+                    print("[LLM FALLBACK] OpenRouter failed → switching to Ollama")
                 try:
+                    if LLM_DEBUG:
+                        print("[LLM CALL] Using Ollama")
                     return _ollama_complete(system, user, json_mode=json_mode)
                 except Exception as ol_exc:
                     raise RuntimeError(
@@ -148,6 +165,8 @@ def complete(system: str, user: str, *, json_mode: bool = False, task: str = "re
                     ) from or_exc
             raise
 
+    if LLM_DEBUG:
+        print("[LLM CALL] Using Anthropic")
     return _anthropic_complete(system, user, json_mode=json_mode)
 
 
@@ -254,7 +273,13 @@ def _anthropic_client_for(api_key: str):
 # Provider-specific completion paths
 # ---------------------------------------------------------------------------
 
-def _openrouter_complete(system: str, user: str, *, json_mode: bool) -> str:
+def _openrouter_complete(
+    system: str,
+    user: str,
+    *,
+    json_mode: bool,
+    _without_response_format: bool = False,
+) -> str:
     import openai
 
     api_key = os.environ.get("OPENROUTER_API_KEY")
@@ -269,7 +294,11 @@ def _openrouter_complete(system: str, user: str, *, json_mode: bool) -> str:
             {"role": "user", "content": user},
         ],
     }
-    if json_mode:
+    # Structured JSON agents (Stage 2 relevance / architect / writers) set
+    # response_format=json_object.  Meta-routes like ``openrouter/free`` may
+    # land on backends that reject that flag (400) while still following
+    # prompt-only JSON instructions — retry once without response_format.
+    if json_mode and not _without_response_format:
         kwargs["response_format"] = {"type": "json_object"}
 
     retriable = (
@@ -278,10 +307,25 @@ def _openrouter_complete(system: str, user: str, *, json_mode: bool) -> str:
         openai.APITimeoutError,
         openai.InternalServerError,
     )
-    resp = _retry_transient(
-        lambda: client.chat.completions.create(**kwargs),
-        retriable=retriable,
-    )
+    try:
+        resp = _retry_transient(
+            lambda: client.chat.completions.create(**kwargs),
+            retriable=retriable,
+        )
+    except openai.BadRequestError:
+        if json_mode and not _without_response_format:
+            if LLM_DEBUG:
+                print(
+                    "[LLM] OpenRouter BadRequest with json response_format; "
+                    "retrying without response_format (prompt-only JSON)"
+                )
+            bolstered = system + (
+                "\n\nReturn ONLY valid JSON. No prose, no markdown fences."
+            )
+            return _openrouter_complete(
+                bolstered, user, json_mode=False, _without_response_format=True
+            )
+        raise
 
     # Defensive: content filtering or upstream errors can return empty choices.
     if not resp.choices:

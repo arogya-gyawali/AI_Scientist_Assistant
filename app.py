@@ -28,11 +28,15 @@ import os
 import sys
 import traceback
 import uuid
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Load .env BEFORE importing modules that read env at import time.
-load_dotenv()
+# Load `.env` from the repo root (this file's directory), not only the process
+# cwd — so `flask --app app run` from another directory still picks up keys.
+_APP_DIR = Path(__file__).resolve().parent
+load_dotenv(_APP_DIR / ".env")
+load_dotenv()  # also allow cwd-based .env overrides for local experimentation
 
 # UTF-8 stdout/stderr so Windows cp1252 doesn't choke on science Unicode.
 for _stream in (sys.stdout, sys.stderr):
@@ -120,6 +124,8 @@ def lit_review():
         return jsonify({"error": "request_body_required",
                         "detail": "Body must be JSON with a 'structured' field."}), 400
 
+    body = _normalize_hypothesis_request_body(dict(body))
+
     try:
         if "id" in body:
             hypothesis = Hypothesis(**body)
@@ -175,6 +181,69 @@ def lit_review():
 # Stage 2 / 3 helpers
 # ---------------------------------------------------------------------------
 
+def _normalize_structured_hypothesis_dict(structured: dict) -> dict:
+    """Map common API/testing aliases onto ``StructuredHypothesis`` field names.
+
+    Pydantic still validates the result strictly — this only normalizes input.
+    Canonical keys win when both alias and canonical are present (alias dropped).
+    """
+    if not isinstance(structured, dict):
+        return structured
+    s = dict(structured)
+
+    def _take_canonical(canonical: str, aliases: tuple[str, ...]) -> None:
+        if canonical in s and s.get(canonical) not in (None, "") and str(s[canonical]).strip():
+            for a in aliases:
+                s.pop(a, None)
+            return
+        for a in aliases:
+            if a not in s:
+                continue
+            val = s.get(a)
+            if val is None or (isinstance(val, str) and not val.strip()):
+                s.pop(a, None)
+                continue
+            if canonical not in s or not str(s.get(canonical, "")).strip():
+                s[canonical] = s.pop(a)
+            else:
+                s.pop(a, None)
+            for b in aliases:
+                if b != a:
+                    s.pop(b, None)
+            return
+        for a in aliases:
+            s.pop(a, None)
+
+    _take_canonical("independent", ("independent_variable", "intervention"))
+    _take_canonical("dependent", ("dependent_variable", "measurement", "outcome"))
+    _take_canonical("research_question", ("question", "researchQuestion"))
+
+    s.setdefault("conditions", "unspecified")
+    s.setdefault("expected", "unspecified")
+
+    for key in (
+        "research_question",
+        "subject",
+        "independent",
+        "dependent",
+        "conditions",
+        "expected",
+    ):
+        if key in s and isinstance(s[key], str):
+            s[key] = s[key].strip()
+
+    return s
+
+
+def _normalize_hypothesis_request_body(body: dict) -> dict:
+    """Shallow-copy JSON body and normalize ``structured`` when present."""
+    out = dict(body)
+    raw = out.get("structured")
+    if isinstance(raw, dict):
+        out["structured"] = _normalize_structured_hypothesis_dict(raw)
+    return out
+
+
 def _resolve_plan(body: dict) -> tuple[ExperimentPlan, bool]:
     """Either load an existing plan via `plan_id` or mint a new one from a
     `structured` hypothesis. Returns (plan, is_new). Raises ValueError on
@@ -183,6 +252,8 @@ def _resolve_plan(body: dict) -> tuple[ExperimentPlan, bool]:
     Both /protocol and /materials accept either form so the FE can chain
     off /lit-review (plan_id) AND a curl-based smoke test can hit them
     without lit-review (structured)."""
+    body = _normalize_hypothesis_request_body(dict(body))
+
     plan_id = body.get("plan_id")
     if plan_id:
         try:

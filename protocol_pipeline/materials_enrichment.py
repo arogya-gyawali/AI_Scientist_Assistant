@@ -155,6 +155,7 @@ def _extract_one(
             EXTRACT_SYSTEM,
             user,
             agent_name="Materials enrichment",
+            task="extraction",
         )
     except Exception as exc:
         _LOG.warning("Materials enrichment LLM call failed for %r: %s", name, exc)
@@ -335,7 +336,9 @@ def _llm_price_from_content(name: str, domain: str, content: str) -> Optional[st
         f"Page text:\n{content[:6000]}"
     )
     try:
-        parsed = llm.complete_json(_PRICE_LLM_SYSTEM, user, agent_name="Materials price")
+        parsed = llm.complete_json(
+            _PRICE_LLM_SYSTEM, user, agent_name="Materials price", task="extraction"
+        )
     except Exception:
         return None
     if not isinstance(parsed, dict):

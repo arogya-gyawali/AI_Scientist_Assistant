@@ -81,6 +81,8 @@ def _check_env() -> bool:
         missing.append("OPENROUTER_API_KEY (LLM_PROVIDER=openrouter)")
     elif provider == "anthropic" and not os.environ.get("ANTHROPIC_API_KEY"):
         missing.append("ANTHROPIC_API_KEY (LLM_PROVIDER=anthropic)")
+    elif provider == "hybrid" and not os.environ.get("OPENROUTER_API_KEY"):
+        missing.append("OPENROUTER_API_KEY (LLM_PROVIDER=hybrid; reasoning + fallback)")
 
     if missing:
         print("\nMissing env vars in .env:", file=sys.stderr)
